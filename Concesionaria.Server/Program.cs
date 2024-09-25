@@ -1,4 +1,6 @@
 using Concesionaria.DB.Data;
+using Concesionaria.DB.Data.Entidades;
+using Concesionaria.Server.Repositorio;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +11,22 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<Context>(op => op.UseSqlServer("name=conn")); 
 
+//Servicios de los repositorios
+
+builder.Services.AddScoped<ITipoDocumentoRepositorio, TipoDocumentoRepositorio>();
+builder.Services.AddScoped<IRepositorio<Persona>, Repositorio<Persona>>();
+builder.Services.AddScoped<IRepositorio<PlanVendido>, Repositorio<PlanVendido>>();
+
+// Coneccion con la BD
+
+builder.Services.AddDbContext<Context>(op => op.UseSqlServer("name=conn"));
+
+// AutoMapper
+
+builder.Services.AddAutoMapper(typeof(Program));
+
+//=================================================
 
 var app = builder.Build();
 

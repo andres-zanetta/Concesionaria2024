@@ -205,7 +205,7 @@ namespace Concesionaria.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cuotaas",
+                name: "Cuotas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -220,9 +220,9 @@ namespace Concesionaria.DB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cuotaas", x => x.Id);
+                    table.PrimaryKey("PK_Cuotas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cuotaas_PlanesVendidos_PlanVendidoId",
+                        name: "FK_Cuotas_PlanesVendidos_PlanVendidoId",
                         column: x => x.PlanVendidoId,
                         principalTable: "PlanesVendidos",
                         principalColumn: "Id",
@@ -245,9 +245,9 @@ namespace Concesionaria.DB.Migrations
                 {
                     table.PrimaryKey("PK_Pagos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pagos_Cuotaas_CuotaId",
+                        name: "FK_Pagos_Cuotas_CuotaId",
                         column: x => x.CuotaId,
-                        principalTable: "Cuotaas",
+                        principalTable: "Cuotas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -276,8 +276,8 @@ namespace Concesionaria.DB.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cuotaas_PlanVendidoId",
-                table: "Cuotaas",
+                name: "IX_Cuotas_PlanVendidoId",
+                table: "Cuotas",
                 column: "PlanVendidoId");
 
             migrationBuilder.CreateIndex(
@@ -362,7 +362,7 @@ namespace Concesionaria.DB.Migrations
                 name: "Pagos");
 
             migrationBuilder.DropTable(
-                name: "Cuotaas");
+                name: "Cuotas");
 
             migrationBuilder.DropTable(
                 name: "PlanesVendidos");

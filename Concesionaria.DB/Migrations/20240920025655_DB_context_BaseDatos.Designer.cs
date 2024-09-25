@@ -128,7 +128,7 @@ namespace Concesionaria.DB.Migrations
 
                     b.HasIndex("PlanVendidoId");
 
-                    b.ToTable("Cuotaas");
+                    b.ToTable("Cuotas");
                 });
 
             modelBuilder.Entity("Concesionaria.DB.Data.Entidades.Pago", b =>
