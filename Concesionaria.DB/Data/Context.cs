@@ -19,7 +19,7 @@ namespace Concesionaria.DB.Data
         public DbSet<TipoPlan> TipoPlanes { get; set; }
         public DbSet<TipoDocumento> TipoDocumentos { get; set; }
         public DbSet<Vehiculo> Vehiculos { get; set; }
-        public DbSet<Vendedor> Vendedors { get; set; }
+        public DbSet<Vendedor> Vendedores { get; set; }
 
         // Consultar: ¿Corresponde agregar una tabla "Direccion" donde guardar calle, barrio, loc, prov?
 

@@ -15,7 +15,6 @@ namespace Concesionaria.Server.Controllers
 
         public TipoDocumentosController(IRepositorio<TipoDocumento> repositorio, IMapper mapper)
         {
-
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
