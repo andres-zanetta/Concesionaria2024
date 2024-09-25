@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Concesionaria.DB.Data
+namespace Concesionaria2024.Shared.DTO
 {
-    public class EntityBase : IEntityBase
+    public class CrearPlanVendidoDTO
     {
-        public int Id { get; set; }
     }
 }
