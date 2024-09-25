@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Concesionaria.DB\Concesionaria.DB.csproj" />
+    <ProjectReference Include="..\Concesionaria2024.Shared\Concesionaria2024.Shared.csproj" />
   </ItemGroup>
 
 </Project>

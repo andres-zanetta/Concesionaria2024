@@ -12,7 +12,7 @@ namespace Concesionaria.DB.Data
     {
         public DbSet<Adjudicacion> Adjudicaciones {  get; set; }
         public DbSet<Cliente> Clientes { get; set; }
-        public DbSet<Cuota> Cuotaas { get; set; }
+        public DbSet<Cuota> Cuotas { get; set; }
         public DbSet<Pago> Pagos { get; set; }
         public DbSet<Persona> Personas { get; set; }
         public DbSet<PlanVendido> PlanesVendidos { get; set; }
