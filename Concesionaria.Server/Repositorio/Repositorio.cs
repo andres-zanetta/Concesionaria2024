@@ -1,4 +1,5 @@
 ﻿using Concesionaria.DB.Data;
+using Concesionaria.DB.Data.Entidades;
 using Microsoft.EntityFrameworkCore;
 
 namespace Concesionaria.Server.Repositorio
@@ -24,6 +25,10 @@ namespace Concesionaria.Server.Repositorio
             return await context.Set<E>().ToListAsync();
         }
 
+        public Task<Vendedor> SelectByPersona(id personaId)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<E> SelectById(int id)
         {
             E? sel = await context.Set<E>()
@@ -89,5 +94,7 @@ namespace Concesionaria.Server.Repositorio
             await context.SaveChangesAsync();
             return true;
         }
+
+        
     }
 }

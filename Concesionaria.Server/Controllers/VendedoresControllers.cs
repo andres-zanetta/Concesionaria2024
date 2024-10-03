@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Concesionaria.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Vendedores")]
     public class VendedoresControllers : ControllerBase
 
     {
@@ -23,33 +23,34 @@ namespace Concesionaria.Server.Controllers
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
-        private readonly Context context;
-
-        public VendedoresControllers(Context context)
-        {
-            this.context = context;
-        }
-
+       
         [HttpGet]
         public async Task<ActionResult<List<Vendedor>>> Get()
         {
-            return await context.Vendedores.ToListAsync();
+            return await repositorio.Select();
         }
 
         // GET: ID 
-        [HttpGet("{ID:int}")]
-        public async Task<ActionResult<Vendedor>> Get(int ID)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Vendedor>> Get(int id)
         {
-            var vendedor = await context.Vendedores.FirstOrDefaultAsync(x => x.Id == ID);
-
-            if (vendedor == null)
+            Vendedor? pepe = await repositorio.SelectById(id);
+           
+            if (pepe == null)
             {
-                return NotFound($"El vendedor con ID {ID} no fue encontrado.");
+                return NotFound($"El vendedor con ID {id} no fue encontrado.");
             }
 
-            return vendedor;
+            return pepe;
         }
 
+        [HttpGet("existe/{id:int}")]
+
+        public async Task<ActionResult<bool>> Existe(int id)
+        {
+            var existe = await repositorio.Existe(id);
+            return existe;
+        }
         // POST: ----------------------------------------------------------------------
         [HttpPost]
         public async Task<ActionResult<int>> Post(CrearVendedorDTO entidadDTO)
@@ -70,25 +71,25 @@ namespace Concesionaria.Server.Controllers
         }
 
         // PUT: ID ------------------------------------------------------------------------
-        [HttpPut("{ID:int}")]
-        public async Task<ActionResult> Put(int ID, [FromBody] Vendedor vendedor)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromBody] Vendedor entidad)
         {
-            if (ID != vendedor.Id)
+            if (id != entidad.Id)
             {
                 return BadRequest("Datos incorrectos");
             }
-            var sel = await repositorio.SelectById(ID);
+            var sel = await repositorio.SelectById(id);
 
             if (sel == null)
             {
                 return NotFound("No existe el vendedor buscado.");
             }
 
-            mapper.Map(vendedor, sel);
+            mapper.Map(entidad, sel);
 
             try
             {
-                await repositorio.Update(ID, sel);
+                await repositorio.Update(id, sel);
                 return Ok();
             }
             catch (Exception e)
@@ -98,18 +99,20 @@ namespace Concesionaria.Server.Controllers
         }
 
         // DELETE: ID ----------------------------------------------------------------------
-        [HttpDelete("{ID:int}")]
-        public async Task<ActionResult> Delete(int ID)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
-            var existe = await repositorio.Existe(ID);
+            var existe = await repositorio.Existe(id);
             if (!existe)
             {
-                return NotFound($"El vendedor {ID} no existe");
+                return NotFound($"El vendedor {id} no existe");
             }
+            Vendedor EntidadABorrar = new Vendedor();
+            EntidadABorrar.Id = id;
 
-            if (await repositorio.Delete(ID))
+            if (await repositorio.Delete(id))
             {
-                return Ok($"El vendedor {ID} fue eliminado");
+                return Ok($"El vendedor {id} fue eliminado");
             }
             else
             {

@@ -8,43 +8,47 @@ using Concesionaria2024.Shared.DTO;
 
 namespace Concesionaria.Server.Controllers
 {
+    [ApiController]
+    [Route("api/Cliente")]
     public class ClientesControllers:ControllerBase
-
     {
-        [ApiController]
-        [Route("api/[controller]")]
-        public class ClienteController : ControllerBase
+        public class ClientesController : ControllerBase
         {
             private readonly IRepositorio<Cliente> repositorio;
             private readonly IMapper mapper;
-            private readonly Context context;
+         
 
-            public ClienteController(IRepositorio<Cliente> repositorio, IMapper mapper, Context context)
+            public ClientesController(IRepositorio<Cliente> repositorio, IMapper mapper)
             {
                 this.repositorio = repositorio;
                 this.mapper = mapper;
-                this.context = context;
+                
             }
 
             // GET:-------------------------------------------------------------------
             [HttpGet]
             public async Task<ActionResult<List<Cliente>>> Get()
             {
-                return await context.Clientes.ToListAsync();
+                return await repositorio.Select();
             }
 
             // GET: ID 
             [HttpGet("{ID:int}")]
-            public async Task<ActionResult<Cliente>> Get(int ID)
+            public async Task<ActionResult<Cliente>> Get(int id)
             {
-                var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == ID);
-
-                if (cliente == null)
+               Cliente? pepe = await repositorio.SelectById(id);
+                if (pepe == null)
                 {
-                    return NotFound($"El cliente con ID {ID} no fue encontrado.");
+                    return NotFound();
                 }
+                return pepe;
+            }
 
-                return cliente;
+            [HttpGet("existe/{id:int}")]
+            public async Task<ActionResult<bool>> Existe(int id)
+            {
+                var existe = await repositorio.Existe(id);
+                return existe;
             }
 
             // POST: ----------------------------------------------------------------------
@@ -67,16 +71,16 @@ namespace Concesionaria.Server.Controllers
             }
 
             // PUT: ID ------------------------------------------------------------------------
-            [HttpPut("{ID:int}")]
-            public async Task<ActionResult> Put(int ID, [FromBody] Cliente cliente)
+            [HttpPut("{id:int}")]
+            public async Task<ActionResult> Put(int id, [FromBody] Cliente cliente)
             {
-                if (ID != cliente.Id)
+                if (id != cliente.Id)
                 {
                     return BadRequest("Datos incorrectos");
                 }
-                var sel = await repositorio.SelectById(ID);
+                var sel = await repositorio.SelectById(id);
 
-                if (sel == null)
+                if (sel == null)//sel es el nombre de la variable de cliente seleccionado
                 {
                     return NotFound("No existe el cliente buscado.");
                 }
@@ -85,7 +89,7 @@ namespace Concesionaria.Server.Controllers
 
                 try
                 {
-                    await repositorio.Update(ID, sel);
+                    await repositorio.Update(id, sel);
                     return Ok();
                 }
                 catch (Exception e)
@@ -95,18 +99,21 @@ namespace Concesionaria.Server.Controllers
             }
 
             // DELETE: ID ----------------------------------------------------------------------
-            [HttpDelete("{ID:int}")]
-            public async Task<ActionResult> Delete(int ID)
+            [HttpDelete("{id:int}")]
+            public async Task<ActionResult> Delete(int id)
             {
-                var existe = await repositorio.Existe(ID);
+                var existe = await repositorio.Existe(id);
                 if (!existe)
                 {
-                    return NotFound($"El cliente {ID} no existe");
+                    return NotFound($"El cliente {id} no existe");
                 }
 
-                if (await repositorio.Delete(ID))
+                Cliente EntidadABorrar = new Cliente();
+                EntidadABorrar.Id = id;
+
+                if (await repositorio.Delete(id))
                 {
-                    return Ok($"El cliente {ID} fue eliminado");
+                    return Ok($"El cliente {id} fue eliminado");
                 }
                 else
                 {
