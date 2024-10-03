@@ -17,6 +17,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ITipoDocumentoRepositorio, TipoDocumentoRepositorio>();
 builder.Services.AddScoped<IRepositorio<Persona>, Repositorio<Persona>>();
 builder.Services.AddScoped<IRepositorio<PlanVendido>, Repositorio<PlanVendido>>();
+builder.Services.AddScoped<IVendedorRepositorio, VendedorRepositorio>();
+builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 
 // Coneccion con la BD
 
