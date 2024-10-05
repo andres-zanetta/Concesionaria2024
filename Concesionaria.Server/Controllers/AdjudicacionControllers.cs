@@ -18,13 +18,13 @@ namespace Concesionaria.Server.Controllers
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
-
+        //Obtener Todas las Adjudicaciones
         [HttpGet]
         public async Task<ActionResult<List<Adjudicacion>>> Get()
         {
             return await repositorio.Select();
         }
-
+        //Obtener una Adjudicacion por ID
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Adjudicacion>> Get(int id)
         {
@@ -35,14 +35,14 @@ namespace Concesionaria.Server.Controllers
             }
             return sel;
         }
-
+        //Verificar si una Adjudicacion Existe
         [HttpGet("existe/{id:int}")]
         public async Task<ActionResult<bool>> Existe(int id)
         {
             var existe = await repositorio.Existe(id);
             return existe;
         }
-
+        //Crear una Nueva Adjudicacion
         [HttpPost]
         public async Task<ActionResult<int>> Post(CrearAdjudicacionDTO entidadDTO)
         {
@@ -60,7 +60,7 @@ namespace Concesionaria.Server.Controllers
                 return BadRequest(e.Message);
             }
         }
-
+        //Actualizar una Adjudicacion
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] Adjudicacion entidad)
         {
@@ -87,7 +87,7 @@ namespace Concesionaria.Server.Controllers
                 return BadRequest(e.Message);
             }
         }
-
+        //Eliminar
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {

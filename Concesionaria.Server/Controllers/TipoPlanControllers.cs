@@ -1,98 +1,112 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Concesionaria.DB.Data;
+﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
-using System.Threading.Tasks;
-using System.Linq;
+using Concesionaria.Server.Repositorio;
+using Concesionaria2024.Shared.DTO;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Concesionaria.Controllers
+namespace Concesionaria.Server.Controllers
 {
     [ApiController]
     [Route("api/TipoPlan")]
     public class TipoPlanController : ControllerBase
     {
-        private readonly Context context;
+        private readonly IRepositorio<TipoPlan> repositorio;
+        private readonly IMapper mapper;
 
-        public TipoPlanController(Context context)
+        public TipoPlanController(IRepositorio<TipoPlan> repositorio, IMapper mapper)
         {
-            context = context;
+            this.repositorio = repositorio;
+            this.mapper = mapper;
         }
-        //Obtener todos los tipos de planes
+        // Obtener todos los tipos de plan
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TipoPlan>>> GetTipoPlanes()
+        public async Task<ActionResult<List<TipoPlan>>> Get()
         {
-            return await context.TipoPlanes.Include(tp => tp.Vehiculo).ToListAsync();
+            return await repositorio.Select();
         }
-        //Obtiene id tipo de plan
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TipoPlan>> GetTipoPlan(int id)
+        // Obtener un tipo de plan por su ID
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<TipoPlan>> Get(int id)
         {
-            var tipoPlan = await context.TipoPlanes.Include(tp => tp.Vehiculo).MinAsync();
-
-            if (tipoPlan == null)
+            TipoPlan? sel = await repositorio.SelectById(id);
+            if (sel == null)
             {
                 return NotFound();
             }
-
-            return tipoPlan;
+            return sel;
         }
-        //crear nuevo tipo
+        // Verificar si un tipo de plan existe por su ID
+        [HttpGet("existe/{id:int}")]
+        public async Task<ActionResult<bool>> Existe(int id)
+        {
+            var existe = await repositorio.Existe(id);
+            return existe;
+        }
+        // Crear un nuevo tipo de plan
         [HttpPost]
-        public async Task<ActionResult<TipoPlan>> PostTipoPlan(TipoPlan tipoPlan)
+        public async Task<ActionResult<int>> Post(CrearTipoPlanDTO entidadDTO)
         {
-            context.TipoPlanes.Add(tipoPlan);
-            await context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTipoPlan", new { id = tipoPlan.Id }, tipoPlan);
-        }
-        //Actualizar tipo existente
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTipoPlan(int id, TipoPlan tipoPlan)
-        {
-            if (id != tipoPlan.Id)
+            try
             {
-                return BadRequest();
+                TipoPlan entidad = mapper.Map<TipoPlan>(entidadDTO);
+                return await repositorio.Insert(entidad);
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException != null)
+                {
+                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+                }
+                return BadRequest(e.Message);
+            }
+        }
+        // Actualizar un tipo de plan existente
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromBody] TipoPlan entidad)
+        {
+            if (id != entidad.Id)
+            {
+                return BadRequest("Datos incorrectos");
+            }
+            var sel = await repositorio.SelectById(id);
+
+            if (sel == null)
+            {
+                return NotFound("No existe el tipo de plan buscado.");
             }
 
-            context.Entry(tipoPlan).State = EntityState.Modified;
+            mapper.Map(entidad, sel);
 
             try
             {
-                await context.SaveChangesAsync();
+                await repositorio.Update(id, sel);
+                return Ok();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                if (!TipoPlanExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(e.Message);
             }
-
-            return NoContent();
         }
-        //Eliminar tipo
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTipoPlan(int id)
+        // Eliminar un tipo de plan por ID
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
-            var tipoPlan = await context.TipoPlanes.FindAsync(id);
-            if (tipoPlan == null)
+            var existe = await repositorio.Existe(id);
+            if (!existe)
             {
-                return NotFound();
+                return NotFound($"El tipo de plan {id} no existe");
             }
+            TipoPlan entidadABorrar = new TipoPlan { Id = id };
 
-            context.TipoPlanes.Remove(tipoPlan);
-            await context.SaveChangesAsync();
-
-            return NoContent();
-        }
-        //Verificador de existentes
-        private bool TipoPlanExists(int id)
-        {
-            return context.TipoPlanes.Any(e => e.Id == id);
+            if (await repositorio.Delete(id))
+            {
+                return Ok($"El tipo de plan {id} fue eliminado");
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
+
