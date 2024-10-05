@@ -1,102 +1,112 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Concesionaria.DB.Data;
+﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
-using System.Threading.Tasks;
+using Concesionaria.Server.Repositorio;
+using Concesionaria2024.Shared.DTO;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Concesionaria.Controllers
+namespace Concesionaria.Server.Controllers
 {
     [ApiController]
     [Route("api/Adjudicacion")]
     public class AdjudicacionController : ControllerBase
     {
-        private readonly Context context;
+        private readonly IRepositorio<Adjudicacion> repositorio;
+        private readonly IMapper mapper;
 
-        public AdjudicacionController(Context context)
+        public AdjudicacionController(IRepositorio<Adjudicacion> repositorio, IMapper mapper)
         {
-            context = context;
+            this.repositorio = repositorio;
+            this.mapper = mapper;
         }
 
-        //Metodo para obtener todas las adj al momento
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Adjudicacion>>> GetAdjudicaciones()
+        public async Task<ActionResult<List<Adjudicacion>>> Get()
         {
-            return await context.Adjudicaciones.Include(a => a.Vehiculo).Include(a => a.PlanVendido).ToListAsync();
+            return await repositorio.Select();
         }
 
-        //Adjudicacion especifica
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Adjudicacion>> GetAdjudicacion(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Adjudicacion>> Get(int id)
         {
-            var adjudicacion = await context.Adjudicaciones.Include(a => a.Vehiculo).Include(a => a.PlanVendido).MinAsync();
-
-            if (adjudicacion == null)
+            Adjudicacion? sel = await repositorio.SelectById(id);
+            if (sel == null)
             {
                 return NotFound();
             }
-
-            return adjudicacion;
+            return sel;
         }
 
-        //Crear nueva aj
+        [HttpGet("existe/{id:int}")]
+        public async Task<ActionResult<bool>> Existe(int id)
+        {
+            var existe = await repositorio.Existe(id);
+            return existe;
+        }
+
         [HttpPost]
-        public async Task<ActionResult<Adjudicacion>> PostAdjudicacion(Adjudicacion adjudicacion)
+        public async Task<ActionResult<int>> Post(CrearAdjudicacionDTO entidadDTO)
         {
-            context.Adjudicaciones.Add(adjudicacion);
-            await context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetAdjudicacion), new { id = adjudicacion.Id }, adjudicacion);
+            try
+            {
+                Adjudicacion entidad = mapper.Map<Adjudicacion>(entidadDTO);
+                return await repositorio.Insert(entidad);
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException != null)
+                {
+                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+                }
+                return BadRequest(e.Message);
+            }
         }
 
-        //Actualizar una adj
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdjudicacion(int id, Adjudicacion adjudicacion)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromBody] Adjudicacion entidad)
         {
-            if (id != adjudicacion.Id)
+            if (id != entidad.Id)
             {
-                return BadRequest();
+                return BadRequest("Datos incorrectos");
+            }
+            var sel = await repositorio.SelectById(id);
+
+            if (sel == null)
+            {
+                return NotFound("No existe la adjudicación buscada.");
             }
 
-            context.Entry(adjudicacion).State = EntityState.Modified;
+            mapper.Map(entidad, sel);
 
             try
             {
-                await context.SaveChangesAsync();
+                await repositorio.Update(id, sel);
+                return Ok();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                if (!AdjudicacionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(e.Message);
             }
-
-            return NoContent();
         }
 
-        //Eliminar adj
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAdjudicacion(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
-            var adjudicacion = await context.Adjudicaciones.FindAsync(id);
-            if (adjudicacion == null)
+            var existe = await repositorio.Existe(id);
+            if (!existe)
             {
-                return NotFound();
+                return NotFound($"La adjudicación {id} no existe");
             }
+            Adjudicacion entidadABorrar = new Adjudicacion { Id = id };
 
-            context.Adjudicaciones.Remove(adjudicacion);
-            await context.SaveChangesAsync();
-
-            return NoContent();
-        }
-        //Comprobar existencia de adj
-        private bool AdjudicacionExists(int id)
-        {
-            return context.Adjudicaciones.Any(e => e.Id == id);
+            if (await repositorio.Delete(id))
+            {
+                return Ok($"La adjudicación {id} fue eliminada");
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
+
