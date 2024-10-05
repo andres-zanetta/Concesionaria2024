@@ -13,6 +13,7 @@ namespace Concesionaria.Server.Mappers
             CreateMap<CrearTipoDocumentoDTO, TipoDocumento>();
             CreateMap<CrearClienteDTO,Cliente> ();
             CreateMap<CrearVendedorDTO, Vendedor>();
+            CreateMap<CrearVehiculoDTO, Vehiculo>();
         }
     }
 }

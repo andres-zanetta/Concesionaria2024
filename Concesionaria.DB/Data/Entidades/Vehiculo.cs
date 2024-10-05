@@ -55,5 +55,10 @@ namespace Concesionaria.DB.Data.Entidades
 
         public List<TipoPlan> TipoPlanes { get; set; } = new List<TipoPlan>();
         public List<Adjudicacion> adjudicaciones { get; set; } = new List<Adjudicacion>();
+
+        public static implicit operator Vehiculo?(Cliente? v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
