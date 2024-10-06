@@ -5,13 +5,11 @@ using Concesionaria.Server.Repositorio;
 using Concesionaria2024.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Concesionaria.Server
+namespace Concesionaria.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Cuotas")]
     public class CuotasControllers : ControllerBase
     {
         private readonly IRepositorio<Cuota> repositorio;
@@ -22,47 +20,35 @@ namespace Concesionaria.Server
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
-        private readonly Context context;
 
-        public CuotasControllers(Context context)
-        {
-            context = context;
-        }
-        //GET:---------------------------------------------------------------------
+
+        // GET: -----------------------------------------------------------------------
         [HttpGet]
         public async Task<ActionResult<List<Cuota>>> Get()
         {
-            return await context.Cuotas.ToListAsync();
+            return await repositorio.Select();
         }
 
-        [HttpGet("{ID:int}")]
-        public async Task<ActionResult<Cuota>> Get(int ID)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Cuota>> Get(int id)
         {
-            var cuota = await context.Cuotas.FirstOrDefaultAsync(x => x.Id == ID);
-
-            if (cuota == null)
+            Cuota? sel = await repositorio.SelectById(id);
+            if (sel == null)
             {
-                return NotFound($"La cuota con el ID: {ID} no fue encontrada");
+                return NotFound();
             }
-            return cuota;
+            return sel;
         }
 
-
-        //POST:------------------------------------------------------------------
-        [HttpPost]
-        public async Task<ActionResult<int>> Post(Cuota entidad)
+        [HttpGet("existe/{id:int}")]
+        public async Task<ActionResult<bool>> Existe(int id)
         {
-            try
-            {
-                context.Cuotas.Add(entidad);
-                await context.SaveChangesAsync();
-                return entidad.Id;
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            var existe = await repositorio.Existe(id);
+            return existe;
+
         }
+
+        // POST: ----------------------------------------------------------------------
         [HttpPost]
         public async Task<ActionResult<int>> Post(CrearCuotaDTO entidadDTO)
         {
@@ -81,68 +67,52 @@ namespace Concesionaria.Server
             }
         }
 
-        //PUT: ----------------------------------------------------------------------
-        [HttpPut("{ID:int}")]
-        public async Task<ActionResult> Put(int ID, [FromBody] Cuota cuota)
+        // PUT: -----------------------------------------------------------------------
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromBody] Cuota entidad)
         {
-            if (ID != cuota.Id)
+            if (id != entidad.Id)
             {
-                return BadRequest("El ID de la cuota no coincide.");
+                return BadRequest("Datos incorrectos");
+            }
+            var sel = await repositorio.SelectById(id);
+
+            if (sel == null)
+            {
+                return NotFound("No existe la cuota buscada.");
             }
 
-            var cuotaExistente = await context.Cuotas.FirstOrDefaultAsync(x => x.Id == ID);
-            if (cuotaExistente == null)
-            {
-                return NotFound($"No se encontró la cuota con ID {ID}.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            cuotaExistente.ValorCuota = cuota.ValorCuota;
-            cuotaExistente.NumeroCuota = cuota.NumeroCuota;
-            cuotaExistente.Estado = cuota.Estado;
-            cuotaExistente.FechaVencimiento = cuota.FechaVencimiento;
-            cuotaExistente.CuotaVencida = cuota.CuotaVencida;
-            cuotaExistente.Observaciones = cuota.Observaciones;
-            cuotaExistente.PlanVendidoId = cuota.PlanVendidoId;
+            mapper.Map(entidad, sel);
 
             try
             {
-                context.Cuotas.Update(cuotaExistente);
-                await context.SaveChangesAsync();
-                return Ok($"La cuota con ID {ID} fue actualizada correctamente.");
+                await repositorio.Update(id, sel);
+                return Ok();
             }
-            catch (DbUpdateException e)
+            catch (Exception e)
             {
-                return BadRequest($"Error al actualizar la cuota: {e.Message}");
+                return BadRequest(e.Message);
             }
         }
-        //DELETE: ------------------------------------------------------------
+
+        // DELETE: --------------------------------------------------------------------
         [HttpDelete("{ID:int}")]
         public async Task<ActionResult> Delete(int ID)
         {
-            var cuotaExistente = await context.Cuotas.FindAsync(ID);
-            if (cuotaExistente == null)
+            var existe = await repositorio.Existe(ID);
+            if (!existe)
             {
-                return NotFound($"La cuota con ID {ID} no fue encontrada.");
+                return NotFound($"La cuota {ID} no existe");
             }
 
-            try
+            if (await repositorio.Delete(ID))
             {
-                context.Cuotas.Remove(cuotaExistente);
-                await context.SaveChangesAsync();
-                return Ok($"La cuota con ID {ID} fue eliminada correctamente.");
+                return Ok();
             }
-            catch (DbUpdateException e)
+            else
             {
-                return BadRequest($"Error al eliminar la cuota: {e.Message}");
+                return BadRequest();
             }
         }
     }
 }
-
-
-

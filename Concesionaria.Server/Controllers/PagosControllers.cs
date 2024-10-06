@@ -5,13 +5,11 @@ using Concesionaria.Server.Repositorio;
 using Concesionaria2024.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Concesionaria.Server
+namespace Concesionaria.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Pagos")]
     public class PagosControllers : ControllerBase
     {
         private readonly IRepositorio<Pago> repositorio;
@@ -22,37 +20,31 @@ namespace Concesionaria.Server
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
-        private readonly Context context;
 
-
-        public PagosControllers(Context context)
-        {
-            this.context = context;
-        }
-
-        // GET:-------------------------------------------------------------------
+        // GET: -----------------------------------------------------------------------
         [HttpGet]
         public async Task<ActionResult<List<Pago>>> Get()
         {
-            return await context.Pagos
-                .Include(p => p.Cuota)
-                .ToListAsync();
+            return await repositorio.Select();
         }
 
-        // GET: ID 
-        [HttpGet("{ID:int}")]
-        public async Task<ActionResult<Pago>> Get(int ID)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Pago>> Get(int id)
         {
-            var pago = await context.Pagos
-                .Include(p => p.Cuota)
-                .FirstOrDefaultAsync(x => x.Id == ID);
-
-            if (pago == null)
+            Pago? sel = await repositorio.SelectById(id);
+            if (sel == null)
             {
-                return NotFound($"El pago con ID {ID} no fue encontrado.");
+                return NotFound();
             }
+            return sel;
+        }
 
-            return pago;
+        [HttpGet("existe/{id:int}")]
+        public async Task<ActionResult<bool>> Existe(int id)
+        {
+            var existe = await repositorio.Existe(id);
+            return existe;
+
         }
 
         // POST: ----------------------------------------------------------------------
@@ -74,26 +66,26 @@ namespace Concesionaria.Server
             }
         }
 
-        // PUT: ID ------------------------------------------------------------------------
-        [HttpPut("{ID:int}")]
-        public async Task<ActionResult> Put(int ID, [FromBody] Pago pago)
+        // PUT: -----------------------------------------------------------------------
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromBody] Pago entidad)
         {
-            if (ID != pago.Id)
+            if (id != entidad.Id)
             {
                 return BadRequest("Datos incorrectos");
             }
-            var sel = await repositorio.SelectById(ID);
+            var sel = await repositorio.SelectById(id);
 
             if (sel == null)
             {
-                return NotFound("No existe el tipo de documento buscado.");
+                return NotFound("No existe el pago buscado.");
             }
 
-            mapper.Map(pago, sel);
+            mapper.Map(entidad, sel);
 
             try
             {
-                await repositorio.Update(ID, sel);
+                await repositorio.Update(id, sel);
                 return Ok();
             }
             catch (Exception e)
@@ -102,27 +94,25 @@ namespace Concesionaria.Server
             }
         }
 
-        // DELETE: ID ----------------------------------------------------------------------
+        // DELETE: --------------------------------------------------------------------
         [HttpDelete("{ID:int}")]
         public async Task<ActionResult> Delete(int ID)
         {
             var existe = await repositorio.Existe(ID);
             if (!existe)
             {
-                return NotFound($"El documento {ID} no existe");
+                return NotFound($"El pago {ID} no existe");
             }
-            TipoDocumento EntidadABorrar = new TipoDocumento();
-            EntidadABorrar.Id = ID;
 
             if (await repositorio.Delete(ID))
             {
-                return Ok($"El tipo de documento {ID} fue eliminado");
+                return Ok();
             }
             else
             {
                 return BadRequest();
             }
         }
-
     }
 }
+
