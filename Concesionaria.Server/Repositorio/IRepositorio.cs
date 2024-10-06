@@ -11,7 +11,6 @@ namespace Concesionaria.Server.Repositorio
         Task<int> Insert(E entidad);
         Task<List<E>> Select();
         Task<E> SelectById(int id);
-        Task<Vendedor> SelectByPersona(id personaId);
         Task<bool> Update(int id, E entidad);
     }
 }
