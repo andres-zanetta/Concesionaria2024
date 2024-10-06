@@ -19,6 +19,8 @@ builder.Services.AddScoped<IRepositorio<Persona>, Repositorio<Persona>>();
 builder.Services.AddScoped<IRepositorio<PlanVendido>, Repositorio<PlanVendido>>();
 builder.Services.AddScoped<IVendedorRepositorio, VendedorRepositorio>();
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
+builder.Services.AddScoped<IRepositorio<Cuota>, Repositorio<Cuota>>();
+builder.Services.AddScoped<IRepositorio<Pago>, Repositorio<Pago>>();
 
 // Coneccion con la BD
 
