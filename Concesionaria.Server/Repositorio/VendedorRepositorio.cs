@@ -15,9 +15,9 @@ namespace Concesionaria.Server.Repositorio
  
         public async Task<Vendedor?> SelectByPersona(int personaId)
         {
-            Vendedor? pepe = await context.Vendedores.
+            Vendedor?V = await context.Vendedores.
                         FirstOrDefaultAsync(x => x.PersonaId == personaId);
-            return pepe;
+            return V;
         }
     }
 
