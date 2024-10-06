@@ -15,7 +15,7 @@ namespace Concesionaria.Server.Repositorio
 
         public async Task<Cliente?> SelectById(int id)
         {
-            Cliente? cliente= await context.Clientes.FirstOrDefaultAsync(x => x.VehiculoId == id);
+            Cliente? cliente= await context.Clientes.FirstOrDefaultAsync(x => x.PersonaId == id);
             return cliente;
         }
 
