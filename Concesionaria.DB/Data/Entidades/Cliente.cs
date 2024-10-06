@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Concesionaria.DB.Data.Entidades
 {
-    [Index(nameof(VehiculoId), Name = "PersonaId_UQ", IsUnique = true)]
+    [Index(nameof(PersonaId), Name = "PersonaId_UQ", IsUnique = true)]
     public class Cliente : EntityBase
     {
         // Fecha de inicio ------------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ namespace Concesionaria.DB.Data.Entidades
 
 
         [Required(ErrorMessage = "La persona es obligatoria.")]
-        public int VehiculoId { get; set; }
+        public int PersonaId { get; set; }
         public Persona Persona { get; set; }
 
 
