@@ -34,14 +34,14 @@ namespace Concesionaria.Server.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Vendedor>> Get(int id)
         {
-            Vendedor? pepe = await repositorio.SelectById(id);
+            Vendedor? V = await repositorio.SelectById(id);
            
-            if (pepe == null)
+            if (V == null)
             {
                 return NotFound($"El vendedor con ID {id} no fue encontrado.");
             }
 
-            return pepe;
+            return V;
         }
 
         [HttpGet("existe/{id:int}")]

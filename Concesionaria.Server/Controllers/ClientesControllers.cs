@@ -36,12 +36,12 @@ namespace Concesionaria.Server.Controllers
             [HttpGet("{ID:int}")]//api/Clientes/2
             public async Task<ActionResult<Cliente>> Get(int id)
             {
-               Cliente? pepe = await repositorio.SelectById(id);
-                if (pepe == null)
+               Cliente? C = await repositorio.SelectById(id);
+                if (C == null)
                 {
                     return NotFound();
                 }
-                return pepe;
+                return C;
             }
 
             [HttpGet("existe/{id:int}")]
