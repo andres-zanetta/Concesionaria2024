@@ -10,10 +10,10 @@ namespace Concesionaria.Server.Controllers
     [Route("api/TipoDocumento")]
     public class TipoDocumentosController : ControllerBase
     {
-        private readonly IRepositorio<TipoDocumento> repositorio;
+        private readonly ITipoDocumentoRepositorio repositorio;
         private readonly IMapper mapper;
 
-        public TipoDocumentosController(IRepositorio<TipoDocumento> repositorio, IMapper mapper)
+        public TipoDocumentosController(ITipoDocumentoRepositorio repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;
@@ -34,6 +34,20 @@ namespace Concesionaria.Server.Controllers
                 return NotFound();
             }
             return sel;
+        }
+
+        [HttpGet("cod/{cod}")]
+        public async Task<ActionResult<TipoDocumento>> GetByCod(string cod)
+        {
+            // para ver en la consola si funciona o no
+            Console.WriteLine($"Buscando TipoDocumento con Codigo: {cod}");
+
+            TipoDocumento? sel = await repositorio.SelectByCod(cod);
+            if (sel == null)
+            {
+                return NotFound(); 
+            }
+            return sel; 
         }
 
         [HttpGet("existe/{id:int}")]
