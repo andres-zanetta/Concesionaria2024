@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Concesionaria.DB.Data.Entidades;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,5 +21,6 @@ namespace Concesionaria2024.Shared.DTO
         public DateTime? FechaFin { get; set; }
 
        
+
     }
 }

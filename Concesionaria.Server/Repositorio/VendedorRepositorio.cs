@@ -12,7 +12,6 @@ namespace Concesionaria.Server.Repositorio
             this.context = context;
         }
 
- 
         public async Task<Vendedor?> SelectByPersona(int personaId)
         {
             Vendedor?V = await context.Vendedores.
