@@ -8,5 +8,8 @@
         public string PatenteVehiculo { get; set; }
         public int VehiculoId { get; set; }
         public int PlanVendidoId { get; set; }
+        public int ClienteId { get; set; } 
+        public decimal Precio { get; set; } 
+        public string? Vendedor { get; set; } 
     }
 }
