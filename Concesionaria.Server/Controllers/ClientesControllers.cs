@@ -2,7 +2,7 @@
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Microsoft.AspNetCore.Mvc;
-using Concesionaria2024.Shared.DTO;
+using Concesionaria2024.Shared.DTO.AndresDTO;
 
 namespace Concesionaria.Server.Controllers
 {
