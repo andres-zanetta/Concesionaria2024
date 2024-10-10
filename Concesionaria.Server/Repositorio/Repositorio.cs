@@ -57,7 +57,8 @@ namespace Concesionaria.Server.Repositorio
                 return false;
             }
 
-            var EntidadExistente = await SelectById(id);
+            var EntidadExistente = await context.Set<E>().FirstOrDefaultAsync( x => x.Id == id); ; 
+            // <- no uso SelectByID por que necesito que trackee la entidad.
 
             if (EntidadExistente == null)
             {
@@ -67,6 +68,9 @@ namespace Concesionaria.Server.Repositorio
             try
             {
                 context.Entry(EntidadExistente).CurrentValues.SetValues(entidad);
+                //El metodo de arriba toma los valores de la entidad seleccionada por id (EntidadExistente)
+                //y los actualiza con los de la entidad pasada como argumento (entidad).
+
                 await context.SaveChangesAsync();
                 return true;
             }

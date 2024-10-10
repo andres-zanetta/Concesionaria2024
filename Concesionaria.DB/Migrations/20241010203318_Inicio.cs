@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Concesionaria.DB.Migrations
 {
     /// <inheritdoc />
-    public partial class DB_context_BaseDatos : Migration
+    public partial class Inicio : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -113,7 +113,7 @@ namespace Concesionaria.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vendedors",
+                name: "Vendedores",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -125,9 +125,9 @@ namespace Concesionaria.DB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vendedors", x => x.Id);
+                    table.PrimaryKey("PK_Vendedores", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vendedors_Personas_PersonaId",
+                        name: "FK_Vendedores_Personas_PersonaId",
                         column: x => x.PersonaId,
                         principalTable: "Personas",
                         principalColumn: "Id",
@@ -167,9 +167,9 @@ namespace Concesionaria.DB.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PlanesVendidos_Vendedors_VendedorId",
+                        name: "FK_PlanesVendidos_Vendedores_VendedorId",
                         column: x => x.VendedorId,
-                        principalTable: "Vendedors",
+                        principalTable: "Vendedores",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -347,7 +347,7 @@ namespace Concesionaria.DB.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "PersonaId_UQ",
-                table: "Vendedors",
+                table: "Vendedores",
                 column: "PersonaId",
                 unique: true);
         }
@@ -374,7 +374,7 @@ namespace Concesionaria.DB.Migrations
                 name: "TipoPlanes");
 
             migrationBuilder.DropTable(
-                name: "Vendedors");
+                name: "Vendedores");
 
             migrationBuilder.DropTable(
                 name: "Vehiculos");
