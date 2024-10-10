@@ -1,15 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Concesionaria.DB.Data.Entidades
+namespace Concesionaria2024.Shared.DTO.GinoDTO
 {
-    [Index(nameof(Codigo), Name = "TDocumento_UQ", IsUnique = true)]
-    public class TipoDocumento : EntityBase
+    public class ActualizarTipoDocumentoDTO
     {
         // Nombre ------------------------------------------------------------------------------------------
 
@@ -25,11 +23,5 @@ namespace Concesionaria.DB.Data.Entidades
         [Required(ErrorMessage = "El código del tipo de documento es obligatorio.")]
         [MaxLength(4, ErrorMessage = "Máximo número de caracteres {1}.")]
         public string Codigo { get; set; }
-
-
-        // Lista ------------------------------------------------------------------------------------------
-
-
-        public List<Persona> personas { get; set; } = new List<Persona>(); 
     }
 }

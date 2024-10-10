@@ -2,7 +2,7 @@
 using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO;
+using Concesionaria2024.Shared.DTO.BrunoDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
-using Concesionaria2024.Shared.DTO;
+using Concesionaria2024.Shared.DTO.AndresDTO;
+using Concesionaria2024.Shared.DTO.BrunoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.GinoDTO;
 
 namespace Concesionaria.Server.Mappers
 {
@@ -11,6 +14,7 @@ namespace Concesionaria.Server.Mappers
             CreateMap<CrearPersonaDTO, Persona>();
             CreateMap<CrearPlanVendidoDTO, PlanVendido>();
             CreateMap<CrearTipoDocumentoDTO, TipoDocumento>();
+            CreateMap<ActualizarTipoDocumentoDTO, TipoDocumento>();
             CreateMap<CrearClienteDTO,Cliente> ();
             CreateMap<CrearVendedorDTO, Vendedor>();
             CreateMap<CrearVehiculoDTO, Vehiculo>();

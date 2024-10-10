@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO;
+using Concesionaria2024.Shared.DTO.GinoDTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Concesionaria.Server.Controllers

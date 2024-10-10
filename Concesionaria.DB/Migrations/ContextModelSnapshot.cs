@@ -390,7 +390,7 @@ namespace Concesionaria.DB.Migrations
                     b.HasIndex(new[] { "PersonaId" }, "PersonaId_UQ")
                         .IsUnique();
 
-                    b.ToTable("Vendedors");
+                    b.ToTable("Vendedores");
                 });
 
             modelBuilder.Entity("Concesionaria.DB.Data.Entidades.Adjudicacion", b =>
@@ -402,7 +402,7 @@ namespace Concesionaria.DB.Migrations
                         .IsRequired();
 
                     b.HasOne("Concesionaria.DB.Data.Entidades.Vehiculo", "Vehiculo")
-                        .WithMany("adjudicaciones")
+                        .WithMany("Adjudicaciones")
                         .HasForeignKey("VehiculoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -539,9 +539,9 @@ namespace Concesionaria.DB.Migrations
 
             modelBuilder.Entity("Concesionaria.DB.Data.Entidades.Vehiculo", b =>
                 {
-                    b.Navigation("TipoPlanes");
+                    b.Navigation("Adjudicaciones");
 
-                    b.Navigation("adjudicaciones");
+                    b.Navigation("TipoPlanes");
                 });
 
             modelBuilder.Entity("Concesionaria.DB.Data.Entidades.Vendedor", b =>
