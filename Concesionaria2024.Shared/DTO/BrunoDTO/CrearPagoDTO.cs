@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Concesionaria2024.Shared.DTO
+namespace Concesionaria2024.Shared.DTO.BrunoDTO
 {
     public class CrearPagoDTO
     {

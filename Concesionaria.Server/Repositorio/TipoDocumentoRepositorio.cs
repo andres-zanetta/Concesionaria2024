@@ -18,5 +18,6 @@ namespace Concesionaria.Server.Repositorio
             TipoDocumento? tipoDoc = await context.TipoDocumentos.FirstOrDefaultAsync(x => x.Codigo == cod);
             return tipoDoc;
         }
+        // Agregar metodos especificos con DTO's.
     }
 }

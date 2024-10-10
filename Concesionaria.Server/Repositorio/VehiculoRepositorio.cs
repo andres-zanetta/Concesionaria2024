@@ -13,51 +13,16 @@ namespace Concesionaria.Server.Repositorio
             this.context = context;
         }
 
-        public async Task<Vehiculo?> SelectById(int id)
+        public async Task<Vehiculo?> SelectByIdAsync(int id)
         {
-            return await context.Set<Vehiculo>().FindAsync(id);
-        }
-
-        public async Task<List<Vehiculo>> Select()
-        {
-            return await context.Set<Vehiculo>().ToListAsync();
-        }
-
-        public async Task<int> Insert(Vehiculo entidad)
-        {
-            await context.Set<Vehiculo>().AddAsync(entidad);
-            await context.SaveChangesAsync();
-            return entidad.Id;
-        }
-
-        public async Task<bool> Update(int id, Vehiculo entidad)
-        {
-            if (id != entidad.Id)
+            try
             {
-                return false;
+                return await context.Vehiculos.FirstOrDefaultAsync(v => v.Id == id);
             }
-
-            context.Entry(entidad).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> Delete(int id)
-        {
-            var entidad = await context.Set<Vehiculo>().FindAsync(id);
-            if (entidad == null)
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception("Error al obtener el vehículo por ID", ex);
             }
-
-            context.Set<Vehiculo>().Remove(entidad);
-            await context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> Existe(int id)
-        {
-            return await context.Set<Vehiculo>().AnyAsync(e => e.Id == id);
         }
     }
 }

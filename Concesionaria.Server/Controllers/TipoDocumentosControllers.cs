@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO;
+using Concesionaria2024.Shared.DTO.GinoDTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Concesionaria.Server.Controllers
@@ -18,6 +18,8 @@ namespace Concesionaria.Server.Controllers
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
+
+        // GET ==========================================================================================
 
         [HttpGet]
         public async Task<ActionResult<List<TipoDocumento>>> Get()
@@ -57,6 +59,7 @@ namespace Concesionaria.Server.Controllers
             return existe;
         }
 
+        // POST ==========================================================================================
         [HttpPost]
         public async Task<ActionResult<int>> Post(CrearTipoDocumentoDTO entidadDTO)
         {
@@ -75,21 +78,27 @@ namespace Concesionaria.Server.Controllers
             }
         }
 
+        // PUT ==========================================================================================
+
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] TipoDocumento entidad)
+        public async Task<ActionResult> Put(int id, [FromBody] ActualizarTipoDocumentoDTO ActualizarEntidadDTO)
         {
-            if (id != entidad.Id)
+            if (!await repositorio.Existe(id))
             {
-                return BadRequest("Datos incorrectos");
+                return BadRequest("No existe el tipo de documento buscado.");
             }
+
             var sel = await repositorio.SelectById(id);
 
             if (sel == null)
             {
-                return NotFound("No existe el tipo de documento buscado.");
+                return NotFound("No existe el tipo de documento");
             }
 
-            mapper.Map(entidad, sel);
+            mapper.Map(ActualizarEntidadDTO, sel);
+
+            // Log para verificar los valores actualizados
+            Console.WriteLine($"TipoDocumento actualizado: {sel.Nombre}, {sel.Codigo}");
 
             try
             {
@@ -98,9 +107,15 @@ namespace Concesionaria.Server.Controllers
             }
             catch (Exception e)
             {
+                if (e.InnerException != null)
+                {
+                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+                }
                 return BadRequest(e.Message);
             }
         }
+
+        // DELETE ==========================================================================================
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)

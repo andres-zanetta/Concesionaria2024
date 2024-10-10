@@ -4,7 +4,6 @@ namespace Concesionaria.Server.Repositorio
 {
     public interface IVehiculoRepositorio : IRepositorio<Vehiculo>
     {
-        Task<Vehiculo?> SelectById(int id);
-
+        Task<Vehiculo?> SelectByIdAsync(int id);
     }
 }
