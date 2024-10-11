@@ -14,7 +14,6 @@ namespace Concesionaria.Server.Mappers
         {   
             // Mapeado Persona ====================================================================
 
-            CreateMap<POST_PersonaDTO, Persona>();
             CreateMap<Persona, GET_PersonaDTO>().ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => src.TipoDocumento.Nombre)); 
             // Mapea el nombre del TipoDocumento a TipoDocumentoNombre en Persona
 
