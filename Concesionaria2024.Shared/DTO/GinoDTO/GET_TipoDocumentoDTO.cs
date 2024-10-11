@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Concesionaria.DB.Data;
+using Concesionaria.DB.Data.Entidades;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO
 {
-    public class CrearTipoDocumentoDTO
+    public class GET_TipoDocumentoDTO : EntityBase
     {
+ 
         // Nombre ------------------------------------------------------------------------------------------
 
 
@@ -23,5 +26,6 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO
         [Required(ErrorMessage = "El código del tipo de documento es obligatorio.")]
         [MaxLength(4, ErrorMessage = "Máximo número de caracteres {1}.")]
         public string Codigo { get; set; }
+
     }
 }

@@ -5,7 +5,7 @@ using Concesionaria.DB.Data.Entidades;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Concesionaria.Controllers
+namespace Concesionaria.Server.Controllers.FacundoControllers
 {
     [ApiController]
     [Route("api/Adjudicacion")]

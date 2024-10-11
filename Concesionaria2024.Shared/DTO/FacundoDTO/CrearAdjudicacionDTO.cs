@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Concesionaria.DB.Data.Dtos
+namespace Concesionaria2024.Shared.DTO.FacundoDTO
 {
-    public class AdjudicacionDto
+    public class CrearAdjudicacionDTO
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string? Detalle { get; set; }
         public DateTime FechaAdjudicacion { get; set; }
         public bool AutoEntregado { get; set; }

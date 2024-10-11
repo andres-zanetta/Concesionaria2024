@@ -1,54 +1,60 @@
 ﻿using AutoMapper;
+using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.BrunoDTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace Concesionaria.Server.Controllers
+namespace Concesionaria.Server.Controllers.BrunoControllers
 {
     [ApiController]
-    [Route("api/TipoPlan")]
-    public class TipoPlanController : ControllerBase
+    [Route("api/Cuotas")]
+    public class CuotasControllers : ControllerBase
     {
-        private readonly IRepositorio<TipoPlan> repositorio;
+        private readonly IRepositorio<Cuota> repositorio;
         private readonly IMapper mapper;
 
-        public TipoPlanController(IRepositorio<TipoPlan> repositorio, IMapper mapper)
+        public CuotasControllers(IRepositorio<Cuota> repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
-        // Obtener todos los tipos de plan
+
+
+        // GET: -----------------------------------------------------------------------
         [HttpGet]
-        public async Task<ActionResult<List<TipoPlan>>> Get()
+        public async Task<ActionResult<List<Cuota>>> Get()
         {
             return await repositorio.Select();
         }
-        // Obtener un tipo de plan por su ID
+
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<TipoPlan>> Get(int id)
+        public async Task<ActionResult<Cuota>> Get(int id)
         {
-            TipoPlan? sel = await repositorio.SelectById(id);
+            Cuota? sel = await repositorio.SelectById(id);
             if (sel == null)
             {
                 return NotFound();
             }
             return sel;
         }
-        // Verificar si un tipo de plan existe por su ID
+
         [HttpGet("existe/{id:int}")]
         public async Task<ActionResult<bool>> Existe(int id)
         {
             var existe = await repositorio.Existe(id);
             return existe;
+
         }
-        // Crear un nuevo tipo de plan
+
+        // POST: ----------------------------------------------------------------------
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearTipoPlanDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(CrearCuotaDTO entidadDTO)
         {
             try
             {
-                TipoPlan entidad = mapper.Map<TipoPlan>(entidadDTO);
+                Cuota entidad = mapper.Map<Cuota>(entidadDTO);
                 return await repositorio.Insert(entidad);
             }
             catch (Exception e)
@@ -60,9 +66,10 @@ namespace Concesionaria.Server.Controllers
                 return BadRequest(e.Message);
             }
         }
-        // Actualizar un tipo de plan existente
+
+        // PUT: -----------------------------------------------------------------------
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] TipoPlan entidad)
+        public async Task<ActionResult> Put(int id, [FromBody] Cuota entidad)
         {
             if (id != entidad.Id)
             {
@@ -72,7 +79,7 @@ namespace Concesionaria.Server.Controllers
 
             if (sel == null)
             {
-                return NotFound("No existe el tipo de plan buscado.");
+                return NotFound("No existe la cuota buscada.");
             }
 
             mapper.Map(entidad, sel);
@@ -87,20 +94,20 @@ namespace Concesionaria.Server.Controllers
                 return BadRequest(e.Message);
             }
         }
-        // Eliminar un tipo de plan por ID
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+
+        // DELETE: --------------------------------------------------------------------
+        [HttpDelete("{ID:int}")]
+        public async Task<ActionResult> Delete(int ID)
         {
-            var existe = await repositorio.Existe(id);
+            var existe = await repositorio.Existe(ID);
             if (!existe)
             {
-                return NotFound($"El tipo de plan {id} no existe");
+                return NotFound($"La cuota {ID} no existe");
             }
-            TipoPlan entidadABorrar = new TipoPlan { Id = id };
 
-            if (await repositorio.Delete(id))
+            if (await repositorio.Delete(ID))
             {
-                return Ok($"El tipo de plan {id} fue eliminado");
+                return Ok();
             }
             else
             {
@@ -109,4 +116,3 @@ namespace Concesionaria.Server.Controllers
         }
     }
 }
-

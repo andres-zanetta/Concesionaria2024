@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO
 {
-    public class ActualizarTipoDocumentoDTO
+    public class PUT_TipoDocumentoDTO
     {
         // Nombre ------------------------------------------------------------------------------------------
 

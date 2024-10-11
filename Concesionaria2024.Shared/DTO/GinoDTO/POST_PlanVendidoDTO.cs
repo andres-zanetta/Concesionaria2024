@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO
 {
-    public class CrearPlanVendidoDTO
+    public class POST_PlanVendidoDTO
     {
         // Fecha cuando se suscribió ------------------------------------------------------------------------------------------
 

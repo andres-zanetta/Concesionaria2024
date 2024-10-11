@@ -1,63 +1,59 @@
 ﻿using AutoMapper;
-using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO.AndresDTO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Concesionaria2024.Shared.DTO.AndresDTO;
 
-namespace Concesionaria.Server.Controllers
+namespace Concesionaria.Server.Controllers.AndresControllers
 {
     [ApiController]
-    [Route("api/Vendedores")]
-    public class VendedoresControllers : ControllerBase
-
+    [Route("api/Cliente")]
+    public class ClientesController : ControllerBase
     {
-        private readonly IRepositorio<Vendedor> repositorio;
+        private readonly IRepositorio<Cliente> repositorio;
         private readonly IMapper mapper;
 
-        public VendedoresControllers(IRepositorio<Vendedor> repositorio, IMapper mapper)
+
+        public ClientesController(IRepositorio<Cliente> repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;
+
         }
-       
-        [HttpGet]
-        public async Task<ActionResult<List<Vendedor>>> Get()
+
+        // GET:-------------------------------------------------------------------
+        [HttpGet] //api/Clientes
+        public async Task<ActionResult<List<Cliente>>> Get()
         {
             return await repositorio.Select();
         }
 
         // GET: ID 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<Vendedor>> Get(int id)
+        [HttpGet("{id:int}")]//api/Clientes/2
+        public async Task<ActionResult<Cliente>> Get(int id)
         {
-            Vendedor? V = await repositorio.SelectById(id);
-           
-            if (V == null)
+            Cliente? C = await repositorio.SelectById(id);
+            if (C == null)
             {
-                return NotFound($"El vendedor con ID {id} no fue encontrado.");
+                return NotFound();
             }
-
-            return V;
+            return C;
         }
 
         [HttpGet("existe/{id:int}")]
-
         public async Task<ActionResult<bool>> Existe(int id)
         {
             var existe = await repositorio.Existe(id);
             return existe;
         }
+
         // POST: ----------------------------------------------------------------------
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearVendedorDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(CrearClienteDTO entidadDTO)
         {
             try
             {
-                Vendedor entidad = mapper.Map<Vendedor>(entidadDTO);
+                Cliente entidad = mapper.Map<Cliente>(entidadDTO);
                 return await repositorio.Insert(entidad);
             }
             catch (Exception e)
@@ -72,20 +68,20 @@ namespace Concesionaria.Server.Controllers
 
         // PUT: ID ------------------------------------------------------------------------
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Vendedor entidad)
+        public async Task<ActionResult> Put(int id, [FromBody] Cliente cliente)
         {
-            if (id != entidad.Id)
+            if (id != cliente.Id)
             {
                 return BadRequest("Datos incorrectos");
             }
             var sel = await repositorio.SelectById(id);
 
-            if (sel == null)
+            if (sel == null)//sel es el nombre de la variable de cliente seleccionado
             {
-                return NotFound("No existe el vendedor buscado.");
+                return NotFound("No existe el cliente buscado.");
             }
 
-            mapper.Map(entidad, sel);
+            mapper.Map(cliente, sel);
 
             try
             {
@@ -105,21 +101,25 @@ namespace Concesionaria.Server.Controllers
             var existe = await repositorio.Existe(id);
             if (!existe)
             {
-                return NotFound($"El vendedor {id} no existe");
+                return NotFound($"El cliente {id} no existe");
             }
-            Vendedor EntidadABorrar = new Vendedor();
+
+            Cliente EntidadABorrar = new Cliente();
             EntidadABorrar.Id = id;
 
             if (await repositorio.Delete(id))
             {
-                return Ok($"El vendedor {id} fue eliminado");
+                return Ok($"El cliente {id} fue eliminado");
             }
             else
             {
                 return BadRequest();
             }
-
-
         }
     }
+
+
+
+
+
 }

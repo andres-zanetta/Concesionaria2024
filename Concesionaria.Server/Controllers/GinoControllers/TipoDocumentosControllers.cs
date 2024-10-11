@@ -4,7 +4,7 @@ using Concesionaria.Server.Repositorio;
 using Concesionaria2024.Shared.DTO.GinoDTO;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Concesionaria.Server.Controllers
+namespace Concesionaria.Server.Controllers.GinoControllers
 {
     [ApiController]
     [Route("api/TipoDocumento")]
@@ -22,34 +22,48 @@ namespace Concesionaria.Server.Controllers
         // GET ==========================================================================================
 
         [HttpGet]
-        public async Task<ActionResult<List<TipoDocumento>>> Get()
+        public async Task<ActionResult<List<GET_TipoDocumentoDTO>>> Get()
         {
-            return await repositorio.Select();
+            try
+            {
+                var tipoDocumento = await repositorio.Select();
+                var tipoDocumentoDTO = mapper.Map<List<GET_TipoDocumentoDTO>>(tipoDocumento);
+                return Ok(tipoDocumentoDTO);
+            }
+            catch (Exception ex)
+            {
+                // Registrar el error para el diagnóstico
+                Console.WriteLine($"Error en el método GET: {ex.Message}");
+                return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+            }
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<TipoDocumento>> Get(int id)
+        public async Task<ActionResult<GET_TipoDocumentoDTO>> Get(int id)
         {
-            TipoDocumento? sel = await repositorio.SelectById(id);
-            if (sel == null)
+            TipoDocumento? tipoDocumento = await repositorio.SelectById(id);
+            if (tipoDocumento == null)
             {
                 return NotFound();
             }
-            return sel;
+            var tipoDocumentoDTO = mapper.Map<GET_TipoDocumentoDTO>(tipoDocumento);
+            return Ok(tipoDocumentoDTO);
         }
 
         [HttpGet("cod/{cod}")]
-        public async Task<ActionResult<TipoDocumento>> GetByCod(string cod)
+        public async Task<ActionResult<GET_TipoDocumentoDTO>> GetByCod(string cod)
         {
             // para ver en la consola si funciona o no
             Console.WriteLine($"Buscando TipoDocumento con Codigo: {cod}");
 
-            TipoDocumento? sel = await repositorio.SelectByCod(cod);
-            if (sel == null)
+            TipoDocumento? tipoDocumento = await repositorio.SelectByCod(cod);
+            if (tipoDocumento == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
-            return sel; 
+            var tipoDocumentoDTO = mapper.Map<GET_TipoDocumentoDTO>(tipoDocumento);
+
+            return Ok(tipoDocumentoDTO);
         }
 
         [HttpGet("existe/{id:int}")]
@@ -61,11 +75,11 @@ namespace Concesionaria.Server.Controllers
 
         // POST ==========================================================================================
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearTipoDocumentoDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_TipoDocumentoDTO POST_entidadDTO)
         {
             try
             {
-                TipoDocumento entidad = mapper.Map<TipoDocumento>(entidadDTO);
+                TipoDocumento entidad = mapper.Map<TipoDocumento>(POST_entidadDTO);
                 return await repositorio.Insert(entidad);
             }
             catch (Exception e)
@@ -81,29 +95,30 @@ namespace Concesionaria.Server.Controllers
         // PUT ==========================================================================================
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] ActualizarTipoDocumentoDTO ActualizarEntidadDTO)
+        public async Task<ActionResult> Put(int id, [FromBody] PUT_TipoDocumentoDTO PUT_EntidadDTO)
         {
             if (!await repositorio.Existe(id))
             {
                 return BadRequest("No existe el tipo de documento buscado.");
             }
 
-            var sel = await repositorio.SelectById(id);
+            var tipoDocumento = await repositorio.SelectById(id);
 
-            if (sel == null)
+            if (tipoDocumento == null)
             {
                 return NotFound("No existe el tipo de documento");
             }
 
-            mapper.Map(ActualizarEntidadDTO, sel);
+            mapper.Map(PUT_EntidadDTO, tipoDocumento);
 
             // Log para verificar los valores actualizados
-            Console.WriteLine($"TipoDocumento actualizado: {sel.Nombre}, {sel.Codigo}");
+            Console.WriteLine($"TipoDocumento actualizado: {tipoDocumento.Nombre}, {tipoDocumento.Codigo}");
 
             try
             {
-                await repositorio.Update(id, sel);
-                return Ok();
+                await repositorio.Update(id, tipoDocumento);
+                var tipoDocumentoDTO = mapper.Map<GET_TipoDocumentoDTO>(tipoDocumento);
+                return Ok(tipoDocumentoDTO);
             }
             catch (Exception e)
             {

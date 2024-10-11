@@ -1,54 +1,63 @@
 ﻿using AutoMapper;
+using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO.GinoDTO;
+using Concesionaria2024.Shared.DTO.AndresDTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Concesionaria.Server.Controllers
+namespace Concesionaria.Server.Controllers.AndresControllers
 {
     [ApiController]
-    [Route("api/PlanVendido")]
-    public class PlanesVendidosControllers : ControllerBase
+    [Route("api/Vendedores")]
+    public class VendedoresControllers : ControllerBase
+
     {
-        private readonly IRepositorio<PlanVendido> repositorio;
+        private readonly IRepositorio<Vendedor> repositorio;
         private readonly IMapper mapper;
 
-        public PlanesVendidosControllers(IRepositorio<PlanVendido> repositorio, IMapper mapper)
+        public VendedoresControllers(IRepositorio<Vendedor> repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<PlanVendido>>> Get()
+        public async Task<ActionResult<List<Vendedor>>> Get()
         {
             return await repositorio.Select();
         }
 
+        // GET: ID 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<PlanVendido>> Get(int id)
+        public async Task<ActionResult<Vendedor>> Get(int id)
         {
-            PlanVendido? sel = await repositorio.SelectById(id);
-            if (sel == null)
+            Vendedor? V = await repositorio.SelectById(id);
+
+            if (V == null)
             {
-                return NotFound();
+                return NotFound($"El vendedor con ID {id} no fue encontrado.");
             }
-            return sel;
+
+            return V;
         }
 
         [HttpGet("existe/{id:int}")]
+
         public async Task<ActionResult<bool>> Existe(int id)
         {
             var existe = await repositorio.Existe(id);
             return existe;
         }
-
+        // POST: ----------------------------------------------------------------------
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearPlanVendidoDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(CrearVendedorDTO entidadDTO)
         {
             try
             {
-                PlanVendido entidad = mapper.Map<PlanVendido>(entidadDTO);
+                Vendedor entidad = mapper.Map<Vendedor>(entidadDTO);
                 return await repositorio.Insert(entidad);
             }
             catch (Exception e)
@@ -61,8 +70,9 @@ namespace Concesionaria.Server.Controllers
             }
         }
 
+        // PUT: ID ------------------------------------------------------------------------
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] PlanVendido entidad)
+        public async Task<ActionResult> Put(int id, [FromBody] Vendedor entidad)
         {
             if (id != entidad.Id)
             {
@@ -72,7 +82,7 @@ namespace Concesionaria.Server.Controllers
 
             if (sel == null)
             {
-                return NotFound("No existe el plan buscado.");
+                return NotFound("No existe el vendedor buscado.");
             }
 
             mapper.Map(entidad, sel);
@@ -88,25 +98,28 @@ namespace Concesionaria.Server.Controllers
             }
         }
 
+        // DELETE: ID ----------------------------------------------------------------------
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             var existe = await repositorio.Existe(id);
             if (!existe)
             {
-                return NotFound($"El plan {id} no existe");
+                return NotFound($"El vendedor {id} no existe");
             }
-            PlanVendido EntidadABorrar = new PlanVendido();
+            Vendedor EntidadABorrar = new Vendedor();
             EntidadABorrar.Id = id;
 
             if (await repositorio.Delete(id))
             {
-                return Ok($"El plan {id} fue eliminado");
+                return Ok($"El vendedor {id} fue eliminado");
             }
             else
             {
                 return BadRequest();
             }
+
+
         }
     }
 }

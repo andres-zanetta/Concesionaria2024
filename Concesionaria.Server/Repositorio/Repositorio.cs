@@ -22,7 +22,15 @@ namespace Concesionaria.Server.Repositorio
 
         public async Task<List<E>> Select()
         {
-            return await context.Set<E>().ToListAsync();
+            try
+            {
+                return await context.Set<E>().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener los registros: {ex.Message}");
+                throw; // Relanzar la excepcion para que se maneje mas arriba
+            }
         }
 
         

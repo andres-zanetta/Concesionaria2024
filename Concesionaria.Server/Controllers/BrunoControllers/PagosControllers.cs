@@ -1,34 +1,37 @@
 ﻿using AutoMapper;
+using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO.GinoDTO;
+using Concesionaria2024.Shared.DTO.BrunoDTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace Concesionaria.Server.Controllers
+namespace Concesionaria.Server.Controllers.BrunoControllers
 {
     [ApiController]
-    [Route("api/Persona")]
-    public class PersonasControllers : ControllerBase
+    [Route("api/Pagos")]
+    public class PagosControllers : ControllerBase
     {
-        private readonly IRepositorio<Persona> repositorio;
+        private readonly IRepositorio<Pago> repositorio;
         private readonly IMapper mapper;
 
-        public PersonasControllers(IRepositorio<Persona> repositorio, IMapper mapper)
+        public PagosControllers(IRepositorio<Pago> repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
 
+        // GET: -----------------------------------------------------------------------
         [HttpGet]
-        public async Task<ActionResult<List<Persona>>> Get()
+        public async Task<ActionResult<List<Pago>>> Get()
         {
             return await repositorio.Select();
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Persona>> Get(int id)
+        public async Task<ActionResult<Pago>> Get(int id)
         {
-            Persona? sel = await repositorio.SelectById(id);
+            Pago? sel = await repositorio.SelectById(id);
             if (sel == null)
             {
                 return NotFound();
@@ -44,12 +47,13 @@ namespace Concesionaria.Server.Controllers
 
         }
 
+        // POST: ----------------------------------------------------------------------
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearPersonaDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(CrearPagoDTO entidadDTO)
         {
             try
             {
-                Persona entidad = mapper.Map<Persona>(entidadDTO);
+                Pago entidad = mapper.Map<Pago>(entidadDTO);
                 return await repositorio.Insert(entidad);
             }
             catch (Exception e)
@@ -62,8 +66,9 @@ namespace Concesionaria.Server.Controllers
             }
         }
 
+        // PUT: -----------------------------------------------------------------------
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Persona entidad)
+        public async Task<ActionResult> Put(int id, [FromBody] Pago entidad)
         {
             if (id != entidad.Id)
             {
@@ -73,7 +78,7 @@ namespace Concesionaria.Server.Controllers
 
             if (sel == null)
             {
-                return NotFound("No existe la persona buscada.");
+                return NotFound("No existe el pago buscado.");
             }
 
             mapper.Map(entidad, sel);
@@ -89,26 +94,25 @@ namespace Concesionaria.Server.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        // DELETE: --------------------------------------------------------------------
+        [HttpDelete("{ID:int}")]
+        public async Task<ActionResult> Delete(int ID)
         {
-            var existe = await repositorio.Existe(id);
+            var existe = await repositorio.Existe(ID);
             if (!existe)
             {
-                return NotFound($"La persona {id} no existe");
+                return NotFound($"El pago {ID} no existe");
             }
-            Persona EntidadABorrar = new Persona();
-            EntidadABorrar.Id = id;
 
-            if (await repositorio.Delete(id))
+            if (await repositorio.Delete(ID))
             {
-                return Ok($"La persona {id} fue eliminada");
+                return Ok();
             }
             else
             {
                 return BadRequest();
             }
-
         }
     }
 }
+

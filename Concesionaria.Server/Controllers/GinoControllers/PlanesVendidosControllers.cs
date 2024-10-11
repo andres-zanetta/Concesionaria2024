@@ -1,37 +1,34 @@
 ﻿using AutoMapper;
-using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO.BrunoDTO;
+using Concesionaria2024.Shared.DTO.GinoDTO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace Concesionaria.Server.Controllers
+namespace Concesionaria.Server.Controllers.GinoControllers
 {
     [ApiController]
-    [Route("api/Pagos")]
-    public class PagosControllers : ControllerBase
+    [Route("api/PlanVendido")]
+    public class PlanesVendidosControllers : ControllerBase
     {
-        private readonly IRepositorio<Pago> repositorio;
+        private readonly IRepositorio<PlanVendido> repositorio;
         private readonly IMapper mapper;
 
-        public PagosControllers(IRepositorio<Pago> repositorio, IMapper mapper)
+        public PlanesVendidosControllers(IRepositorio<PlanVendido> repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
 
-        // GET: -----------------------------------------------------------------------
         [HttpGet]
-        public async Task<ActionResult<List<Pago>>> Get()
+        public async Task<ActionResult<List<PlanVendido>>> Get()
         {
             return await repositorio.Select();
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Pago>> Get(int id)
+        public async Task<ActionResult<PlanVendido>> Get(int id)
         {
-            Pago? sel = await repositorio.SelectById(id);
+            PlanVendido? sel = await repositorio.SelectById(id);
             if (sel == null)
             {
                 return NotFound();
@@ -44,16 +41,14 @@ namespace Concesionaria.Server.Controllers
         {
             var existe = await repositorio.Existe(id);
             return existe;
-
         }
 
-        // POST: ----------------------------------------------------------------------
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearPagoDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_PlanVendidoDTO entidadDTO)
         {
             try
             {
-                Pago entidad = mapper.Map<Pago>(entidadDTO);
+                PlanVendido entidad = mapper.Map<PlanVendido>(entidadDTO);
                 return await repositorio.Insert(entidad);
             }
             catch (Exception e)
@@ -66,9 +61,8 @@ namespace Concesionaria.Server.Controllers
             }
         }
 
-        // PUT: -----------------------------------------------------------------------
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Pago entidad)
+        public async Task<ActionResult> Put(int id, [FromBody] PlanVendido entidad)
         {
             if (id != entidad.Id)
             {
@@ -78,7 +72,7 @@ namespace Concesionaria.Server.Controllers
 
             if (sel == null)
             {
-                return NotFound("No existe el pago buscado.");
+                return NotFound("No existe el plan buscado.");
             }
 
             mapper.Map(entidad, sel);
@@ -94,19 +88,20 @@ namespace Concesionaria.Server.Controllers
             }
         }
 
-        // DELETE: --------------------------------------------------------------------
-        [HttpDelete("{ID:int}")]
-        public async Task<ActionResult> Delete(int ID)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
-            var existe = await repositorio.Existe(ID);
+            var existe = await repositorio.Existe(id);
             if (!existe)
             {
-                return NotFound($"El pago {ID} no existe");
+                return NotFound($"El plan {id} no existe");
             }
+            PlanVendido EntidadABorrar = new PlanVendido();
+            EntidadABorrar.Id = id;
 
-            if (await repositorio.Delete(ID))
+            if (await repositorio.Delete(id))
             {
-                return Ok();
+                return Ok($"El plan {id} fue eliminado");
             }
             else
             {
@@ -115,4 +110,3 @@ namespace Concesionaria.Server.Controllers
         }
     }
 }
-

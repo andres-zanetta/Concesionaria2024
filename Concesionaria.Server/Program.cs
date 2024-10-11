@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen();
 //Servicios de los repositorios
 
 builder.Services.AddScoped<ITipoDocumentoRepositorio, TipoDocumentoRepositorio>();
-builder.Services.AddScoped<IRepositorio<Persona>, Repositorio<Persona>>();
+builder.Services.AddScoped<IPersonaRepositorio, PersonaRepositorio>();
 builder.Services.AddScoped<IRepositorio<PlanVendido>, Repositorio<PlanVendido>>();
 builder.Services.AddScoped<IVendedorRepositorio, VendedorRepositorio>();
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
