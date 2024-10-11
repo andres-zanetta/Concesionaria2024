@@ -18,6 +18,20 @@ namespace Concesionaria.Server.Repositorio
                         FirstOrDefaultAsync(x => x.PersonaId == personaId);
             return V;
         }
+
+
+
+
+        //public async Task<Vendedor?> SelectByFecha(DateTime fechaInicio)
+        //{
+        //    Vendedor? V = await context.Vendedores.
+        //               FirstOrDefaultAsync(x => x.FechaInicio== fechaInicio);
+        //    return V;
+        //}
+
+
+
+
     }
 
 }

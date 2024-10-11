@@ -44,6 +44,29 @@ namespace Concesionaria.Server.Controllers
             return V;
         }
 
+
+
+
+        //[HttpGet("GetByFecha/{fecha:Datetime}")]
+        //public async Task<ActionResult<Vendedor>> GetByFecha(DateTime fecha)
+        //{
+        //    Vendedor? V= await repositorio.SelectByFecha(fecha);
+        //    if(V==null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return V;
+            
+        //}
+
+
+
+
+
+
+
+
+
         [HttpGet("existe/{id:int}")]
 
         public async Task<ActionResult<bool>> Existe(int id)

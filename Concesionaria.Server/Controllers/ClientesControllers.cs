@@ -70,7 +70,7 @@ namespace Concesionaria.Server.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] Cliente cliente)
         {
-            if (id != cliente.Id)
+            if (id != cliente.Id)//no tocar
             {
                 return BadRequest("Datos incorrectos");
             }

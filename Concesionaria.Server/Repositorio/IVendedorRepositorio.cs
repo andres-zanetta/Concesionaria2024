@@ -4,6 +4,11 @@ namespace Concesionaria.Server.Repositorio
 {
     public interface IVendedorRepositorio : IRepositorio<Vendedor>
     {
-        Task<Vendedor> SelectById(int personaId);
+        Task<Vendedor> SelectByPersona(int personaId);
+
+        //Task<Vendedor> SelectByFecha(DateTime fecha);
+
+
+
     }
 }
