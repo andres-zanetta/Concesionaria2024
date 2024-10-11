@@ -9,18 +9,53 @@ namespace Concesionaria.Server.Mappers
 {
     public class AutoMapperProfiles : Profile
     {
+        //                                       CreateMap<Origen, Destino>     <--- Formato
         public AutoMapperProfiles()
         {
-            CreateMap<CrearPersonaDTO, Persona>();
-            CreateMap<CrearPlanVendidoDTO, PlanVendido>();
-            CreateMap<CrearTipoDocumentoDTO, TipoDocumento>();
-            CreateMap<ActualizarTipoDocumentoDTO, TipoDocumento>();
+            // Mapeado Persona ====================================================================
+
+            CreateMap<Persona, GET_PersonaDTO>().ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => src.TipoDocumento.Nombre));
+            // Mapea el nombre del TipoDocumento a TipoDocumentoNombre en Persona
+            CreateMap<POST_PersonaDTO, Persona>();
+            CreateMap<PUT_PersonaDTO, Persona>();
+
+            // Mapeado Plan Vendido ===============================================================
+
+            CreateMap<POST_PlanVendidoDTO, PlanVendido>();
+
+            // Mapeado Tipo Documento =============================================================
+
+            CreateMap<TipoDocumento, GET_TipoDocumentoDTO>();
+            CreateMap<GET_TipoDocumentoDTO, TipoDocumento>();
+            CreateMap<POST_TipoDocumentoDTO, TipoDocumento>();
+            CreateMap<PUT_TipoDocumentoDTO, TipoDocumento>();
+
+            // Mapeado Cliente ====================================================================
+
             CreateMap<CrearClienteDTO,Cliente> ();
+
+            // Mapeado Vendedor ===================================================================
+
             CreateMap<CrearVendedorDTO, Vendedor>();
+
+            // Mapeado Vehiculo ===================================================================
+
             CreateMap<CrearVehiculoDTO, Vehiculo>();
+
+            // Mapeado Adjudicacion ===============================================================
+
             CreateMap<CrearAdjudicacionDTO, Adjudicacion>();
+
+            // Mapeado Tipo Plan ==================================================================
+
             CreateMap<CrearTipoPlanDTO, TipoPlan>();
+
+            // Mapeado Cuota ======================================================================
+
             CreateMap<CrearCuotaDTO, Cuota>();
+
+            // Mapeado Pago =======================================================================
+
             CreateMap<CrearPagoDTO, Pago>();
         }
     }
