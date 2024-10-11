@@ -2,7 +2,7 @@
 using Concesionaria.DB.Data.Entidades;
 using Microsoft.EntityFrameworkCore;
 
-namespace Concesionaria.Server.Repositorio
+namespace Concesionaria.Server.Repositorio.GinoRepositorios
 {
     public class TipoDocumentoRepositorio : Repositorio<TipoDocumento>, ITipoDocumentoRepositorio
     {

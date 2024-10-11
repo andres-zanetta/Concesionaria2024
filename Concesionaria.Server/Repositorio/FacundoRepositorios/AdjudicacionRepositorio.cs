@@ -1,13 +1,13 @@
-﻿using Concesionaria.DB.Data.Entidades;
-using Concesionaria.DB.Data.Repositorios;
+﻿using Concesionaria.DB.Data;
+using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Microsoft.EntityFrameworkCore;
 
-namespace Concesionaria.DB.Data.Repositorio
+namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
     public class AdjudicacionRepositorio : Repositorio<Adjudicacion>, IAdjudicacionRepositorio
     {
-        private readonly Context context; 
+        private readonly Context context;
 
         public AdjudicacionRepositorio(Context context) : base(context)
         {

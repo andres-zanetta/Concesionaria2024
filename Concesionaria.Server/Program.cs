@@ -1,6 +1,8 @@
 using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
+using Concesionaria.Server.Repositorio.AndresRepositorios;
+using Concesionaria.Server.Repositorio.GinoRepositorios;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,8 +23,11 @@ builder.Services.AddScoped<IVendedorRepositorio, VendedorRepositorio>();
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 builder.Services.AddScoped<IRepositorio<Cuota>, Repositorio<Cuota>>();
 builder.Services.AddScoped<IRepositorio<Pago>, Repositorio<Pago>>();
+builder.Services.AddScoped<IRepositorio<Adjudicacion>, Repositorio<Adjudicacion>>();
+builder.Services.AddScoped<IRepositorio<TipoPlan>, Repositorio<TipoPlan>>();
+builder.Services.AddScoped<IRepositorio<Vehiculo>, Repositorio<Vehiculo>>();
 
-// Coneccion con la BD
+// Coneccion con la BD / Context
 
 builder.Services.AddDbContext<Context>(op => op.UseSqlServer("name=conn"));
 
@@ -30,7 +35,7 @@ builder.Services.AddDbContext<Context>(op => op.UseSqlServer("name=conn"));
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-//=================================================
+// =================================================
 
 var app = builder.Build();
 

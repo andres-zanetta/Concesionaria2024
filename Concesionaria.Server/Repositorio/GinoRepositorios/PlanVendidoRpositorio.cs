@@ -1,7 +1,7 @@
 ﻿using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 
-namespace Concesionaria.Server.Repositorio
+namespace Concesionaria.Server.Repositorio.GinoRepositorios
 {
     public class PlanVendidoRpositorio : Repositorio<PlanVendido>
     {

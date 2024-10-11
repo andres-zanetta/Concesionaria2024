@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Concesionaria.DB.Data;
 
-namespace Concesionaria.Server.Repositorio
+namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
     public class VehiculoRepositorio : Repositorio<Vehiculo>, IVehiculoRepositorio
     {

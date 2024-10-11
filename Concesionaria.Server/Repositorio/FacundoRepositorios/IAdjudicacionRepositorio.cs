@@ -1,11 +1,10 @@
 ﻿using Concesionaria.DB.Data.Entidades;
-using Concesionaria.DB.Data;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Concesionaria.Server.Repositorio;
 
-namespace Concesionaria.DB.Data.Repositorios
+namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
     public interface IAdjudicacionRepositorio : IRepositorio<Adjudicacion>
     {

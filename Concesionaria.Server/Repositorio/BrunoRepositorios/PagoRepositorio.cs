@@ -1,15 +1,16 @@
 ﻿using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 
-namespace Concesionaria.Server.Repositorio
+namespace Concesionaria.Server.Repositorio.BrunoRepositorios
 {
-    public class PersonaRepositorio : Repositorio<Persona>
+    public class PagoRepositorio : Repositorio<Pago>
     {
         private readonly Context context;
 
-        public PersonaRepositorio(Context context) : base(context)
+        public PagoRepositorio(Context context) : base(context)
         {
             this.context = context;
         }
     }
 }
+

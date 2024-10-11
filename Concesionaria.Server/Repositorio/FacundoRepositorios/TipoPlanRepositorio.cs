@@ -1,7 +1,7 @@
 ﻿using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 
-namespace Concesionaria.Server.Repositorio
+namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
     public class TipoPlanRepositorio : Repositorio<TipoPlan>, ITipoPlanRepositorio
     {
