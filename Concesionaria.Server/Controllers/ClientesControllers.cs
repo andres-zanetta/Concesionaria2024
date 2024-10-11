@@ -29,7 +29,7 @@ namespace Concesionaria.Server.Controllers
         }
 
         // GET: ID 
-        [HttpGet("{ID:int}")]//api/Clientes/2
+        [HttpGet("{id:int}")]//api/Clientes/2
         public async Task<ActionResult<Cliente>> Get(int id)
         {
             Cliente? C = await repositorio.SelectById(id);
