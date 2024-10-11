@@ -1,15 +1,15 @@
-﻿namespace Concesionaria2024.Shared.DTO
+﻿using System;
+
+namespace Concesionaria.DB.Data.Dtos
 {
-    public class CrearAdjudicacionDTO
+    public class AdjudicacionDto
     {
+        public int Id { get; set; } 
         public string? Detalle { get; set; }
         public DateTime FechaAdjudicacion { get; set; }
         public bool AutoEntregado { get; set; }
-        public string PatenteVehiculo { get; set; }
+        public string PatenteVehiculo { get; set; } = string.Empty;
         public int VehiculoId { get; set; }
         public int PlanVendidoId { get; set; }
-        public int ClienteId { get; set; } 
-        public decimal Precio { get; set; } 
-        public string? Vendedor { get; set; } 
     }
 }

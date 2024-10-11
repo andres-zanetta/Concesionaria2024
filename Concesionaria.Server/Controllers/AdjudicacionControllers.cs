@@ -1,112 +1,101 @@
-﻿using AutoMapper;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
-using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO.FacundoDTO;
-using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Concesionaria.Server.Controllers
+namespace Concesionaria.Controllers
 {
     [ApiController]
     [Route("api/Adjudicacion")]
     public class AdjudicacionController : ControllerBase
     {
-        private readonly IRepositorio<Adjudicacion> repositorio;
-        private readonly IMapper mapper;
+        private readonly Context context;
 
-        public AdjudicacionController(IRepositorio<Adjudicacion> repositorio, IMapper mapper)
+        public AdjudicacionController(Context context)
         {
-            this.repositorio = repositorio;
-            this.mapper = mapper;
+            this.context = context;
         }
-        //Obtener Todas las Adjudicaciones
+
         [HttpGet]
-        public async Task<ActionResult<List<Adjudicacion>>> Get()
+        public async Task<ActionResult<IEnumerable<Adjudicacion>>> GetAdjudicaciones()
         {
-            return await repositorio.Select();
+            return await context.Adjudicaciones
+                                 .Include(a => a.Vehiculo)
+                                 .Include(a => a.PlanVendido)
+                                 .ToListAsync();
         }
-        //Obtener una Adjudicacion por ID
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<Adjudicacion>> Get(int id)
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Adjudicacion>> GetAdjudicacion(int id)
         {
-            Adjudicacion? sel = await repositorio.SelectById(id);
-            if (sel == null)
+            var adjudicacion = await context.Adjudicaciones
+                                               .Include(a => a.Vehiculo)
+                                               .Include(a => a.PlanVendido)
+                                               .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (adjudicacion == null)
             {
                 return NotFound();
             }
-            return sel;
+
+            return adjudicacion;
         }
-        //Verificar si una Adjudicacion Existe
-        [HttpGet("existe/{id:int}")]
-        public async Task<ActionResult<bool>> Existe(int id)
-        {
-            var existe = await repositorio.Existe(id);
-            return existe;
-        }
-        //Crear una Nueva Adjudicacion
+
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearAdjudicacionDTO entidadDTO)
+        public async Task<ActionResult<Adjudicacion>> PostAdjudicacion(Adjudicacion adjudicacion)
         {
-            try
-            {
-                Adjudicacion entidad = mapper.Map<Adjudicacion>(entidadDTO);
-                return await repositorio.Insert(entidad);
-            }
-            catch (Exception e)
-            {
-                if (e.InnerException != null)
-                {
-                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
-                }
-                return BadRequest(e.Message);
-            }
+            context.Adjudicaciones.Add(adjudicacion);
+            await context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetAdjudicacion), new { id = adjudicacion.Id }, adjudicacion);
         }
-        //Actualizar una Adjudicacion
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Adjudicacion entidad)
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAdjudicacion(int id, Adjudicacion adjudicacion)
         {
-            if (id != entidad.Id)
-            {
-                return BadRequest("Datos incorrectos");
-            }
-            var sel = await repositorio.SelectById(id);
-
-            if (sel == null)
-            {
-                return NotFound("No existe la adjudicación buscada.");
-            }
-
-            mapper.Map(entidad, sel);
-
-            try
-            {
-                await repositorio.Update(id, sel);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-        //Eliminar
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var existe = await repositorio.Existe(id);
-            if (!existe)
-            {
-                return NotFound($"La adjudicación {id} no existe");
-            }
-            Adjudicacion entidadABorrar = new Adjudicacion { Id = id };
-
-            if (await repositorio.Delete(id))
-            {
-                return Ok($"La adjudicación {id} fue eliminada");
-            }
-            else
+            if (id != adjudicacion.Id)
             {
                 return BadRequest();
             }
+
+            context.Entry(adjudicacion).State = EntityState.Modified;
+
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AdjudicacionExiste(id))
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAdjudicacion(int id)
+        {
+            var adjudicacion = await context.Adjudicaciones.FindAsync(id);
+            if (adjudicacion == null)
+            {
+                return NotFound();
+            }
+
+            context.Adjudicaciones.Remove(adjudicacion);
+            await context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool AdjudicacionExiste(int id)
+        {
+            return context.Adjudicaciones.Any(e => e.Id == id);
         }
     }
 }
-
