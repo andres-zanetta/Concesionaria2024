@@ -18,5 +18,11 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
             var personas = await context.Personas.Include(p => p.TipoDocumento).ToListAsync(); // Incluye la entidad TipoDocumento
             return personas;
         }
+
+        public async Task<Persona> SelectEntidadTDById(int id)
+        {
+            var persona = await context.Personas.Include(p => p.TipoDocumento).FirstOrDefaultAsync(p => p.Id == id);
+            return persona;
+        }
     }
 }

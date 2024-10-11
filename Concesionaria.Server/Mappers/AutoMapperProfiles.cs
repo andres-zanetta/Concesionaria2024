@@ -11,11 +11,13 @@ namespace Concesionaria.Server.Mappers
     {
         //                                       CreateMap<Origen, Destino>     <--- Formato
         public AutoMapperProfiles()
-        {   
+        {
             // Mapeado Persona ====================================================================
 
-            CreateMap<Persona, GET_PersonaDTO>().ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => src.TipoDocumento.Nombre)); 
+            CreateMap<Persona, GET_PersonaDTO>().ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => src.TipoDocumento.Nombre));
             // Mapea el nombre del TipoDocumento a TipoDocumentoNombre en Persona
+            CreateMap<POST_PersonaDTO, Persona>();
+            CreateMap<PUT_PersonaDTO, Persona>();
 
             // Mapeado Plan Vendido ===============================================================
 

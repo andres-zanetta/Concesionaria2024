@@ -40,7 +40,7 @@ namespace Concesionaria.Server.Controllers.GinoControllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<GET_PersonaDTO>> Get(int id)
         {
-            Persona? persona = await repositorio.SelectById(id);
+            Persona? persona = await repositorio.SelectEntidadTDById(id);
             if (persona == null)
             {
                 return NotFound();
@@ -82,7 +82,7 @@ namespace Concesionaria.Server.Controllers.GinoControllers
                 return BadRequest("No existe el tipo de documento buscado.");
             }
 
-            var persona = await repositorio.SelectById(id);
+            var persona = await repositorio.SelectEntidadTDById(id);
 
             if (persona == null)
             {
@@ -91,14 +91,16 @@ namespace Concesionaria.Server.Controllers.GinoControllers
 
             mapper.Map(PUT_EntidadDTO, persona);
 
-            // Log para verificar los valores actualizados
+            // Log para verificar los valores actualizados en verde 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"TipoDocumento actualizado: {persona.Nombre}, {persona.Apellido}, {persona.NumDoc}, {persona.TipoDocumentoId}");
+            Console.ResetColor();
 
             try
             {
                 await repositorio.Update(id, persona);
-                var pesonaDTO = mapper.Map<GET_TipoDocumentoDTO>(persona);
-                return Ok(pesonaDTO);
+                var personaDTO = mapper.Map<GET_PersonaDTO>(persona);
+                return Ok(personaDTO);
             }
             catch (Exception e)
             {
