@@ -6,9 +6,6 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
     {
         Task<Vendedor> SelectByPersona(int personaId);
 
-        //Task<Vendedor> SelectByFecha(DateTime fecha);
-
-
-
+      
     }
 }

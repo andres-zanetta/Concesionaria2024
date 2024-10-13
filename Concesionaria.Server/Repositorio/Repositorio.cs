@@ -38,46 +38,6 @@ namespace Concesionaria.Server.Repositorio
             return sel;
         }
 
-        //{
-        //    E? sel = await context.Set<E>()
-        //        .AsNoTracking()
-        //        .FirstOrDefaultAsync(
-        //        x => x.Fecha == fecha);
-        //    return sel;
-        //}
-
-
-
-        //{
-        //    E? sel = await context.Set<E>()
-        //        .AsNoTracking()
-        //        .FirstOrDefaultAsync(
-        //        x => x.Fecha == fecha);
-        //    return sel;
-        //}
-
-
-
-        //{
-        //    E? sel = await context.Set<E>()
-        //        .AsNoTracking()
-        //        .FirstOrDefaultAsync(
-        //        x => x.Fecha == fecha);
-        //    return sel;
-        //}
-
-
-
-        //{
-        //    E? sel = await context.Set<E>()
-        //        .AsNoTracking()
-        //        .FirstOrDefaultAsync(
-        //        x => x.Fecha == fecha);
-        //    return sel;
-        //}
-
-
-
         public async Task<int> Insert(E entidad)
         {
             try
