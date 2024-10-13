@@ -19,6 +19,17 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             return cliente;
         }
 
+        public async Task<Cliente?> SelectByFechaInicio(DateTime fechaInicio)
+        {
+            Cliente? cliente = await context.Clientes.
+                      FirstOrDefaultAsync(x => x.FechaInicio == fechaInicio);
+            return cliente;
+        }
+
+        //public async Task<Cliente?>SelectByPlanVendido(int planvendido)
+        //{
+        //    Cliente? cliente = await context.Clientes.FirstOrDefaultAsync(x => x.PlanVendido == planvendido);
+        //}
 
     }
 }
