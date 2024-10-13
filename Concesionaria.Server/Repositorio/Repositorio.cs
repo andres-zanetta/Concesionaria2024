@@ -15,8 +15,7 @@ namespace Concesionaria.Server.Repositorio
 
         public async Task<bool> Existe(int id)
         {
-            var existe = await context.Set<E>()
-                             .AnyAsync(x => x.Id == id);
+            var existe = await context.Set<E>().AnyAsync(x => x.Id == id);
             return existe;
         }
 
@@ -32,13 +31,10 @@ namespace Concesionaria.Server.Repositorio
                 throw; // Relanzar la excepcion para que se maneje mas arriba
             }
         }
-
+        
         public async Task<E> SelectById(int id)
         {
-            E? sel = await context.Set<E>()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(
-                x => x.Id == id);
+            E? sel = await context.Set<E>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             return sel;
         }
 
@@ -64,8 +60,8 @@ namespace Concesionaria.Server.Repositorio
                 return false;
             }
 
-            var EntidadExistente = await context.Set<E>().FirstOrDefaultAsync( x => x.Id == id); ; 
-            // <- no uso SelectByID por que necesito que trackee la entidad.
+            var EntidadExistente = await context.Set<E>().FirstOrDefaultAsync(x => x.Id == id); ; 
+            // <- no uso SelectByID por que necesito que trackee la entidad y ese metodo no la trackea.
 
             if (EntidadExistente == null)
             {
@@ -101,6 +97,6 @@ namespace Concesionaria.Server.Repositorio
             context.Set<E>().Remove(sel);
             await context.SaveChangesAsync();
             return true;
-        }
+        }      
     }
 }

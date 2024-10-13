@@ -2,6 +2,7 @@ using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria.Server.Repositorio.AndresRepositorios;
+using Concesionaria.Server.Repositorio.FacundoRepositorios;
 using Concesionaria.Server.Repositorio.GinoRepositorios;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ITipoDocumentoRepositorio, TipoDocumentoRepositorio>();
 builder.Services.AddScoped<IPersonaRepositorio, PersonaRepositorio>();
-builder.Services.AddScoped<IRepositorio<PlanVendido>, Repositorio<PlanVendido>>();
+builder.Services.AddScoped<IPlanVendidoRepositorio, PlanVendidoRepositorio>();
 builder.Services.AddScoped<IVendedorRepositorio, VendedorRepositorio>();
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 builder.Services.AddScoped<IRepositorio<Cuota>, Repositorio<Cuota>>();

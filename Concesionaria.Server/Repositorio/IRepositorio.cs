@@ -3,8 +3,8 @@ using Concesionaria.DB.Data.Entidades;
 
 namespace Concesionaria.Server.Repositorio
 {
-    public interface IRepositorio<E> where E : class, IEntityBase
-    {
+    public interface IRepositorio<E> where E : class, IEntityBase                    
+    {       
         Task<bool> Delete(int id);
         Task<bool> Existe(int id);
         Task<int> Insert(E entidad);

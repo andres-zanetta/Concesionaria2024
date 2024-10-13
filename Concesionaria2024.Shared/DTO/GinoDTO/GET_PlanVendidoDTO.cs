@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Concesionaria.DB.Data.Entidades;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,12 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Concesionaria.DB.Data.Entidades
+namespace Concesionaria2024.Shared.DTO.GinoDTO
 {
-    [Index(nameof(ClienteId), Name = "ClienteId_UQ", IsUnique = false)]
-    [Index(nameof(VendedorId), Name = "VendedorId_UQ", IsUnique = false)]
-    [Index(nameof(Estado), Name = "Estado", IsUnique = false)]
-    public class PlanVendido : EntityBase
+    public class GET_PlanVendidoDTO
     {
         // Fecha cuando se suscribió ------------------------------------------------------------------------------------------
 
@@ -19,7 +16,7 @@ namespace Concesionaria.DB.Data.Entidades
         public DateTime? FechaSuscripcion { get; set; }
 
 
-        // Fecha del sorteo ------------------------------------------------------------------------------------------
+        // FEcha del sorteo ------------------------------------------------------------------------------------------
 
 
         public DateTime? FechaSorteo { get; set; }
@@ -62,30 +59,28 @@ namespace Concesionaria.DB.Data.Entidades
         public bool PlanEnMora { get; set; }
 
 
-        // Clase de navegación ------------------------------------------------------------------------------------------
+     
+        //  Clases de Nav pero en este caso las uso para traer info relac al plan
+
+
 
 
         [Required(ErrorMessage = "El cliente es obligatorio.")]
         public int ClienteId { get; set; }
-        public Cliente Cliente { get; set; }
+        public string NombreCliente { get; set; }
 
 
         [Required(ErrorMessage = "El vendedor es obligatorio.")]
         public int VendedorId { get; set; }
-        public Vendedor Vendedor { get; set; }
+        public string NombreVendedor { get; set; }
+
 
 
         [Required(ErrorMessage = "El tipo de plan es obligatorio.")]
         public int TipoPlanId { get; set; }
-        public TipoPlan TipoPlan { get; set; }
+        public string NombrePlan { get; set; }
+        public decimal ValorTotal { get; set; }
 
 
-        public Adjudicacion Adjudicacion { get; set; }
-
-
-        // Lista ------------------------------------------------------------------------------------------
-
-
-        public List<Cuota> cuotas { get; set; } = new List<Cuota>();
     }
 }
