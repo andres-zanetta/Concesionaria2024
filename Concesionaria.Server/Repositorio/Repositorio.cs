@@ -33,7 +33,6 @@ namespace Concesionaria.Server.Repositorio
             }
         }
 
-        
         public async Task<E> SelectById(int id)
         {
             E? sel = await context.Set<E>()
@@ -42,18 +41,6 @@ namespace Concesionaria.Server.Repositorio
                 x => x.Id == id);
             return sel;
         }
-
-
-        //public async Task<E> SelectByFecha(DateTime fecha)
-        //{
-        //    E? sel = await context.Set<E>()
-        //        .AsNoTracking()
-        //        .FirstOrDefaultAsync(
-        //        x => x.Fecha == fecha);
-        //    return sel;
-        //}
-
-
 
         public async Task<int> Insert(E entidad)
         {
@@ -115,7 +102,5 @@ namespace Concesionaria.Server.Repositorio
             await context.SaveChangesAsync();
             return true;
         }
-
-       
     }
 }

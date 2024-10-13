@@ -33,7 +33,6 @@ namespace Concesionaria.Server.Controllers.GinoControllers
             {
                 return NotFound();
             }
-            return sel;
         }
 
         [HttpGet("existe/{id:int}")]
