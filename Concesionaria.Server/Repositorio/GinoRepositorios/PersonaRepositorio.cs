@@ -15,14 +15,30 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
 
         public async Task<List<Persona>> SelectEntidadTD()
         {
-            var personas = await context.Personas.Include(p => p.TipoDocumento).ToListAsync(); // Incluye la entidad TipoDocumento
-            return personas;
+            try
+            {
+                var personas = await context.Personas.Include(p => p.TipoDocumento).ToListAsync(); // Incluye la entidad TipoDocumento
+                return personas;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener los registros: {e.Message}");
+                throw;
+            }
         }
 
         public async Task<Persona> SelectEntidadTDById(int id)
         {
-            var persona = await context.Personas.Include(p => p.TipoDocumento).FirstOrDefaultAsync(p => p.Id == id);
-            return persona;
+            try
+            {
+                var persona = await context.Personas.Include(p => p.TipoDocumento).FirstOrDefaultAsync(p => p.Id == id);
+                return persona;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener los registros: {e.Message}");
+                throw;
+            }
         }
     }
 }

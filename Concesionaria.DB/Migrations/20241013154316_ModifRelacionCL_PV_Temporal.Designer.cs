@@ -4,6 +4,7 @@ using Concesionaria.DB.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Concesionaria.DB.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241013154316_ModifRelacionCL_PV_Temporal")]
+    partial class ModifRelacionCL_PV_Temporal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,10 +250,10 @@ namespace Concesionaria.DB.Migrations
                     b.Property<bool>("PlanEnMora")
                         .HasColumnType("bit");
 
-                    b.Property<int>("TipoPlanId")
+                    b.Property<int?>("TipoPlanId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VendedorId")
+                    b.Property<int?>("VendedorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -466,15 +469,11 @@ namespace Concesionaria.DB.Migrations
 
                     b.HasOne("Concesionaria.DB.Data.Entidades.TipoPlan", "TipoPlan")
                         .WithMany()
-                        .HasForeignKey("TipoPlanId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("TipoPlanId");
 
                     b.HasOne("Concesionaria.DB.Data.Entidades.Vendedor", "Vendedor")
                         .WithMany("planVendidos")
-                        .HasForeignKey("VendedorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("VendedorId");
 
                     b.Navigation("Cliente");
 
