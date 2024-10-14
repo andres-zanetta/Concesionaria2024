@@ -1,4 +1,4 @@
-﻿using Concesionaria.DB.Data.Entidades;
+﻿using Concesionaria.DB.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.AndresDTO
 {
-    public class CrearVendedorDTO
+    public class POST_VendedorDTO:EntityBase
     {
 
         [Range(1, int.MaxValue, ErrorMessage = "El precio del vehiculo debe ser un numero positivo")]
@@ -19,8 +19,5 @@ namespace Concesionaria2024.Shared.DTO.AndresDTO
         public DateTime FechaInicio { get; set; }
 
         public DateTime? FechaFin { get; set; }
-
-
-
     }
 }

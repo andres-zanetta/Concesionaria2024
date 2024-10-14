@@ -1,6 +1,7 @@
 ﻿using Concesionaria.DB.Data.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Concesionaria.DB.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Concesionaria.Server.Repositorio.AndresRepositorios
 {
@@ -13,17 +14,29 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             this.context = context;
         }
 
-        public async Task<Cliente?> SelectById(int id)
+        public async Task<Cliente> SelectById(int id)
         {
-            Cliente? cliente = await context.Clientes.FirstOrDefaultAsync(x => x.PersonaId == id);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.PersonaId == id);
             return cliente;
         }
+        
 
-        public async Task<Cliente?> SelectByFechaInicio(DateTime fechaInicio)
+        public async Task<Cliente> SelectByFechaInicio(DateTime fechaInicio)
         {
-            Cliente? cliente = await context.Clientes.
-                      FirstOrDefaultAsync(x => x.FechaInicio == fechaInicio);
-            return cliente;
+            try
+            {
+                Cliente? cliente = await context.Clientes.
+                   FirstOrDefaultAsync(x => x.FechaInicio == fechaInicio);
+                return cliente;
+
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine($"Error al obtener los registros: {e.Message}");
+                throw;
+            }
+         
         }
 
        

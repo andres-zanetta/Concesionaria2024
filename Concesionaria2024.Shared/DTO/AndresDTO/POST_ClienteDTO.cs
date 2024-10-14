@@ -1,4 +1,5 @@
-﻿using Concesionaria.DB.Data.Entidades;
+﻿using Concesionaria.DB.Data;
+using Concesionaria.DB.Data.Entidades;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.AndresDTO
 {
-    public class CrearClienteDTO
-
+    public class POST_ClienteDTO:EntityBase
     {
         // Fecha ------------------------------------------------------------------------------------------
         [Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
@@ -22,5 +22,6 @@ namespace Concesionaria2024.Shared.DTO.AndresDTO
         [Required(ErrorMessage = "La persona es obligatoria.")]
         public int PersonaId { get; set; }
         public Persona Persona { get; set; }
+
     }
 }

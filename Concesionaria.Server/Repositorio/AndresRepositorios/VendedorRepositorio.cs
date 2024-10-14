@@ -12,7 +12,7 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             this.context = context;
         }
 
-        public async Task<Vendedor?> SelectByPersona(int personaId)
+        public async Task<Vendedor> SelectByPersona(int personaId)
         {
             Vendedor? V = await context.Vendedores.
                         FirstOrDefaultAsync(x => x.PersonaId == personaId);
@@ -42,9 +42,10 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             return V;
         }
 
-
-
-
+        Task<List<Vendedor>> IVendedorRepositorio.SelectByPersona(int personaId)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

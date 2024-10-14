@@ -2,7 +2,9 @@
 using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
+using Concesionaria.Server.Repositorio.AndresRepositorios;
 using Concesionaria2024.Shared.DTO.AndresDTO;
+using Concesionaria2024.Shared.DTO.GinoDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -15,33 +17,45 @@ namespace Concesionaria.Server.Controllers.AndresControllers
     public class VendedoresControllers : ControllerBase
 
     {
-        private readonly IRepositorio<Vendedor> repositorio;
+        private readonly IVendedorRepositorio repositorio;
         private readonly IMapper mapper;
 
-        public VendedoresControllers(IRepositorio<Vendedor> repositorio, IMapper mapper)
+        public VendedoresControllers(IVendedorRepositorio repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Vendedor>>> Get()
+        public async Task<ActionResult<List<GET_VendedorDTO>>> Get()
         {
-            return await repositorio.Select();
+            try
+            {
+                var ListPersonaSelect = await repositorio.Select();
+                var ListPersona = mapper.Map<List<GET_VendedorDTO>>(ListPersonaSelect);
+                return Ok(ListPersona);
+            }
+            catch (Exception ex)
+            {
+                // Registrar el error para el diagnóstico
+                Console.WriteLine($"Error en el método GET: {ex.Message}");
+                return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+            }
         }
 
         // GET: ID 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Vendedor>> Get(int id)
+        public async Task<ActionResult<GET_VendedorDTO>> Get(int id)
         {
-            Vendedor? V = await repositorio.SelectById(id);
+            Vendedor? vendedor = await repositorio.SelectById(id);
 
-            if (V == null)
+            if (vendedor == null)
             {
                 return NotFound($"El vendedor con ID {id} no fue encontrado.");
             }
+            var VendedorDTO = mapper.Map<GET_VendedorDTO>(vendedor);
 
-            return V;
+            return VendedorDTO;
         }
 
 
@@ -59,12 +73,7 @@ namespace Concesionaria.Server.Controllers.AndresControllers
             
         //}
 
-
-
-
-
-
-
+        
 
 
         [HttpGet("existe/{id:int}")]
@@ -76,11 +85,11 @@ namespace Concesionaria.Server.Controllers.AndresControllers
         }
         // POST: ----------------------------------------------------------------------
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearVendedorDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_VendedorDTO POST_VendedorDTO)
         {
             try
             {
-                Vendedor entidad = mapper.Map<Vendedor>(entidadDTO);
+                Vendedor entidad = mapper.Map<Vendedor>(POST_VendedorDTO);
                 return await repositorio.Insert(entidad);
             }
             catch (Exception e)
@@ -95,25 +104,31 @@ namespace Concesionaria.Server.Controllers.AndresControllers
 
         // PUT: ID ------------------------------------------------------------------------
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Vendedor entidad)
+        public async Task<ActionResult> Put(int id, [FromBody] PUT_VendedorDTO PUT_EntidadDTO)
         {
-            if (id != entidad.Id)
+            if (!await repositorio.Existe(id))
             {
                 return BadRequest("Datos incorrectos");
             }
-            var sel = await repositorio.SelectById(id);
+            var vendedor = await repositorio.SelectById(id);
 
-            if (sel == null)
+            if (vendedor == null)
             {
                 return NotFound("No existe el vendedor buscado.");
             }
 
-            mapper.Map(entidad, sel);
+            mapper.Map(PUT_EntidadDTO, vendedor);
+
+            //Console.ForegroundColor = ConsoleColor.Green;
+            //Console.WriteLine($"Vendedor actualizado: {vendedor.Nombre}, {vendedor.Apellido}, {vendedor.NumDoc}, {vendedor.TipoDocumentoId}");
+            //Console.ResetColor();
 
             try
             {
-                await repositorio.Update(id, sel);
-                return Ok();
+                await repositorio.Update(id, vendedor);
+                var vendedorDTO = mapper.Map<GET_VendedorDTO>(vendedor);
+
+                return Ok(vendedorDTO);
             }
             catch (Exception e)
             {

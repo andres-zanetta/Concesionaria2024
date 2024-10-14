@@ -20,13 +20,13 @@ namespace Concesionaria.Server.Mappers
             CreateMap<PUT_PersonaDTO, Persona>();
 
             // Mapeado Plan Vendido ===============================================================
-
             CreateMap<PlanVendido, GET_PlanVendidoDTO>()
-            .ForMember(dest => dest.NombreCliente, opt => opt.MapFrom(src => $"{src.Cliente.Persona.Nombre} {src.Cliente.Persona.Apellido}"))
-            .ForMember(dest => dest.NombreVendedor, opt => opt.MapFrom(src => $"{src.Vendedor.Persona.Nombre} {src.Vendedor.Persona.Apellido}"))
-            .ForMember(dest => dest.NombrePlan, opt => opt.MapFrom(src => $"{src.TipoPlan.NombrePlan}"))
-            .ForMember(dest => dest.ValorTotal, opt => opt.MapFrom(src => $"{src.TipoPlan.ValorTotal}"));
+           .ForMember(dest => dest.NombreCliente, opt => opt.MapFrom(src => $"{src.Cliente.Persona.Nombre} {src.Cliente.Persona.Apellido}"))
+           .ForMember(dest => dest.NombreVendedor, opt => opt.MapFrom(src => $"{src.Vendedor.Persona.Nombre} {src.Vendedor.Persona.Apellido}"))
+           .ForMember(dest => dest.NombrePlan, opt => opt.MapFrom(src => $"{src.TipoPlan.NombrePlan}"))
+           .ForMember(dest => dest.ValorTotal, opt => opt.MapFrom(src => $"{src.TipoPlan.ValorTotal}"));
             // El metodo de arriba agregar al DTO info util trackeada desde persona asociada a un CL o V e info util del TipoPlan
+
 
 
             CreateMap<POST_PlanVendidoDTO, PlanVendido>();
@@ -40,11 +40,12 @@ namespace Concesionaria.Server.Mappers
 
             // Mapeado Cliente ====================================================================
 
-            CreateMap<CrearClienteDTO,Cliente> ();
+            CreateMap<Cliente,GET_ClienteDTO>();
+            CreateMap<GET_ClienteDTO, Cliente>();
 
             // Mapeado Vendedor ===================================================================
 
-            CreateMap<CrearVendedorDTO, Vendedor>();
+            CreateMap<GET_VendedorDTO, Vendedor>();
 
             // Mapeado Vehiculo ===================================================================
 

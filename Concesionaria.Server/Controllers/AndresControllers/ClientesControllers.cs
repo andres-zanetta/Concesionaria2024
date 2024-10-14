@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
+using Concesionaria.Server.Repositorio.AndresRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using Concesionaria2024.Shared.DTO.AndresDTO;
+using Concesionaria2024.Shared.DTO.GinoDTO;
 
 namespace Concesionaria.Server.Controllers.AndresControllers
 {
@@ -10,11 +12,11 @@ namespace Concesionaria.Server.Controllers.AndresControllers
     [Route("api/Cliente")]
     public class ClientesController : ControllerBase
     {
-        private readonly IRepositorio<Cliente> repositorio;
+        private readonly IClienteRepositorio repositorio;
         private readonly IMapper mapper;
 
 
-        public ClientesController(IRepositorio<Cliente> repositorio, IMapper mapper)
+        public ClientesController(IClienteRepositorio repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;
@@ -23,21 +25,24 @@ namespace Concesionaria.Server.Controllers.AndresControllers
 
         // GET:-------------------------------------------------------------------
         [HttpGet] //api/Clientes
-        public async Task<ActionResult<List<Cliente>>> Get()
+        public async Task<ActionResult<List<GET_ClienteDTO>>> Get()
         {
-            return await repositorio.Select();
+            var ListPersonaSelect = await repositorio.Select();
+            var ListPersona = mapper.Map<List<GET_ClienteDTO>>(ListPersonaSelect);
+            return Ok(ListPersona);
         }
 
         // GET: ID 
         [HttpGet("{id:int}")]//api/Clientes/2
-        public async Task<ActionResult<Cliente>> Get(int id)
+        public async Task<ActionResult<GET_ClienteDTO>> Get(int id)
         {
             Cliente? C = await repositorio.SelectById(id);
             if (C == null)
             {
                 return NotFound();
             }
-            return C;
+            var clienteDTO = mapper.Map<GET_ClienteDTO>(C);
+            return clienteDTO ;
         }
 
         [HttpGet("existe/{id:int}")]
@@ -49,11 +54,11 @@ namespace Concesionaria.Server.Controllers.AndresControllers
 
         // POST: ----------------------------------------------------------------------
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearClienteDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_ClienteDTO  POST_entidadDTO)
         {
             try
             {
-                Cliente entidad = mapper.Map<Cliente>(entidadDTO);
+                Cliente entidad = mapper.Map<Cliente>(POST_entidadDTO);
                 return await repositorio.Insert(entidad);
             }
             catch (Exception e)
@@ -68,7 +73,7 @@ namespace Concesionaria.Server.Controllers.AndresControllers
 
         // PUT: ID ------------------------------------------------------------------------
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Cliente cliente)
+        public async Task<ActionResult> Put(int id, [FromBody] PUT_ClienteDTO cliente)
         {
             if (id != cliente.Id)//no tocar
             {
@@ -86,10 +91,16 @@ namespace Concesionaria.Server.Controllers.AndresControllers
             try
             {
                 await repositorio.Update(id, sel);
-                return Ok();
+                var clienteDTO = mapper.Map<GET_ClienteDTO>(cliente);
+                return Ok(clienteDTO);
             }
             catch (Exception e)
             {
+
+                if (e.InnerException != null)
+                {
+                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+                }
                 return BadRequest(e.Message);
             }
         }

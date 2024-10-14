@@ -4,8 +4,12 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
 {
     public interface IVendedorRepositorio : IRepositorio<Vendedor>
     {
-        Task<Vendedor> SelectByPersona(int personaId);
+        Task<List<Vendedor>> SelectByPersona(int personaId);
+        Task<Vendedor> SelectById(int id);
+       
 
-      
+
+
+
     }
 }
