@@ -19,7 +19,9 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
             {
                 var planVendido = await context.PlanesVendidos.Include(pv => pv.Cliente).ThenInclude(c => c.Persona)
                     .Include(pv => pv.Vendedor).ThenInclude(v => v.Persona)
-                    .Include(pv => pv.TipoPlan).ToListAsync();
+                    .Include(pv => pv.TipoPlan)
+                    .Include(pv => pv.Adjudicacion).ThenInclude(a => a.Vehiculo)
+                    .ToListAsync();
 
                 return planVendido;
             }
@@ -37,7 +39,9 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
             {
                 var planVendidoById = await context.PlanesVendidos.Include(pv => pv.Cliente).ThenInclude(c => c.Persona)
                     .Include(pv => pv.Vendedor).ThenInclude(v => v.Persona)
-                    .Include(pv => pv.TipoPlan).FirstOrDefaultAsync(pv => pv.Id == id);
+                    .Include(pv => pv.TipoPlan)
+                    .Include(pv => pv.Adjudicacion).ThenInclude(a => a.Vehiculo)
+                    .FirstOrDefaultAsync(pv => pv.Id == id);
 
                 return planVendidoById;
             }

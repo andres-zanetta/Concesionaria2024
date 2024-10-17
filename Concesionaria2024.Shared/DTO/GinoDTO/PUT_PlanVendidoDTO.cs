@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO
 {
-    public class GET_PlanVendidoDTO
+    public class PUT_PlanVendidoDTO
     {
         // Fecha cuando se suscribió ------------------------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO
         public DateTime? FechaSuscripcion { get; set; }
 
 
-        // FEcha del sorteo ------------------------------------------------------------------------------------------
+        // Fecha del sorteo ------------------------------------------------------------------------------------------
 
 
         public DateTime? FechaSorteo { get; set; }
@@ -59,36 +59,22 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO
         public bool PlanEnMora { get; set; }
 
 
-     
-        //  Clases de Nav pero en este caso las uso para traer info relac al plan
-
-
-
-
-        [Required(ErrorMessage = "El cliente es obligatorio.")]
-        public int ClienteId { get; set; }
-        public string NombreCliente { get; set; }
-
-
-
-        [Required(ErrorMessage = "El vendedor es obligatorio.")]
-        public int VendedorId { get; set; }
-        public string NombreVendedor { get; set; }
-
+       // ==================================== Ids de las entidades asociadas ==================================================
 
 
         [Required(ErrorMessage = "El tipo de plan es obligatorio.")]
         public int TipoPlanId { get; set; }
-        public string NombrePlan { get; set; }
-        public decimal ValorTotal { get; set; }
 
+
+        [Required(ErrorMessage = "El vendedor es obligatorio.")]
+        public int VendedorId { get; set; }
+
+
+        [Required(ErrorMessage = "El cliente es obligatorio.")]
+        public int ClienteId { get; set; }
 
 
         public int? AdjudicacionId { get; set; }
-        public bool AutoEntregado { get; set; }
-        public string PatenteVehiculo { get; set; }
-        public string ModeloVehiculo { get; set;}
-        public string MarcaVehiculo { get; set; }
 
     }
 }

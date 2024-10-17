@@ -84,28 +84,39 @@ namespace Concesionaria.Server.Controllers.GinoControllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] PlanVendido entidad)
+        public async Task<ActionResult> Put(int id, [FromBody] PUT_PlanVendidoDTO PUT_EntidadDTO)
         {
-            if (id != entidad.Id)
+            if (!await repositorio.Existe(id))
             {
-                return BadRequest("Datos incorrectos");
-            }
-            var sel = await repositorio.SelectById(id);
-
-            if (sel == null)
-            {
-                return NotFound("No existe el plan buscado.");
+                return BadRequest("No existe el tipo de documento buscado.");
             }
 
-            mapper.Map(entidad, sel);
+            var planVendido = await repositorio.SelectPlanYAsociadosById(id);
+
+            if (planVendido == null)
+            {
+                return NotFound("No existe el tipo de documento");
+            }
+
+            mapper.Map(PUT_EntidadDTO, planVendido);
+
+            // Log para verificar los valores actualizados en verde 
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"PlanVendido actualizado: {planVendido.VendedorId}, {planVendido.ClienteId}, {planVendido.TipoPlanId}, {planVendido.AdjudicacionId}");
+            Console.ResetColor();
 
             try
             {
-                await repositorio.Update(id, sel);
-                return Ok();
+                await repositorio.Update(id, planVendido);
+                var personaDTO = mapper.Map<GET_PlanVendidoDTO>(planVendido);
+                return Ok(personaDTO);
             }
             catch (Exception e)
             {
+                if (e.InnerException != null)
+                {
+                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+                }
                 return BadRequest(e.Message);
             }
         }

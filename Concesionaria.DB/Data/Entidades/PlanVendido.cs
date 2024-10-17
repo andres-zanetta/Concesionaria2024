@@ -80,7 +80,8 @@ namespace Concesionaria.DB.Data.Entidades
         public TipoPlan TipoPlan { get; set; }
 
 
-        public Adjudicacion Adjudicacion { get; set; }
+        public int? AdjudicacionId { get; set; }
+        public Adjudicacion? Adjudicacion { get; set; }
 
 
         // Lista ------------------------------------------------------------------------------------------

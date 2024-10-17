@@ -50,6 +50,6 @@ namespace Concesionaria.DB.Data.Entidades
         [Required(ErrorMessage = "El vehiculo es obligatorio.")]
         public int VehiculoId { get; set; }
         public Vehiculo Vehiculo { get; set; }
-
+       
     }
 }
