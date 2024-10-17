@@ -27,8 +27,6 @@ namespace Concesionaria.Server.Mappers
            .ForMember(dest => dest.ValorTotal, opt => opt.MapFrom(src => $"{src.TipoPlan.ValorTotal}"));
             // El metodo de arriba agregar al DTO info util trackeada desde persona asociada a un CL o V e info util del TipoPlan
 
-
-
             CreateMap<POST_PlanVendidoDTO, PlanVendido>();
 
             // Mapeado Tipo Documento =============================================================

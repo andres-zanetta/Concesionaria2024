@@ -51,11 +51,5 @@ namespace Concesionaria.DB.Data.Entidades
         public int VehiculoId { get; set; }
         public Vehiculo Vehiculo { get; set; }
 
-
-        [Required(ErrorMessage = "El plan vendido es obligatorio.")]
-        public int PlanVendidoId { get; set; }       
-        public PlanVendido PlanVendido { get; set; }
-
-       
     }
 }

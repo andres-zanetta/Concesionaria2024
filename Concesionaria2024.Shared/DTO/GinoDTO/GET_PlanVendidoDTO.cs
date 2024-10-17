@@ -81,6 +81,5 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO
         public string NombrePlan { get; set; }
         public decimal ValorTotal { get; set; }
 
-
     }
 }
