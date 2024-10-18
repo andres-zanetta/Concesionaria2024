@@ -21,6 +21,6 @@ namespace Concesionaria2024.Shared.DTO.AndresDTO
 
         [Required(ErrorMessage = "La persona es obligatoria.")]
         public int PersonaId { get; set; }
-        public Persona Persona { get; set; }
+        public Persona NombrePersona { get; set; }
     }
 }

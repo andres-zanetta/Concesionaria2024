@@ -1,4 +1,5 @@
 ﻿using Concesionaria.DB.Data;
+using Concesionaria.DB.Data.Entidades;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,8 +11,11 @@ namespace Concesionaria2024.Shared.DTO.AndresDTO
 {
     public class GET_VendedorDTO:EntityBase
     {
+        [Required(ErrorMessage = "El vendedor es obligatorio.")]
+        public int VendedorId { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "El precio del vehiculo debe ser un numero positivo")]
+
+        [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser un numero positivo")]
         public int? CantPlanesVendidos { get; set; }
 
 
@@ -19,6 +23,10 @@ namespace Concesionaria2024.Shared.DTO.AndresDTO
         public DateTime FechaInicio { get; set; }
 
         public DateTime? FechaFin { get; set; }
+
+        public Persona NombrePersona { get; set; }
+
+
 
     }
 }

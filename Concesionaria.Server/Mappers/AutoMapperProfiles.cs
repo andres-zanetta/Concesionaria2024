@@ -43,12 +43,27 @@ namespace Concesionaria.Server.Mappers
 
             // Mapeado Cliente ====================================================================
 
-            CreateMap<Cliente,GET_ClienteDTO>();
-            CreateMap<GET_ClienteDTO, Cliente>();
+           
+
+            CreateMap<Cliente, GET_ClienteDTO>()
+           .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.FechaInicio))
+           .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.FechaFin))
+           .ForMember(dest => dest.PersonaId, opt => opt.MapFrom(src => src.PersonaId))
+           .ForMember(dest => dest.NombrePersona, opt => opt.MapFrom(src => src.Persona.Nombre));
+            ///info util de Cliente
+
+
 
             // Mapeado Vendedor ===================================================================
 
-            CreateMap<GET_VendedorDTO, Vendedor>();
+          
+            CreateMap<Vendedor, GET_VendedorDTO>()
+            .ForMember(dest => dest.CantPlanesVendidos, opt => opt.MapFrom(src => src.CantPlanesVendidos))
+            .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.FechaInicio))
+            .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.FechaFin))
+            //.ForMember(dest => dest.VendedorId, opt => opt.MapFrom(src => src.VendedorId)) duda de error.
+            .ForMember(dest => dest.NombrePersona, opt => opt.MapFrom(src => $"{src.Persona.Nombre}"));
+
 
             // Mapeado Vehiculo ===================================================================
 
