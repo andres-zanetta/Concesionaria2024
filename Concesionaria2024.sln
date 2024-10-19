@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concesionaria.Server", "Con
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concesionaria.DB", "Concesionaria.DB\Concesionaria.DB.csproj", "{84369B2F-ACC6-48B5-853E-F1DDF7B054AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Concesionaria2024.Shared", "Concesionaria2024.Shared\Concesionaria2024.Shared.csproj", "{E98AC99D-7354-43A6-961E-BB2562F1D3B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concesionaria2024.Shared", "Concesionaria2024.Shared\Concesionaria2024.Shared.csproj", "{E98AC99D-7354-43A6-961E-BB2562F1D3B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Concesionaria.Client", "Concesionaria.Client\Concesionaria.Client.csproj", "{B6405920-C16C-4694-B0F2-C38C06497AD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{E98AC99D-7354-43A6-961E-BB2562F1D3B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E98AC99D-7354-43A6-961E-BB2562F1D3B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E98AC99D-7354-43A6-961E-BB2562F1D3B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6405920-C16C-4694-B0F2-C38C06497AD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6405920-C16C-4694-B0F2-C38C06497AD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6405920-C16C-4694-B0F2-C38C06497AD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6405920-C16C-4694-B0F2-C38C06497AD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
