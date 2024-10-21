@@ -2,6 +2,7 @@
 using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
+using Concesionaria.Server.Repositorio.BrunoRepositorios;
 using Concesionaria2024.Shared.DTO.BrunoDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,10 @@ namespace Concesionaria.Server.Controllers.BrunoControllers
     [Route("api/Pagos")]
     public class PagosControllers : ControllerBase
     {
-        private readonly IRepositorio<Pago> repositorio;
+        private readonly IPagoRepositorio repositorio;
         private readonly IMapper mapper;
 
-        public PagosControllers(IRepositorio<Pago> repositorio, IMapper mapper)
+        public PagosControllers(IPagoRepositorio repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;

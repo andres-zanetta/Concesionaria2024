@@ -27,11 +27,6 @@ namespace Concesionaria2024.Shared.DTO.BrunoDTO
         [Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
         public DateTime FechaVencimiento { get; set; }
 
-        // Estado ------------------------------------------------------------------------------------------
-
-        [Required(ErrorMessage = "El estado de la cuota es obligatorio.")]
-        [MaxLength(20, ErrorMessage = "Máximo número de caracteres {1}.")]
-        public string Estado { get; set; }
 
         // Observaciones (opcional) ------------------------------------------------------------------------------------------
 

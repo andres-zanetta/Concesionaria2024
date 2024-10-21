@@ -2,6 +2,7 @@
 using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
+using Concesionaria.Server.Repositorio.BrunoRepositorios;
 using Concesionaria2024.Shared.DTO.BrunoDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,10 @@ namespace Concesionaria.Server.Controllers.BrunoControllers
     [Route("api/Cuotas")]
     public class CuotasControllers : ControllerBase
     {
-        private readonly IRepositorio<Cuota> repositorio;
+        private readonly ICuotaRepositorio repositorio;
         private readonly IMapper mapper;
 
-        public CuotasControllers(IRepositorio<Cuota> repositorio, IMapper mapper)
+        public CuotasControllers(ICuotaRepositorio repositorio, IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;
