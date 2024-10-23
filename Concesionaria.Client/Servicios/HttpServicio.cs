@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Concesionaria.Client.Servicios
 {
-    public class HttpServicio
+    public class HttpServicio : IHttpServicio
     {
         private readonly HttpClient http;
 
@@ -15,7 +15,7 @@ namespace Concesionaria.Client.Servicios
         public async Task<HttpRespuesta<O>> Get<O>(string url)
         {
             var response = await http.GetAsync(url);
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 var respuesta = await DesSerealizar<O>(response);
                 return new HttpRespuesta<O>(respuesta, false, response);

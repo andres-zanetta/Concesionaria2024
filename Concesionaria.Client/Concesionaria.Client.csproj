@@ -11,4 +11,17 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\BrunoPages\" />
+    <Folder Include="Pages\AndresPages\" />
+    <Folder Include="Pages\FacundoPages\" />
+    <Folder Include="Pages\GinoPages\PlanVendido\" />
+    <Folder Include="Pages\GinoPages\Persona\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Concesionaria.DB\Concesionaria.DB.csproj" />
+    <ProjectReference Include="..\Concesionaria2024.Shared\Concesionaria2024.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

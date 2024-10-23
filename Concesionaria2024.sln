@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concesionaria.DB", "Concesi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concesionaria2024.Shared", "Concesionaria2024.Shared\Concesionaria2024.Shared.csproj", "{E98AC99D-7354-43A6-961E-BB2562F1D3B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Concesionaria.Client", "Concesionaria.Client\Concesionaria.Client.csproj", "{B6405920-C16C-4694-B0F2-C38C06497AD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concesionaria.Client", "Concesionaria.Client\Concesionaria.Client.csproj", "{B6405920-C16C-4694-B0F2-C38C06497AD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
