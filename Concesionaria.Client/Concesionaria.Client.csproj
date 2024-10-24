@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="CarpetaDePruebaBorrar\" />
     <Folder Include="Pages\BrunoPages\" />
-    <Folder Include="Pages\AndresPages\" />
     <Folder Include="Pages\FacundoPages\" />
     <Folder Include="Pages\GinoPages\PlanVendido\" />
     <Folder Include="Pages\GinoPages\Persona\" />
