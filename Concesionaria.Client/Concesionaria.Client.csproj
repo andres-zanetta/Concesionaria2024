@@ -7,12 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CarpetaDePruebaBorrar\**" />
+    <Content Remove="CarpetaDePruebaBorrar\**" />
+    <EmbeddedResource Remove="CarpetaDePruebaBorrar\**" />
+    <None Remove="CarpetaDePruebaBorrar\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CarpetaDePruebaBorrar\" />
+    <Folder Include="Pages\AndresPages\" />
     <Folder Include="Pages\BrunoPages\" />
     <Folder Include="Pages\FacundoPages\" />
     <Folder Include="Pages\GinoPages\PlanVendido\" />
