@@ -1,0 +1,61 @@
+﻿@page "/api/Cliente"
+@inject IHttpServicio http
+<h3>Lista de Clientes</h3>
+
+<table>
+    <tr>
+        <th>FechaInicio</th>
+        <th>FechaFin</th> 
+    </tr>
+	@if (Mensaje == "")
+	{
+		@if (ListaCliente == null)
+		{
+			<p>Buscando...</p>
+		}
+		else if (ListaCliente.Count == 0)
+		{
+			<p>No existen los clientes a mostrar</p>
+		}
+		else
+		{
+			@foreach (var item in ListaCliente)
+			{
+				<tr>
+					<td>@item.FechaInicio</td>
+					<td>@item.FechaFin</td>
+				</tr>
+			}
+		}
+	}
+	else
+	{
+		<p>Error: @Mensaje</p>
+	}
+</table>
+
+@code {
+	List<Cliente> ListaCliente;
+	string Mensaje = string.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		await Leer();
+	}
+
+	private async Task Leer()
+	{
+		var Resp = await http.Get<List<Cliente>>("/api/Cliente");
+		if (!Resp.Error)
+		{
+			ListaCliente = Resp.Respuesta;
+		}
+		else
+		{
+			Mensaje = await Resp.ObtenerError();
+		}
+
+	}
+
+}

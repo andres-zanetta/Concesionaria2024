@@ -1,0 +1,65 @@
+﻿@page "/api/Vendedor"
+@inject IHttpServicio http
+<h3>Lista de Vendedores</h3>
+
+<table>
+    <tr>
+        <th>CantPlanesVendidos</th>
+        <th>FechaInicio</th>
+        <th>FechaFin</th>
+    </tr>
+	@if (Mensaje == "")
+	{
+		@if (ListaVendedores == null)
+		{
+			<p>Buscando...</p>
+		}
+		else if (ListaVendedores.Count == 0)
+		{
+			<p>No existen los vendedores a mostrar</p>
+		}
+		else
+		{
+			@foreach (var item in ListaVendedores)
+			{
+				<tr>
+					<td>@item.CantPlanesVendidos</td>
+					<td>@item.FechaInicio</td>
+					<td>@item.FechaFin</td>
+				</tr>
+			}
+		}
+	}
+	else
+	{
+		<p>Error: @Mensaje</p>
+	}
+</table>
+
+
+
+@code {
+	List<Vendedor> ListaVendedores;
+	string Mensaje = string.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		await Leer();
+	}
+
+	private async Task Leer()
+	{
+		var Resp = await http.Get<List<Vendedor>>("/api/Vendedor");
+		if (!Resp.Error)
+		{
+			ListaVendedores = Resp.Respuesta;
+		}
+		else
+		{
+			Mensaje = await Resp.ObtenerError();
+		}
+
+	}
+
+}
