@@ -1,4 +1,5 @@
 ﻿
+using System.Text;
 using System.Text.Json;
 
 namespace Concesionaria.Client.Servicios
@@ -26,7 +27,24 @@ namespace Concesionaria.Client.Servicios
             }
         }
 
-        private async Task<O> DesSerealizar<O>(HttpResponseMessage response)
+        public async Task<HttpRespuesta<object>> Post<O>(string url, O entidad)  // "O" lo que se envia, "object" lo que recibo.
+        {
+            var EntSerializada = JsonSerializer.Serialize(entidad);
+            var EnviarJSON = new StringContent(EntSerializada, Encoding.UTF8, "application/json");
+            var response = await http.PostAsync(url, EnviarJSON);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var respuesta = await DesSerealizar<object>(response);
+                return new HttpRespuesta<object>(respuesta, false, response);
+            }
+            else
+            {
+                return new HttpRespuesta<object>(default, true, response);
+            }
+		}
+
+		private async Task<O> DesSerealizar<O>(HttpResponseMessage response)
         {
             var respuesta = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<O>(respuesta, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
