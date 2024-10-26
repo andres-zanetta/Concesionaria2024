@@ -42,7 +42,7 @@ namespace Concesionaria.Server.Controllers.AndresControllers
                 return NotFound();
             }
             var clienteDTO = mapper.Map<GET_ClienteDTO>(C);
-            return clienteDTO ;
+            return clienteDTO;
         }
 
         [HttpGet("existe/{id:int}")]

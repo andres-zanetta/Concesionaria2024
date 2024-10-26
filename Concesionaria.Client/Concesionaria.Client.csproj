@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\AndresPages\" />
     <Folder Include="Pages\BrunoPages\" />
     <Folder Include="Pages\FacundoPages\" />
     <Folder Include="Pages\GinoPages\PlanVendido\" />
