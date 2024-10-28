@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.FacundoDTO
 {
-    public class CrearAdjudicacionDTO
+    public class GET_TipoPlanDTO
     {
         public int Id { get; set; }
-        public string? Detalle { get; set; }
-        public DateTime FechaAdjudicacion { get; set; }
-        public bool AutoEntregado { get; set; }
-        public string PatenteVehiculo { get; set; } = string.Empty;
+        public string? NombrePlan { get; set; }
+        public string? Descripcion { get; set; }
+        public int CantCuotas { get; set; }
+        public decimal ValorTotal { get; set; }
         public int VehiculoId { get; set; }
     }
+
 }

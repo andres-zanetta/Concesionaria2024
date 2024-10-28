@@ -67,14 +67,20 @@ namespace Concesionaria.Server.Mappers
             // Mapeado Vehiculo ===================================================================
 
             CreateMap<CrearVehiculoDTO, Vehiculo>();
+            CreateMap<PUT_VehiculoDTO, Vehiculo>();
+            
 
             // Mapeado Adjudicacion ===============================================================
 
             CreateMap<CrearAdjudicacionDTO, Adjudicacion>();
+            CreateMap<PUT_AdjudicacionDTO, Adjudicacion>();
 
             // Mapeado Tipo Plan ==================================================================
 
-            CreateMap<CrearTipoPlanDTO, TipoPlan>();
+            CreateMap<GET_TipoPlanDTO, TipoPlan>();
+            CreateMap<POST_TipoPlanDTO, TipoPlan>();
+            CreateMap<PUT_TipoPlanDTO, TipoPlan>();
+
 
             // Mapeado Cuota ======================================================================
 

@@ -24,6 +24,7 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
         {
             return await repositorio.Select();
         }
+
         // Obtener un vehiculo por ID
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Vehiculo>> Get(int id)
@@ -35,6 +36,7 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
             }
             return sel;
         }
+
         // Verificar si un vehiculo existe
         [HttpGet("existe/{id:int}")]
         public async Task<ActionResult<bool>> Existe(int id)
@@ -42,6 +44,7 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
             var existe = await repositorio.Existe(id);
             return existe;
         }
+
         // Crear un nuevo vehiculo
         [HttpPost]
         public async Task<ActionResult<int>> Post(CrearVehiculoDTO entidadDTO)
@@ -60,11 +63,12 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
                 return BadRequest(e.Message);
             }
         }
+
         // Actualizar un vehiculo existente
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Vehiculo entidad)
+        public async Task<ActionResult> Put(int id, [FromBody] PUT_VehiculoDTO entidadDTO)
         {
-            if (id != entidad.Id)
+            if (id != entidadDTO.Id)
             {
                 return BadRequest("Datos incorrectos");
             }
@@ -75,7 +79,8 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
                 return NotFound("No existe el vehículo buscado.");
             }
 
-            mapper.Map(entidad, sel);
+            // Mapeo desde el DTO a la entidad existente
+            mapper.Map(entidadDTO, sel);
 
             try
             {
@@ -87,6 +92,7 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
                 return BadRequest(e.Message);
             }
         }
+
         // Eliminar un vehiculo por ID
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
