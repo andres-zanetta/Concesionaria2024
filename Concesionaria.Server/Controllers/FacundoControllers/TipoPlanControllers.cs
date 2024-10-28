@@ -3,6 +3,7 @@ using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria2024.Shared.DTO.FacundoDTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Concesionaria.Server.Controllers.FacundoControllers
 {
@@ -59,24 +60,29 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
         // POST ==========================================================================================
 
         [HttpPost]
-        public async Task<IActionResult> Post(POST_TipoPlanDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_TipoPlanDTO entidadDTO)
         {
-            if (entidadDTO == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Los datos del tipo de plan son nulos.");
+                return BadRequest(ModelState);
             }
 
             try
             {
-                TipoPlan entidad = mapper.Map<TipoPlan>(entidadDTO);
+                var entidad = mapper.Map<TipoPlan>(entidadDTO);
                 var id = await repositorio.Insert(entidad);
-                return CreatedAtAction(nameof(Get), new { id }, null);
+                return CreatedAtAction(nameof(Get), new { id }, entidad);
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest($"Error al insertar en la base de datos: {ex.Message}");
             }
             catch (Exception e)
             {
-                return BadRequest($"Error al insertar: {e.Message}");
+                return BadRequest(e.Message);
             }
         }
+
 
         // PUT ==========================================================================================
 

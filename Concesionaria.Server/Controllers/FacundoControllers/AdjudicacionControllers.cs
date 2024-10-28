@@ -3,6 +3,7 @@ using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria2024.Shared.DTO.FacundoDTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Concesionaria.Server.Controllers
 {
@@ -46,18 +47,26 @@ namespace Concesionaria.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> Post(CrearAdjudicacionDTO entidadDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                Adjudicacion entidad = mapper.Map<Adjudicacion>(entidadDTO);
+                var entidad = mapper.Map<Adjudicacion>(entidadDTO);
                 return await repositorio.Insert(entidad);
+            }
+            catch (DbUpdateException ex) 
+            {
+                return BadRequest($"Error al insertar en la base de datos: {ex.Message}");
             }
             catch (Exception e)
             {
-                return BadRequest(e.InnerException != null
-                    ? $"Error: {e.Message}. Inner Exception: {e.InnerException.Message}"
-                    : e.Message);
+                return BadRequest(e.Message);
             }
         }
+
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] PUT_AdjudicacionDTO entidadDTO)
@@ -84,6 +93,7 @@ namespace Concesionaria.Server.Controllers
             {
                 return BadRequest(e.Message);
             }
+
         }
 
         [HttpDelete("{id:int}")]
