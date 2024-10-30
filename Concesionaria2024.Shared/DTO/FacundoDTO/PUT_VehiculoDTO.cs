@@ -1,10 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.FacundoDTO
 {
-    public class CrearVehiculoDTO
+    public class PUT_VehiculoDTO
     {
+        [Required(ErrorMessage = "El ID es obligatorio.")]
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "La marca es obligatoria.")]
         public string? Marca { get; set; }
 

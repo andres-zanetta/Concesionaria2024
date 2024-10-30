@@ -1,6 +1,7 @@
 ﻿using Concesionaria.DB.Data.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Concesionaria.DB.Data;
+using System.Threading.Tasks;
 
 namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
@@ -15,14 +16,8 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 
         public async Task<Vehiculo?> SelectByIdAsync(int id)
         {
-            try
-            {
-                return await context.Vehiculos.FirstOrDefaultAsync(v => v.Id == id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener el vehículo por ID", ex);
-            }
+            return await context.Vehiculos.FirstOrDefaultAsync(v => v.Id == id);
         }
     }
 }
+

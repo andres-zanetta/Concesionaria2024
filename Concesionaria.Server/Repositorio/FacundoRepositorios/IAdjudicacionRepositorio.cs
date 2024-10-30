@@ -1,9 +1,13 @@
 ﻿using Concesionaria.DB.Data.Entidades;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Concesionaria.Server.Repositorio
+namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
-    public interface IAdjudicacionRepositorio : IRepositorio<Adjudicacion>
+    public interface IAdjudicacionRepositorio
     {
-        Task<List<Adjudicacion>> GetByVehiculoIdAsync(int vehiculoId);
+        Task<List<Adjudicacion>> SelectEntidadConVehiculo();
+        Task<Adjudicacion> SelectEntidadConVehiculoById(int id);
     }
 }
+

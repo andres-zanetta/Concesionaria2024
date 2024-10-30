@@ -3,6 +3,7 @@ using Concesionaria.DB.Data.Entidades;
 using Concesionaria2024.Shared.DTO.AndresDTO;
 using Concesionaria2024.Shared.DTO.BrunoDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
 using Concesionaria2024.Shared.DTO.GinoDTO;
 
 namespace Concesionaria.Server.Mappers
@@ -66,15 +67,39 @@ namespace Concesionaria.Server.Mappers
 
             // Mapeado Vehiculo ===================================================================
 
-            CreateMap<CrearVehiculoDTO, Vehiculo>();
+            CreateMap<Vehiculo, GET_VehiculoDTO>()
+                .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca))
+                .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
+                .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio));
+
+            CreateMap<CrearVehiculoDTO, Vehiculo>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); 
+
+            CreateMap<PUT_VehiculoDTO, Vehiculo>()
+                .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca))
+                .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
+                .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio));
+
+
 
             // Mapeado Adjudicacion ===============================================================
 
-            CreateMap<CrearAdjudicacionDTO, Adjudicacion>();
+            CreateMap<CrearAdjudicacionDTO, Adjudicacion>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore()); 
+
+            CreateMap<PUT_AdjudicacionDTO, Adjudicacion>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             // Mapeado Tipo Plan ==================================================================
 
-            CreateMap<CrearTipoPlanDTO, TipoPlan>();
+            CreateMap<TipoPlan, GET_TipoPlanDTO>();
+
+            CreateMap<POST_TipoPlanDTO, TipoPlan>();
+
+            CreateMap<PUT_TipoPlanDTO, TipoPlan>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); 
+
+
 
             // Mapeado Cuota ======================================================================
 

@@ -3,6 +3,7 @@ using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria2024.Shared.DTO.FacundoDTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Concesionaria.Server.Controllers.FacundoControllers
 {
@@ -18,95 +19,124 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
-        // Obtener todos los tipos de plan
+
+        // GET ==========================================================================================
+
         [HttpGet]
-        public async Task<ActionResult<List<TipoPlan>>> Get()
+        public async Task<IActionResult> Get()
         {
-            return await repositorio.Select();
-        }
-        // Obtener un tipo de plan por su ID
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<TipoPlan>> Get(int id)
-        {
-            TipoPlan? sel = await repositorio.SelectById(id);
-            if (sel == null)
+            try
             {
-                return NotFound();
+                var tipoPlanes = await repositorio.Select();
+                var tipoPlanesDTO = mapper.Map<List<GET_TipoPlanDTO>>(tipoPlanes);
+                return Ok(tipoPlanesDTO);
             }
-            return sel;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en el método GET: {ex.Message}");
+                return StatusCode(500, "Ocurrió un error interno.");
+            }
         }
-        // Verificar si un tipo de plan existe por su ID
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var tipoPlan = await repositorio.SelectById(id);
+            if (tipoPlan == null)
+            {
+                return NotFound($"Tipo de plan con ID {id} no encontrado.");
+            }
+            var tipoPlanDTO = mapper.Map<GET_TipoPlanDTO>(tipoPlan);
+            return Ok(tipoPlanDTO);
+        }
+
         [HttpGet("existe/{id:int}")]
-        public async Task<ActionResult<bool>> Existe(int id)
+        public async Task<IActionResult> Existe(int id)
         {
             var existe = await repositorio.Existe(id);
-            return existe;
+            return Ok(existe);
         }
-        // Crear un nuevo tipo de plan
+
+        // POST ==========================================================================================
+
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearTipoPlanDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_TipoPlanDTO entidadDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                TipoPlan entidad = mapper.Map<TipoPlan>(entidadDTO);
-                return await repositorio.Insert(entidad);
+                var entidad = mapper.Map<TipoPlan>(entidadDTO);
+                var id = await repositorio.Insert(entidad);
+                return CreatedAtAction(nameof(Get), new { id }, entidad);
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest($"Error al insertar en la base de datos: {ex.Message}");
             }
             catch (Exception e)
             {
-                if (e.InnerException != null)
-                {
-                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
-                }
                 return BadRequest(e.Message);
             }
         }
-        // Actualizar un tipo de plan existente
+
+
+        // PUT ==========================================================================================
+
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] TipoPlan entidad)
+        public async Task<IActionResult> Put(int id, [FromBody] PUT_TipoPlanDTO entidadDTO)
         {
-            if (id != entidad.Id)
+            if (entidadDTO == null)
             {
-                return BadRequest("Datos incorrectos");
-            }
-            var sel = await repositorio.SelectById(id);
-
-            if (sel == null)
-            {
-                return NotFound("No existe el tipo de plan buscado.");
+                return BadRequest("Los datos del tipo de plan son nulos.");
             }
 
-            mapper.Map(entidad, sel);
+            if (!await repositorio.Existe(id))
+            {
+                return NotFound($"Tipo de plan con ID {id} no encontrado.");
+            }
 
             try
             {
-                await repositorio.Update(id, sel);
-                return Ok();
+                var tipoPlan = await repositorio.SelectById(id);
+                if (tipoPlan == null)
+                {
+                    return NotFound($"Tipo de plan con ID {id} no encontrado.");
+                }
+
+                mapper.Map(entidadDTO, tipoPlan);
+                await repositorio.Update(id, tipoPlan);
+                var tipoPlanDTO = mapper.Map<GET_TipoPlanDTO>(tipoPlan);
+                return Ok(tipoPlanDTO);
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return BadRequest($"Error al actualizar: {e.Message}");
             }
         }
-        // Eliminar un tipo de plan por ID
+
+        // DELETE ==========================================================================================
+
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var existe = await repositorio.Existe(id);
             if (!existe)
             {
-                return NotFound($"El tipo de plan {id} no existe");
+                return NotFound($"El tipo de plan con ID {id} no existe.");
             }
-            TipoPlan entidadABorrar = new TipoPlan { Id = id };
 
             if (await repositorio.Delete(id))
             {
-                return Ok($"El tipo de plan {id} fue eliminado");
+                return Ok($"El tipo de plan con ID {id} fue eliminado.");
             }
             else
             {
-                return BadRequest();
+                return BadRequest("No se pudo eliminar el tipo de plan.");
             }
         }
     }
 }
-

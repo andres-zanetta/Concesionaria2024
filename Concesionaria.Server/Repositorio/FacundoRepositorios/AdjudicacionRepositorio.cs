@@ -1,65 +1,47 @@
-﻿using System.Collections.Generic; 
-using System.Linq; 
-using System.Threading.Tasks;
-using Concesionaria.DB.Data;
+﻿using Concesionaria.DB.Data;
 using Concesionaria.DB.Data.Entidades;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
-    public class AdjudicacionRepositorio : IAdjudicacionRepositorio
+    public class AdjudicacionRepositorio : Repositorio<Adjudicacion>, IAdjudicacionRepositorio
     {
         private readonly Context context;
 
-        public AdjudicacionRepositorio(Context context)
+        public AdjudicacionRepositorio(Context context) : base(context)
         {
             this.context = context;
         }
 
-        public async Task<List<Adjudicacion>> Select()
+        public async Task<List<Adjudicacion>> SelectEntidadConVehiculo()
         {
-            return await context.Adjudicaciones.ToListAsync();
+            try
+            {
+                var adjudicaciones = await context.Adjudicaciones.Include(a => a.Vehiculo).ToListAsync();
+                return adjudicaciones;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener los registros: {e.Message}");
+                throw;
+            }
         }
 
-        public async Task<Adjudicacion> SelectById(int id)
+        public async Task<Adjudicacion> SelectEntidadConVehiculoById(int id)
         {
-            return await context.Adjudicaciones.FindAsync(id);
-        }
-
-        public async Task<int> Insert(Adjudicacion entidad)
-        {
-            context.Adjudicaciones.Add(entidad);
-            await context.SaveChangesAsync();
-            return entidad.Id; 
-        }
-
-        public async Task<bool> Update(int id, Adjudicacion entidad)
-        {
-            if (id != entidad.Id) return false; 
-
-            context.Adjudicaciones.Update(entidad);
-            return await context.SaveChangesAsync() > 0; 
-        }
-
-        public async Task<bool> Delete(int id)
-        {
-            var adjudicacion = await SelectById(id);
-            if (adjudicacion == null) return false; 
-
-            context.Adjudicaciones.Remove(adjudicacion);
-            return await context.SaveChangesAsync() > 0; 
-        }
-
-        public async Task<bool> Existe(int id)
-        {
-            return await context.Adjudicaciones.AnyAsync(a => a.Id == id); 
-        }
-
-        public async Task<List<Adjudicacion>> GetByVehiculoIdAsync(int vehiculoId)
-        {
-            return await context.Adjudicaciones
-                .Where(a => a.VehiculoId == vehiculoId)
-                .ToListAsync(); 
+            try
+            {
+                var adjudicacion = await context.Adjudicaciones.Include(a => a.Vehiculo).FirstOrDefaultAsync(a => a.Id == id);
+                return adjudicacion;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener los registros: {e.Message}");
+                throw;
+            }
         }
     }
 }
