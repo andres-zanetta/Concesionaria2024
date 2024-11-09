@@ -14,6 +14,20 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             this.context = context;
         }
 
+        public async Task<Cliente> SelectByDNI(int numDoc)
+        {
+            try
+            {
+                var cliente = await context.Clientes.Include(C => C.Persona).FirstOrDefaultAsync(C => C.Persona.NumDoc == numDoc);
+                return cliente;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener los registros:  {e.Message}");
+                throw e;
+            }
+        }
+
         public async Task<Cliente> SelectById(int id)
         {
             var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.PersonaId == id);

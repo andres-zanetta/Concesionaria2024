@@ -9,9 +9,16 @@ using System.Threading.Tasks;
 
 namespace Concesionaria.DB.Data.Entidades
 {
+    [Index(nameof(Codigo), Name = "Codigo_UQ", IsUnique = true)]
     [Index(nameof(Marca), nameof(Modelo), Name = "MArca_Modelo_UQ", IsUnique = true)]
     public class Vehiculo : EntityBase
     {
+        // Codigo -----------------------------------------------------------------------------------------
+
+        [Required(ErrorMessage = "El codigo del Vehiculo es obligatoria.")]
+        [MaxLength(30, ErrorMessage = "Máximo número de caracteres {1}.")]
+        public string Codigo { get; set; }
+
         // Marca ------------------------------------------------------------------------------------------
 
 
@@ -20,7 +27,7 @@ namespace Concesionaria.DB.Data.Entidades
         public string Marca { get; set; }
 
 
-        // Modelo ------------------------------------------------------------------------------------------
+        // Modelo -----------------------------------------------------------------------------------------
 
 
         [Required(ErrorMessage = "El modelo del Vehiculo es obligatorio.")]
@@ -28,7 +35,7 @@ namespace Concesionaria.DB.Data.Entidades
         public string Modelo { get; set; }
 
 
-        // Precio ------------------------------------------------------------------------------------------
+        // Precio -----------------------------------------------------------------------------------------
 
 
         [Required(ErrorMessage = "El precio del Vehiculo es obligatorio.")]
@@ -43,7 +50,7 @@ namespace Concesionaria.DB.Data.Entidades
         public string? Motor { get; set; }
 
 
-        // Combustible ------------------------------------------------------------------------------------------
+        // Combustible ------------------------------------------------------------------------------------
 
 
         [MaxLength(20, ErrorMessage = "Máximo número de caracteres {1}.")]

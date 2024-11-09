@@ -4,7 +4,9 @@ using Concesionaria2024.Shared.DTO.AndresDTO;
 using Concesionaria2024.Shared.DTO.BrunoDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
-using Concesionaria2024.Shared.DTO.GinoDTO;
+using Concesionaria2024.Shared.DTO.GinoDTO.Persona;
+using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido;
+using Concesionaria2024.Shared.DTO.GinoDTO.TIpoDocumento;
 
 namespace Concesionaria.Server.Mappers
 {
@@ -50,8 +52,11 @@ namespace Concesionaria.Server.Mappers
            .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.FechaInicio))
            .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.FechaFin))
            .ForMember(dest => dest.PersonaId, opt => opt.MapFrom(src => src.PersonaId));
-         
+
             ///info util de Cliente
+            ///
+
+            CreateMap<POST_ClienteDTO, Cliente>();
 
 
 
@@ -63,6 +68,9 @@ namespace Concesionaria.Server.Mappers
             .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.FechaInicio))
             .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.FechaFin))
             .ForMember(dest => dest.NombrePersona, opt => opt.MapFrom(src => $"{src.Persona.Nombre}"));
+
+
+            CreateMap<POST_VendedorDTO, Vendedor>();
 
 
             // Mapeado Vehiculo ===================================================================

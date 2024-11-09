@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Concesionaria2024.Shared.DTO.GinoDTO
+namespace Concesionaria2024.Shared.DTO.GinoDTO.TIpoDocumento
 {
     public class PUT_TipoDocumentoDTO
     {

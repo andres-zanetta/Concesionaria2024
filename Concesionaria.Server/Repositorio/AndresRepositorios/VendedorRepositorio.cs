@@ -12,6 +12,21 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             this.context = context;
         }
 
+        public async Task<Vendedor> SelectByDNI(int numDoc)
+        {
+            try
+            {
+                var vendedor = await context.Vendedores.Include(V => V.Persona).FirstOrDefaultAsync(V => V.Persona.NumDoc == numDoc);
+                return vendedor;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener el registro {e.Message}");
+                throw e;
+            }
+        }
+
+
         public async Task<Vendedor> SelectByPersona(int personaId)
         {
             Vendedor? V = await context.Vendedores.

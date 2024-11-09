@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Concesionaria2024.Shared.DTO.GinoDTO
+namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 {
     public class PUT_PlanVendidoDTO
     {
@@ -59,7 +59,7 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO
         public bool PlanEnMora { get; set; }
 
 
-       // ==================================== Ids de las entidades asociadas ==================================================
+        // ==================================== Ids de las entidades asociadas ==================================================
 
 
         [Required(ErrorMessage = "El tipo de plan es obligatorio.")]

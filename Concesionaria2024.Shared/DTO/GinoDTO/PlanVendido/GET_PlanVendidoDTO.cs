@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Concesionaria2024.Shared.DTO.GinoDTO
+namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 {
     public class GET_PlanVendidoDTO
     {
@@ -59,7 +59,7 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO
         public bool PlanEnMora { get; set; }
 
 
-     
+
         //  Clases de Nav pero en este caso las uso para traer info relac al plan
 
 
@@ -87,7 +87,7 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO
         public int? AdjudicacionId { get; set; }
         public bool AutoEntregado { get; set; }
         public string PatenteVehiculo { get; set; }
-        public string ModeloVehiculo { get; set;}
+        public string ModeloVehiculo { get; set; }
         public string MarcaVehiculo { get; set; }
 
     }

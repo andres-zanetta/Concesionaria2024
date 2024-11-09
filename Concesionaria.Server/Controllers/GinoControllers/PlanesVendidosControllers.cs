@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
+using Concesionaria.Server.Repositorio.AndresRepositorios;
 using Concesionaria.Server.Repositorio.FacundoRepositorios;
 using Concesionaria.Server.Repositorio.GinoRepositorios;
-using Concesionaria2024.Shared.DTO.GinoDTO;
+using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Concesionaria.Server.Controllers.GinoControllers
@@ -12,11 +13,18 @@ namespace Concesionaria.Server.Controllers.GinoControllers
     [Route("api/PlanVendido")]
     public class PlanesVendidosControllers : ControllerBase
     {
+        private readonly ITipoPlanRepositorio repoTipoPlan;
+        private readonly IVendedorRepositorio repoVendedor;
+        private readonly IClienteRepositorio repoCliente;
         private readonly IPlanVendidoRepositorio repositorio;
         private readonly IMapper mapper;
 
-        public PlanesVendidosControllers(IPlanVendidoRepositorio repositorio, IMapper mapper)
+        public PlanesVendidosControllers(ITipoPlanRepositorio repoTipoPlan, IVendedorRepositorio repoVendedor,
+                                        IClienteRepositorio repoCliente, IPlanVendidoRepositorio repositorio, IMapper mapper)
         {
+            this.repoTipoPlan = repoTipoPlan;
+            this.repoVendedor = repoVendedor;
+            this.repoCliente = repoCliente;
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
@@ -66,8 +74,23 @@ namespace Concesionaria.Server.Controllers.GinoControllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Post(POST_PlanVendidoDTO POST_entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_PlanVendidoDNI_DTO POST_entidadDNI_DTO)
         {
+            var cliente = await repoCliente.SelectByDNI(POST_entidadDNI_DTO.ClienteDNI);
+            var vendedor = await repoVendedor.SelectByDNI(POST_entidadDNI_DTO.VendedorDNI);
+            var tipoPlan = await repoTipoPlan.SelectByNombre(POST_entidadDNI_DTO.TipoPlanNombre);
+
+            var POST_entidadDTO = new POST_PlanVendidoDTO
+            {
+                FechaSuscripcion = cliente.FechaInicio,
+                Descripcion = POST_entidadDNI_DTO.Descripcion,
+                Estado = POST_entidadDNI_DTO.Estado,
+                FechaInicio = DateTime.Today,
+                VendedorId = cliente.Id,
+                ClienteId = cliente.Id,
+                TipoPlanId = tipoPlan.Id,
+            };
+
             try
             {
                 PlanVendido entidad = mapper.Map<PlanVendido>(POST_entidadDTO);
