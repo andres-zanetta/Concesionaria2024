@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

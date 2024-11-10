@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Concesionaria2024.Shared.DTO.FacundoDTO
+﻿namespace Concesionaria2024.Shared.DTO.FacundoDTO
 {
-    using System;
-
     namespace Concesionaria2024.Shared.DTO.FacundoDTO
     {
         public class GET_VehiculoDTO

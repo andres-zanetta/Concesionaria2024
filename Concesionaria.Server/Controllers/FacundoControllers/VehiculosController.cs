@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO.FacundoDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -44,7 +44,7 @@ public class VehiculosController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> Create([FromBody] CrearVehiculoDTO entidadDTO)
+    public async Task<ActionResult<int>> Post([FromBody] POST_VehiculoDTO entidadDTO)
     {
         if (entidadDTO == null)
         {

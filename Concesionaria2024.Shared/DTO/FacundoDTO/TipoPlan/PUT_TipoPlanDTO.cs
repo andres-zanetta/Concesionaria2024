@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Concesionaria2024.Shared.DTO.FacundoDTO
+namespace Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
 {
-    public class POST_TipoPlanDTO
+    public class PUT_TipoPlanDTO
     {
         [Required(ErrorMessage = "El nombre del plan es obligatorio.")]
         [MaxLength(100, ErrorMessage = "Máximo número de caracteres {1}.")]

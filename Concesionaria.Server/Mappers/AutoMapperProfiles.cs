@@ -2,8 +2,10 @@
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria2024.Shared.DTO.AndresDTO;
 using Concesionaria2024.Shared.DTO.BrunoDTO;
-using Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo;
 using Concesionaria2024.Shared.DTO.GinoDTO.Persona;
 using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido;
 using Concesionaria2024.Shared.DTO.GinoDTO.TIpoDocumento;
@@ -80,7 +82,7 @@ namespace Concesionaria.Server.Mappers
                 .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
                 .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio));
 
-            CreateMap<CrearVehiculoDTO, Vehiculo>()
+            CreateMap<POST_VehiculoDTO, Vehiculo>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); 
 
             CreateMap<PUT_VehiculoDTO, Vehiculo>()
@@ -92,7 +94,9 @@ namespace Concesionaria.Server.Mappers
 
             // Mapeado Adjudicacion ===============================================================
 
-            CreateMap<CrearAdjudicacionDTO, Adjudicacion>()
+            CreateMap<GET_AdjudicacionDTO, Adjudicacion>();
+
+            CreateMap<POST_AdjudicacionDTO, Adjudicacion>()
             .ForMember(dest => dest.Id, opt => opt.Ignore()); 
 
             CreateMap<PUT_AdjudicacionDTO, Adjudicacion>()

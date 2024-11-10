@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Concesionaria2024.Shared.DTO.FacundoDTO
+namespace Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion
 {
     public class PUT_AdjudicacionDTO
     {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
-using Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,10 +21,19 @@ namespace Concesionaria.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Adjudicacion>>> Get()
+        public async Task<ActionResult<List<GET_AdjudicacionDTO>>> Get()
         {
-            return await repositorio.Select();
+            var adjudicaciones = await repositorio.Select();  
+            if (adjudicaciones == null || !adjudicaciones.Any())
+            {
+                return NotFound("No se encontraron adjudicaciones.");
+            }
+
+            var adjudicacionesDTO = mapper.Map<List<GET_AdjudicacionDTO>>(adjudicaciones);
+
+            return Ok(adjudicacionesDTO);
         }
+
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Adjudicacion>> Get(int id)
@@ -45,7 +54,7 @@ namespace Concesionaria.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearAdjudicacionDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_AdjudicacionDTO entidadDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -57,7 +66,7 @@ namespace Concesionaria.Server.Controllers
                 var entidad = mapper.Map<Adjudicacion>(entidadDTO);
                 return await repositorio.Insert(entidad);
             }
-            catch (DbUpdateException ex) 
+            catch (DbUpdateException ex)
             {
                 return BadRequest($"Error al insertar en la base de datos: {ex.Message}");
             }
@@ -66,7 +75,6 @@ namespace Concesionaria.Server.Controllers
                 return BadRequest(e.Message);
             }
         }
-
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] PUT_AdjudicacionDTO entidadDTO)
