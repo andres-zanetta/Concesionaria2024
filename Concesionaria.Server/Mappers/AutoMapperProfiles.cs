@@ -58,13 +58,14 @@ namespace Concesionaria.Server.Mappers
             ///info util de Cliente
             ///
 
-            CreateMap<POST_ClienteDTO, Cliente>();
+            CreateMap<POST_ClienteDTO, Cliente>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
 
 
 
             // Mapeado Vendedor ===================================================================
 
-          
+
             CreateMap<Vendedor, GET_VendedorDTO>()
             .ForMember(dest => dest.CantPlanesVendidos, opt => opt.MapFrom(src => src.CantPlanesVendidos))
             .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.FechaInicio))
