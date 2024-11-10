@@ -1,0 +1,58 @@
+﻿@page "/api/PlanVendido/agregar"
+@using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+<h3>Nuevo Plan Vendido</h3>
+
+<EditForm Model="postPlanVendido" OnValidSubmit="Grabar">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Descripción</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@postPlanVendido.Descripcion" />
+            <ValidationMessage For="@(() => postPlanVendido.Descripcion)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Estado</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@postPlanVendido.Estado" />
+            <ValidationMessage For="@(() => postPlanVendido.Estado)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Vendedor DNI</label>
+        <div>
+            <InputNumber class="form-control" @bind-Value="@postPlanVendido.VendedorDNI" />
+            <ValidationMessage For="@(() => postPlanVendido.VendedorDNI)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Cliente DNI</label>
+        <div>
+            <InputNumber class="form-control" @bind-Value="@postPlanVendido.ClienteDNI" />
+            <ValidationMessage For="@(() => postPlanVendido.ClienteDNI)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Tipo de Plan Nombre</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@postPlanVendido.TipoPlanNombre" />
+            <ValidationMessage For="@(() => postPlanVendido.TipoPlanNombre)" />
+        </div>
+    </div>
+    <br />
+    <button class="btn btn-primary" type="submit">Aceptar</button>
+</EditForm>
+
+@code {
+    private POST_PlanVendidoDNI_DTO postPlanVendido = new POST_PlanVendidoDNI_DTO();
+
+    private async Task Grabar()
+    {
+        var httpRespuesta = await http.Post<POST_PlanVendidoDNI_DTO>("api/PlanVendido", postPlanVendido);
+      
+        navigationManager.NavigateTo("/api/PlanVendido/mostrar");
+    }
+}
+
