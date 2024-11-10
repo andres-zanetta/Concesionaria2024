@@ -1,6 +1,5 @@
-﻿@* <h3>PUT_Cliente</h3>
-
-@page "/api/Cliente/put/{cliente:int}"
+﻿@page "/api/Cliente/put/{cliente:int}"
+@using Concesionaria2024.Shared.DTO.AndresDTO
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
 <h3>Editar Lista de Clientes</h3>
@@ -56,10 +55,10 @@
     {
     
 
-        var httpRespuesta = await http.Put<Cliente>($"api/Cliente/{Id}", cliente);
+        var httpRespuesta = await http.Put<PUT_ClienteDTO>($"api/Cliente/{Id}");
         if (httpRespuesta.Error)
         {
-            var body = httpRespuesta.HttpResponseMessage;
+            //var body = httpRespuesta.HttpResponseMessage;
         }
         navigationManager.NavigateTo("/api/Clientes");
     }
@@ -71,4 +70,4 @@
 
 
 }
- *@
+ 

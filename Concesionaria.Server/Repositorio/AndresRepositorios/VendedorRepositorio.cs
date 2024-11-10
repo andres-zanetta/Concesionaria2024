@@ -26,15 +26,6 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             }
         }
 
-
-        public async Task<Vendedor> SelectByPersona(int personaId)
-        {
-            Vendedor? V = await context.Vendedores.
-                        FirstOrDefaultAsync(x => x.PersonaId == personaId);
-            return V;
-        }
-
-
         public async Task<Vendedor?> SelectByFechaInicio(DateTime fechaInicio)
         {
             Vendedor? V = await context.Vendedores.
@@ -57,10 +48,7 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             return V;
         }
 
-        Task<List<Vendedor>> IVendedorRepositorio.SelectByPersona(int personaId)
-        {
-            throw new NotImplementedException();
-        }
+  
     }
 
 }
