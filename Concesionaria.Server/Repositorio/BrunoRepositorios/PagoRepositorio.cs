@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Concesionaria.Server.Repositorio.BrunoRepositorios
 {
-    public class PagoRepositorio : Repositorio<Pago>
+    public class PagoRepositorio : Repositorio<Pago>, IPagoRepositorio
     {
         private readonly Context context;
 

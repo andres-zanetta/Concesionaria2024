@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Concesionaria.Server.Repositorio.BrunoRepositorios
 {
-    public class CuotaRepositorio : Repositorio<Cuota>
+    public class CuotaRepositorio : Repositorio<Cuota>, ICuotaRepositorio
     {
         private readonly Context context;
 
@@ -41,6 +41,20 @@ namespace Concesionaria.Server.Repositorio.BrunoRepositorios
             {
                 Console.WriteLine($"Error al obtener las cuotas vencidas: {e.Message}");
                 throw;
+            }
+        }
+        public async Task<int> Insert(Cuota entidad)
+        {
+            try
+            {
+                await context.Set<Cuota>().AddAsync(entidad);
+                await context.SaveChangesAsync();
+                return entidad.Id;
+            }
+
+            catch (Exception err)
+            {
+                throw err;
             }
         }
 

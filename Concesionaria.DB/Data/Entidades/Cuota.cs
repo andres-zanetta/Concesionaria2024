@@ -23,6 +23,10 @@ namespace Concesionaria.DB.Data.Entidades
 
         [Required(ErrorMessage = "La Capacidad maxima del vehiculo es obligatoria.")]
         //Esto debe ser autoincremental Consultar con el profesor si se puede arreglar via codigo
+
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //solo una columna por tabla puede tener un comportamiento Identity,
+        //por lo que solo el Id se mantiene como autoincremental y NumeroCuota como un campo normal. 
         public int NumeroCuota { get; set; }
 
 
