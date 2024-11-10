@@ -1,4 +1,6 @@
-﻿using Concesionaria.DB.Data.Entidades;
+﻿using Concesionaria.DB.Data;
+using Concesionaria.DB.Data.Entidades;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,8 +10,12 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 {
-    public class GET_PlanVendidoDTO
+    public class GET_PlanVendidoDTO : EntityBase
     {
+        // Id -----------------------------------------------------------------------------------
+
+        public int Id { get; set; }
+
         // Fecha cuando se suscribió ------------------------------------------------------------------------------------------
 
 

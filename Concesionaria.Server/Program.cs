@@ -34,7 +34,7 @@ builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 builder.Services.AddScoped<ICuotaRepositorio, CuotaRepositorio>();
 builder.Services.AddScoped<IPagoRepositorio, PagoRepositorio>();
 builder.Services.AddScoped<IRepositorio<Adjudicacion>, Repositorio<Adjudicacion>>();
-builder.Services.AddScoped<IRepositorio<TipoPlan>, Repositorio<TipoPlan>>();
+builder.Services.AddScoped<ITipoPlanRepositorio, TipoPlanRepositorio>();
 builder.Services.AddScoped<IRepositorio<Vehiculo>, Repositorio<Vehiculo>>();
 
 // Coneccion con la BD / Context

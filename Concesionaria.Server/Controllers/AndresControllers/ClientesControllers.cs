@@ -54,11 +54,16 @@ namespace Concesionaria.Server.Controllers.AndresControllers
 
         // POST: ----------------------------------------------------------------------
         [HttpPost]
-        public async Task<ActionResult<int>> Post(POST_ClienteDTO  POST_entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_ClienteSinFechaInicio  clienteDTO)
         {
+            var DTOCliente = new POST_ClienteDTO
+            {
+                FechaInicio = DateTime.Today,
+                PersonaId = clienteDTO.PersonaId,
+            };
             try
             {
-                Cliente entidad = mapper.Map<Cliente>(POST_entidadDTO);
+                Cliente entidad = mapper.Map<Cliente>(DTOCliente);
                 return await repositorio.Insert(entidad);
             }
             catch (Exception e)

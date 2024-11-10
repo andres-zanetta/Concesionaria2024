@@ -36,6 +36,7 @@ namespace Concesionaria.Server.Controllers.GinoControllers
             {
                 var ListPVendido = await repositorio.SelectPlanYAsociados();
                 var ListPVendidoDTO = mapper.Map<List<GET_PlanVendidoDTO>>(ListPVendido);
+                ListPVendidoDTO.ForEach(dto => Console.WriteLine($"Id: {dto.Id}"));
                 return Ok(ListPVendidoDTO);
             }
             catch (Exception e)
@@ -47,7 +48,7 @@ namespace Concesionaria.Server.Controllers.GinoControllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<PlanVendido>> Get(int id)
+        public async Task<ActionResult<GET_PlanVendidoDTO>> Get(int id)
         {
             try
             {
@@ -76,23 +77,37 @@ namespace Concesionaria.Server.Controllers.GinoControllers
         [HttpPost]
         public async Task<ActionResult<int>> Post(POST_PlanVendidoDNI_DTO POST_entidadDNI_DTO)
         {
-            var cliente = await repoCliente.SelectByDNI(POST_entidadDNI_DTO.ClienteDNI);
-            var vendedor = await repoVendedor.SelectByDNI(POST_entidadDNI_DTO.VendedorDNI);
-            var tipoPlan = await repoTipoPlan.SelectByNombre(POST_entidadDNI_DTO.TipoPlanNombre);
-
-            var POST_entidadDTO = new POST_PlanVendidoDTO
-            {
-                FechaSuscripcion = cliente.FechaInicio,
-                Descripcion = POST_entidadDNI_DTO.Descripcion,
-                Estado = POST_entidadDNI_DTO.Estado,
-                FechaInicio = DateTime.Today,
-                VendedorId = cliente.Id,
-                ClienteId = cliente.Id,
-                TipoPlanId = tipoPlan.Id,
-            };
-
             try
             {
+                var cliente = await repoCliente.SelectByDNI(POST_entidadDNI_DTO.ClienteDNI);
+                if (cliente == null)
+                {
+                    return NotFound($"Cliente con DNI {POST_entidadDNI_DTO.ClienteDNI} no encontrado.");
+                }
+
+                var vendedor = await repoVendedor.SelectByDNI(POST_entidadDNI_DTO.VendedorDNI);
+                if (vendedor == null)
+                {
+                    return NotFound($"Vendedor con DNI {POST_entidadDNI_DTO.VendedorDNI} no encontrado.");
+                }
+
+                var tipoPlan = await repoTipoPlan.SelectByNombre(POST_entidadDNI_DTO.TipoPlanNombre);
+                if (tipoPlan == null)
+                {
+                    return NotFound($"Tipo de plan con nombre {POST_entidadDNI_DTO.TipoPlanNombre} no encontrado.");
+                }
+                
+                var POST_entidadDTO = new POST_PlanVendidoDTO
+                {
+                    FechaSuscripcion = cliente.FechaInicio,
+                    Descripcion = POST_entidadDNI_DTO.Descripcion,
+                    Estado = POST_entidadDNI_DTO.Estado,
+                    FechaInicio = DateTime.Today,
+                    VendedorId = vendedor.Id,
+                    ClienteId = cliente.Id,
+                    TipoPlanId = tipoPlan.Id,
+                };
+
                 PlanVendido entidad = mapper.Map<PlanVendido>(POST_entidadDTO);
                 return Ok(await repositorio.Insert(entidad));
             }
@@ -109,6 +124,8 @@ namespace Concesionaria.Server.Controllers.GinoControllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] PUT_PlanVendidoDTO PUT_EntidadDTO)
         {
+
+
             if (!await repositorio.Existe(id))
             {
                 return BadRequest("No existe el tipo de documento buscado.");
