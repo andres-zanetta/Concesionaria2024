@@ -63,10 +63,7 @@ namespace Concesionaria.Client.Servicios
             }
         }
 
-        public Task<HttpRespuesta<O>> Put<O>(string url)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         private async Task<O> DesSerealizar<O>(HttpResponseMessage response)
         {
