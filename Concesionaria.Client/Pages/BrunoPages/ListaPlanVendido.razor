@@ -1,0 +1,94 @@
+﻿@page "/api/PlanVendido/mostrar"
+@using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
+@inject IHttpServicio http
+
+<h3>Planes Vendidos</h3>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fecha Suscripción</th>
+            <th>Fecha Sorteo</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Plan en Mora</th>
+            <th>Cliente</th>
+            <th>Vendedor</th>
+            <th>Tipo de Plan</th>
+            <th>Valor Total</th>
+            <th>Adjudicación</th>
+            <th>Auto Entregado</th>
+            <th>Patente</th>
+            <th>Modelo</th>
+            <th>Marca</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Mensaje == "")
+        {
+            @if (listaPlanesVendido == null)
+            {
+                <tr><td colspan="16">Buscando...</td></tr>
+            }
+            else if (listaPlanesVendido.Count == 0)
+            {
+                <tr><td colspan="16">No existen planes vendidos.</td></tr>
+            }
+            else
+            {
+                @foreach (var plan in listaPlanesVendido)
+                {
+                    <tr>
+                        <td>@plan.FechaSuscripcion?.ToString("dd/MM/yyyy")</td>
+                        <td>@plan.FechaSorteo?.ToString("dd/MM/yyyy")</td>
+                        <td>@plan.Descripcion</td>
+                        <td>@plan.Estado</td>
+                        <td>@plan.FechaInicio.ToString("dd/MM/yyyy")</td>
+                        <td>@plan.FechaFin?.ToString("dd/MM/yyyy")</td>
+                        <td>@plan.PlanEnMora ? "Sí" : "No"</td>
+                        <td>@plan.NombreCliente</td>
+                        <td>@plan.NombreVendedor</td>
+                        <td>@plan.NombrePlan</td>
+                        <td>@plan.ValorTotal.ToString("C")</td>
+                        <td>@plan.AdjudicacionId</td>
+                        <td>@plan.AutoEntregado ? "Sí" : "No"</td>
+                        <td>@plan.PatenteVehiculo</td>
+                        <td>@plan.ModeloVehiculo</td>
+                        <td>@plan.MarcaVehiculo</td>
+                    </tr>
+                }
+            }
+        }
+        else
+        {
+            <tr><td colspan="16">Error: @Mensaje</td></tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<GET_PlanVendidoDTO> listaPlanesVendido;
+    string Mensaje = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LeerPlanesVendidos();
+    }
+
+    private async Task LeerPlanesVendidos()
+    {
+        var resp = await http.Get<List<GET_PlanVendidoDTO>>("api/PlanVendido");
+        if (!resp.Error)
+        {
+            listaPlanesVendido = resp.Respuesta;
+        }
+        else
+        {
+            Mensaje = await resp.ObtenerError();
+        }
+    }
+}
+
