@@ -23,7 +23,7 @@ namespace Concesionaria2024.Shared.DTO.BrunoDTO
 
         [Required(ErrorMessage = "La Capacidad maxima del vehiculo es obligatoria.")]
         //Esto debe ser autoincremental Consultar con el profesor si se puede arreglar via codigo
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int NumeroCuota { get; set; }
 
 
