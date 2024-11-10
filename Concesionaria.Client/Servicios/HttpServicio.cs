@@ -44,7 +44,26 @@ namespace Concesionaria.Client.Servicios
             }
 		}
 
-		private async Task<O> DesSerealizar<O>(HttpResponseMessage response)
+        public async Task<HttpRespuesta<object>> Put<O>(string url, O entidad)
+        {
+            var enviarJson = JsonSerializer.Serialize(entidad);
+
+            var enviarContent = new StringContent(enviarJson,
+                                Encoding.UTF8,
+                                "application/json");
+
+            var response = await http.PutAsync(url, enviarContent);
+            if (response.IsSuccessStatusCode)
+            {
+                return new HttpRespuesta<object>(null, false, response);
+            }
+            else
+            {
+                return new HttpRespuesta<object>(default, true, response);
+            }
+        }
+
+        private async Task<O> DesSerealizar<O>(HttpResponseMessage response)
         {
             var respuesta = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<O>(respuesta, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
