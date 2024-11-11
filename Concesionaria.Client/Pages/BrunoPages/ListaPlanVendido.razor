@@ -7,6 +7,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Código</th> 
             <th>Fecha Suscripción</th>
             <th>Fecha Sorteo</th>
             <th>Descripción</th>
@@ -41,6 +42,7 @@
                 @foreach (var plan in listaPlanesVendidos)
                 {
                     <tr>
+                        <td>@plan.Codigo</td> 
                         <td>@plan.FechaSuscripcion?.ToString("dd/MM/yyyy")</td>
                         <td>@plan.FechaSorteo?.ToString("dd/MM/yyyy")</td>
                         <td>@plan.Descripcion</td>
@@ -91,4 +93,5 @@
         }
     }
 }
+
 

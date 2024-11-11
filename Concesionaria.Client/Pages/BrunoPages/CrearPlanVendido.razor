@@ -6,6 +6,17 @@
 
 <EditForm Model="postPlanVendido" OnValidSubmit="Grabar">
     <DataAnnotationsValidator />
+
+    <!-- Campo de Código agregado -->
+    <div class="form-group">
+        <label>Código</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@postPlanVendido.Codigo" />
+            <ValidationMessage For="@(() => postPlanVendido.Codigo)" />
+        </div>
+    </div>
+
+    <!-- Campo de Descripción -->
     <div class="form-group">
         <label>Descripción</label>
         <div>
@@ -13,6 +24,8 @@
             <ValidationMessage For="@(() => postPlanVendido.Descripcion)" />
         </div>
     </div>
+
+    <!-- Campo de Estado -->
     <div class="form-group">
         <label>Estado</label>
         <div>
@@ -20,6 +33,8 @@
             <ValidationMessage For="@(() => postPlanVendido.Estado)" />
         </div>
     </div>
+
+    <!-- Campo de Vendedor DNI -->
     <div class="form-group">
         <label>Vendedor DNI</label>
         <div>
@@ -27,6 +42,8 @@
             <ValidationMessage For="@(() => postPlanVendido.VendedorDNI)" />
         </div>
     </div>
+
+    <!-- Campo de Cliente DNI -->
     <div class="form-group">
         <label>Cliente DNI</label>
         <div>
@@ -34,6 +51,8 @@
             <ValidationMessage For="@(() => postPlanVendido.ClienteDNI)" />
         </div>
     </div>
+
+    <!-- Campo de Tipo de Plan Nombre -->
     <div class="form-group">
         <label>Tipo de Plan Nombre</label>
         <div>
@@ -41,6 +60,7 @@
             <ValidationMessage For="@(() => postPlanVendido.TipoPlanNombre)" />
         </div>
     </div>
+
     <br />
     <button class="btn btn-primary" type="submit">Aceptar</button>
 </EditForm>
@@ -51,8 +71,9 @@
     private async Task Grabar()
     {
         var httpRespuesta = await http.Post<POST_PlanVendidoDNI_DTO>("api/PlanVendido", postPlanVendido);
-      
+
         navigationManager.NavigateTo("/api/PlanVendido/mostrar");
     }
 }
+
 
