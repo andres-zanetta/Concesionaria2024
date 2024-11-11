@@ -1,5 +1,4 @@
 ﻿@page "/api/PlanVendido/editar"
-@using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
 <h3>Editar Plan Vendido</h3>
@@ -102,24 +101,24 @@
     [Parameter] public int planVendidoId { get; set; }
     private PUT_PlanVendidoDTO planVendido = new PUT_PlanVendidoDTO();
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        await Mostrar();
-    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     await base.OnInitializedAsync();
+    //     await Mostrar();
+    // }
 
-    private async Task Mostrar()
-    {
-        var respuesta = await http.Get<PUT_PlanVendidoDTO>($"api/PlanVendido/{planVendidoId}");
-        if (!respuesta.Error)
-        {
-            planVendido = respuesta.Respuesta;
-        }
-        else
-        {
-            navigationManager.NavigateTo("/api/PlanVendido");
-        }
-    }
+    // private async Task Mostrar()
+    // {
+    //     var respuesta = await http.Get<PUT_PlanVendidoDTO>($"api/PlanVendido/{planVendidoId}");
+    //     if (!respuesta.Error)
+    //     {
+    //         planVendido = respuesta.Respuesta;
+    //     }
+    //     else
+    //     {
+    //         navigationManager.NavigateTo("/api/PlanVendido");
+    //     }
+    // }
 
     private async Task Grabar()
     {

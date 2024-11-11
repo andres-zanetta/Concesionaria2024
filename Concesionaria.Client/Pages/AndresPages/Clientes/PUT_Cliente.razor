@@ -1,4 +1,4 @@
-﻿@page "/api/Cliente/put/{cliente:int}"
+﻿@* @page "/api/Cliente/put/{cliente:int}"
 @using Concesionaria2024.Shared.DTO.AndresDTO
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
@@ -53,8 +53,6 @@
 
     private async Task Grabar()
     {
-    
-
         var httpRespuesta = await http.Put<PUT_ClienteDTO>($"api/Cliente/{Id}");
         if (httpRespuesta.Error)
         {
@@ -70,4 +68,4 @@
 
 
 }
- 
+  *@
