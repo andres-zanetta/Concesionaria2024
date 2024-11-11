@@ -18,6 +18,10 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 
         // Fecha cuando se suscribió ------------------------------------------------------------------------------------------
 
+        [Required(ErrorMessage = "El codigo es obligatorio.")]
+        [MaxLength(30, ErrorMessage = "Máximo número de caracteres {1}.")]
+        public string Codigo { get; set; }
+
 
         public DateTime? FechaSuscripcion { get; set; }
 

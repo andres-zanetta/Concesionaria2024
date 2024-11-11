@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Concesionaria.DB.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicio : Migration
+    public partial class inicio : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,6 +31,7 @@ namespace Concesionaria.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Marca = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     Modelo = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     Precio = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
@@ -64,6 +65,30 @@ namespace Concesionaria.DB.Migrations
                         name: "FK_Personas_TipoDocumentos_TipoDocumentoId",
                         column: x => x.TipoDocumentoId,
                         principalTable: "TipoDocumentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Adjudicaciones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Detalle = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    FechaAdjudicacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AutoEntregado = table.Column<bool>(type: "bit", nullable: false),
+                    PatenteVehiculo = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    VehiculoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Adjudicaciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Adjudicaciones_Vehiculos_VehiculoId",
+                        column: x => x.VehiculoId,
+                        principalTable: "Vehiculos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -140,6 +165,7 @@ namespace Concesionaria.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     FechaSuscripcion = table.Column<DateTime>(type: "datetime2", nullable: true),
                     FechaSorteo = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Descripcion = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -149,11 +175,17 @@ namespace Concesionaria.DB.Migrations
                     PlanEnMora = table.Column<bool>(type: "bit", nullable: false),
                     ClienteId = table.Column<int>(type: "int", nullable: false),
                     VendedorId = table.Column<int>(type: "int", nullable: false),
-                    TipoPlanId = table.Column<int>(type: "int", nullable: false)
+                    TipoPlanId = table.Column<int>(type: "int", nullable: false),
+                    AdjudicacionId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PlanesVendidos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PlanesVendidos_Adjudicaciones_AdjudicacionId",
+                        column: x => x.AdjudicacionId,
+                        principalTable: "Adjudicaciones",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PlanesVendidos_Clientes_ClienteId",
                         column: x => x.ClienteId,
@@ -170,36 +202,6 @@ namespace Concesionaria.DB.Migrations
                         name: "FK_PlanesVendidos_Vendedores_VendedorId",
                         column: x => x.VendedorId,
                         principalTable: "Vendedores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Adjudicaciones",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Detalle = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    FechaAdjudicacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AutoEntregado = table.Column<bool>(type: "bit", nullable: false),
-                    PatenteVehiculo = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    VehiculoId = table.Column<int>(type: "int", nullable: false),
-                    PlanVendidoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Adjudicaciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Adjudicaciones_PlanesVendidos_PlanVendidoId",
-                        column: x => x.PlanVendidoId,
-                        principalTable: "PlanesVendidos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Adjudicaciones_Vehiculos_VehiculoId",
-                        column: x => x.VehiculoId,
-                        principalTable: "Vehiculos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -259,12 +261,6 @@ namespace Concesionaria.DB.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Adjudicaciones_PlanVendidoId",
-                table: "Adjudicaciones",
-                column: "PlanVendidoId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Adjudicaciones_VehiculoId",
                 table: "Adjudicaciones",
                 column: "VehiculoId");
@@ -313,6 +309,11 @@ namespace Concesionaria.DB.Migrations
                 column: "Estado");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PlanesVendidos_AdjudicacionId",
+                table: "PlanesVendidos",
+                column: "AdjudicacionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PlanesVendidos_TipoPlanId",
                 table: "PlanesVendidos",
                 column: "TipoPlanId");
@@ -340,6 +341,12 @@ namespace Concesionaria.DB.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "Codigo_UQ",
+                table: "Vehiculos",
+                column: "Codigo",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "MArca_Modelo_UQ",
                 table: "Vehiculos",
                 columns: new[] { "Marca", "Modelo" },
@@ -356,9 +363,6 @@ namespace Concesionaria.DB.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Adjudicaciones");
-
-            migrationBuilder.DropTable(
                 name: "Pagos");
 
             migrationBuilder.DropTable(
@@ -366,6 +370,9 @@ namespace Concesionaria.DB.Migrations
 
             migrationBuilder.DropTable(
                 name: "PlanesVendidos");
+
+            migrationBuilder.DropTable(
+                name: "Adjudicaciones");
 
             migrationBuilder.DropTable(
                 name: "Clientes");

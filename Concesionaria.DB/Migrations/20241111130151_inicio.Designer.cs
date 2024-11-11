@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Concesionaria.DB.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20241013154316_ModifRelacionCL_PV_Temporal")]
-    partial class ModifRelacionCL_PV_Temporal
+    [Migration("20241111130151_inicio")]
+    partial class inicio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,11 @@ namespace Concesionaria.DB.Migrations
                     b.Property<bool>("AutoEntregado")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<string>("Detalle")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -48,16 +53,10 @@ namespace Concesionaria.DB.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("PlanVendidoId")
-                        .HasColumnType("int");
-
                     b.Property<int>("VehiculoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PlanVendidoId")
-                        .IsUnique();
 
                     b.HasIndex("VehiculoId");
 
@@ -223,8 +222,16 @@ namespace Concesionaria.DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AdjudicacionId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(100)
@@ -250,13 +257,15 @@ namespace Concesionaria.DB.Migrations
                     b.Property<bool>("PlanEnMora")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("TipoPlanId")
+                    b.Property<int>("TipoPlanId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VendedorId")
+                    b.Property<int>("VendedorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdjudicacionId");
 
                     b.HasIndex("TipoPlanId");
 
@@ -339,6 +348,11 @@ namespace Concesionaria.DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<string>("Combustible")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -361,6 +375,9 @@ namespace Concesionaria.DB.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex(new[] { "Codigo" }, "Codigo_UQ")
+                        .IsUnique();
 
                     b.HasIndex(new[] { "Marca", "Modelo" }, "MArca_Modelo_UQ")
                         .IsUnique();
@@ -398,19 +415,11 @@ namespace Concesionaria.DB.Migrations
 
             modelBuilder.Entity("Concesionaria.DB.Data.Entidades.Adjudicacion", b =>
                 {
-                    b.HasOne("Concesionaria.DB.Data.Entidades.PlanVendido", "PlanVendido")
-                        .WithOne("Adjudicacion")
-                        .HasForeignKey("Concesionaria.DB.Data.Entidades.Adjudicacion", "PlanVendidoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Concesionaria.DB.Data.Entidades.Vehiculo", "Vehiculo")
                         .WithMany("Adjudicaciones")
                         .HasForeignKey("VehiculoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("PlanVendido");
 
                     b.Navigation("Vehiculo");
                 });
@@ -461,6 +470,10 @@ namespace Concesionaria.DB.Migrations
 
             modelBuilder.Entity("Concesionaria.DB.Data.Entidades.PlanVendido", b =>
                 {
+                    b.HasOne("Concesionaria.DB.Data.Entidades.Adjudicacion", "Adjudicacion")
+                        .WithMany()
+                        .HasForeignKey("AdjudicacionId");
+
                     b.HasOne("Concesionaria.DB.Data.Entidades.Cliente", "Cliente")
                         .WithMany("planVendidos")
                         .HasForeignKey("ClienteId")
@@ -469,11 +482,17 @@ namespace Concesionaria.DB.Migrations
 
                     b.HasOne("Concesionaria.DB.Data.Entidades.TipoPlan", "TipoPlan")
                         .WithMany()
-                        .HasForeignKey("TipoPlanId");
+                        .HasForeignKey("TipoPlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Concesionaria.DB.Data.Entidades.Vendedor", "Vendedor")
                         .WithMany("planVendidos")
-                        .HasForeignKey("VendedorId");
+                        .HasForeignKey("VendedorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Adjudicacion");
 
                     b.Navigation("Cliente");
 
@@ -525,9 +544,6 @@ namespace Concesionaria.DB.Migrations
 
             modelBuilder.Entity("Concesionaria.DB.Data.Entidades.PlanVendido", b =>
                 {
-                    b.Navigation("Adjudicacion")
-                        .IsRequired();
-
                     b.Navigation("cuotas");
                 });
 

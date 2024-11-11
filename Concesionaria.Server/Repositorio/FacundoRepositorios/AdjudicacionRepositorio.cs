@@ -16,6 +16,21 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
             this.context = context;
         }
 
+        public async Task<PlanVendido> SelectByCodigo(string codigo)
+        {
+            try
+            {
+                var adjudicacion = await context.PlanesVendidos.FirstOrDefaultAsync(a => a.Codigo == codigo);
+                return adjudicacion;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener los registros:  {e.Message}");
+                throw e;
+            }
+
+        }
+
         public async Task<List<Adjudicacion>> SelectEntidadConVehiculo()
         {
             try

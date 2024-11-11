@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
+using Concesionaria.Server.Repositorio.FacundoRepositorios;
 using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,10 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
     [Route("api/TipoPlan")]
     public class TipoPlanController : ControllerBase
     {
-        private readonly IRepositorio<TipoPlan> repositorio;
+        private readonly ITipoPlanRepositorio repositorio;
         private readonly IMapper mapper;
 
-        public TipoPlanController(IRepositorio<TipoPlan> repositorio, IMapper mapper)
+        public TipoPlanController( ITipoPlanRepositorio repositorio , IMapper mapper)
         {
             this.repositorio = repositorio;
             this.mapper = mapper;

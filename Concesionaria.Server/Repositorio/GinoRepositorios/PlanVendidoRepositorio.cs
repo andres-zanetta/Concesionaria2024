@@ -32,6 +32,21 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
             }
         }
 
+        public async Task<PlanVendido> SelectByCodigo (string codigo)
+        {
+            try
+            {
+                var planVendido = await context.PlanesVendidos.FirstOrDefaultAsync(pv => pv.Codigo == codigo);
+                return planVendido;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener los registros:  {e.Message}");
+                throw e;
+            }
+
+        }
+
         public async Task<PlanVendido> SelectPlanYAsociadosById(int id)
         {
 
@@ -53,3 +68,4 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
         }
     }
 }
+

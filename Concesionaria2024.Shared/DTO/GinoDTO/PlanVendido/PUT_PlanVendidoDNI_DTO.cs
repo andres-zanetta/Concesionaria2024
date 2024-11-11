@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 {
-    public class POST_PlanVendidoDTO
+    public class PUT_PlanVendidoDNI_DTO
     {
         [Required(ErrorMessage = "El codigo es obligatorio.")]
         [MaxLength(30, ErrorMessage = "Máximo número de caracteres {1}.")]
         public string Codigo { get; set; }
 
-        // Fecha cuando se suscribió --------------------------------------------------------------
 
 
-        public DateTime FechaSuscripcion { get; set; }
+        public DateTime? FechaSuscripcion { get; set; }
 
 
 
-        // Descripcion ----------------------------------------------------------------------------
+        public DateTime? FechaSorteo { get; set; }
 
 
+        // Descripción ----------------------------------------------------------------------------
 
         [MaxLength(100, ErrorMessage = "Máximo número de caracteres {1}.")]
         public string? Descripcion { get; set; }
@@ -35,28 +35,38 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
         [MaxLength(20, ErrorMessage = "Máximo número de caracteres {1}.")]
         public string Estado { get; set; }
 
-
-        // Fecha inicio ---------------------------------------------------------------------------
-
-
         [Required(ErrorMessage = "La fecha de inicio es obligatoria.")]
         public DateTime FechaInicio { get; set; }
 
+
+        // Fecha fin ------------------------------------------------------------------------------------------
+
+
+        //Agregar metodo estatico para que la fecha fin no sea anterior a la fecha inicio
+        public DateTime? FechaFin { get; set; }
+
+
+        // Plan en mora ------------------------------------------------------------------------------------------
+
+
+        [Display(Name = "¿El plan tiene mora?", Description = "Indica si el plan tiene mora")]
+        public bool PlanEnMora { get; set; }
 
         //NavClass---------------------------------------------------------------------------------
 
 
         [Required(ErrorMessage = "El venderdor es obligatoria.")]
-        public int VendedorId { get; set; }
+        public int VendedorDNI { get; set; }
 
 
         [Required(ErrorMessage = "El clienteo es obligatoria.")]
-        public int ClienteId { get; set; }
+        public int ClienteDNI { get; set; }
 
 
         [Required(ErrorMessage = "El tipo de plan es obligatoria.")]
-        public int TipoPlanId { get; set; }
+        public string TipoPlanNombre { get; set; }
 
+        public string? AdjudicaciónCodigo { get; set; }
 
     }
 }

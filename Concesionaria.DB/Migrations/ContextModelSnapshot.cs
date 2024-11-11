@@ -33,6 +33,11 @@ namespace Concesionaria.DB.Migrations
                     b.Property<bool>("AutoEntregado")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<string>("Detalle")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -219,6 +224,11 @@ namespace Concesionaria.DB.Migrations
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(100)
