@@ -1,10 +1,21 @@
 ﻿@page "/api/PlanVendido/editar"
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
+
 <h3>Editar Plan Vendido</h3>
 
 <EditForm Model="planVendido" OnValidSubmit="Grabar">
     <DataAnnotationsValidator />
+    
+    <!-- Campo para introducir el ID del Plan Vendido -->
+    <div class="form-group">
+        <label>ID del Plan Vendido</label>
+        <div>
+            <InputNumber class="form-control" @bind-Value="@planVendidoId" />
+            <ValidationMessage For="@(() => planVendidoId)" />
+        </div>
+    </div>
+
     <div class="form-group">
         <label>Fecha Suscripción</label>
         <div>
@@ -95,39 +106,62 @@
 
     <br />
     <button class="btn btn-primary" type="submit">Aceptar</button>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    }
+
 </EditForm>
 
+
+
 @code {
-    [Parameter] public int planVendidoId { get; set; }
+    // Añadir un nuevo parámetro para el ID del Plan Vendido
+    private int planVendidoId;
     private PUT_PlanVendidoDTO planVendido = new PUT_PlanVendidoDTO();
+    private string errorMessage;
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     await base.OnInitializedAsync();
-    //     await Mostrar();
-    // }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        // Inicializamos el planVendido con los datos del planVendidoId al cargar la página
+        await Mostrar();
+    }
 
-    // private async Task Mostrar()
-    // {
-    //     var respuesta = await http.Get<PUT_PlanVendidoDTO>($"api/PlanVendido/{planVendidoId}");
-    //     if (!respuesta.Error)
-    //     {
-    //         planVendido = respuesta.Respuesta;
-    //     }
-    //     else
-    //     {
-    //         navigationManager.NavigateTo("/api/PlanVendido");
-    //     }
-    // }
+    private async Task Mostrar()
+    {
+        if (planVendidoId > 0) // Verificamos si el ID es válido
+        {
+            var respuesta = await http.Get<PUT_PlanVendidoDTO>($"api/PlanVendido/{planVendidoId}");
+            if (!respuesta.Error)
+            {
+                planVendido = respuesta.Respuesta; // Asignamos los datos al DTO
+            }
+            else
+            {
+                navigationManager.NavigateTo("/api/PlanVendido"); // Si no se encuentra el plan, redirigimos
+            }
+        }
+    }
 
     private async Task Grabar()
     {
-        var httpRespuesta = await http.Put<PUT_PlanVendidoDTO>($"api/PlanVendido/{planVendidoId}", planVendido);
-        if (httpRespuesta.Error)
+        // Al hacer clic en "Aceptar", enviamos los cambios a la API
+        if (planVendidoId > 0)
         {
-            // Manejo de error
+            var httpRespuesta = await http.Put<PUT_PlanVendidoDTO>($"api/PlanVendido/{planVendidoId}", planVendido);
+            if (!httpRespuesta.Error)
+            {
+                // Si la actualización es exitosa, navegamos a la lista de Planes Vendidos
+                navigationManager.NavigateTo("/api/PlanVendido");
+            }
+            else
+            {
+                errorMessage = await httpRespuesta.ObtenerError();
+            }
         }
-        navigationManager.NavigateTo("/api/PlanVendido");
     }
 }
-
