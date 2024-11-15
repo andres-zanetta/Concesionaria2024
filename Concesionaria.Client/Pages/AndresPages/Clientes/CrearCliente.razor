@@ -1,0 +1,46 @@
+﻿@page "/api/Cliente/agregar"
+@using Concesionaria2024.Shared.DTO.AndresDTO
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+<h3>Nuevo Cliente</h3>
+
+<EditForm Model="postCliente" OnValidSubmit="Grabar">
+    <DataAnnotationsValidator />
+
+    <!-- Campo de Fecha Inicio agregado -->
+    <div class="form-group">
+        <label>FechaInicio</label>
+        <div>
+            <InputDate class="form-control" @bind-Value="@postCliente.FechaInicio" />
+            <ValidationMessage For="@(() => postCliente.FechaInicio)" />
+        </div>
+
+    </div>
+    <!-- Campo de Fecha Fin agregado -->
+    <div class="form-group">
+        <label>FechaFin</label>
+        <div>
+            <InputDate class="form-control" @bind-Value="@postCliente.FechaInicio" />
+            <ValidationMessage For="@(() => postCliente.FechaInicio)" />
+        </div>
+
+    </div>
+   
+    <br />
+    <button class="btn btn-primary" type="submit">Aceptar</button>
+
+</EditForm>
+
+@code {
+    private POST_ClienteDTO postCliente = new POST_ClienteDTO();
+
+    private async Task Grabar()
+    {
+        var httpRespuesta = await http.Post<POST_ClienteDTO>("api/Vendedor", postCliente);
+
+        navigationManager.NavigateTo("/api/Cliente/mostrar");
+        
+    }
+
+
+}
