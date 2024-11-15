@@ -1,0 +1,55 @@
+﻿@page "/api/Clientes/mostrar"
+@using Concesionaria2024.Shared.DTO.AndresDTO
+@using Concesionaria2024.Shared.DTO.GinoDTO.Persona
+@inject IHttpServicio http
+
+<h3>ListaClientes</h3>
+<br />
+<table class="table table-borderless table-dark">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>""</td>
+            <td>""</td>
+            
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>""</td>
+            <td>""</td>
+            
+        </tr>
+    </tbody>
+</table>
+
+@code {
+    List<GET_ClienteDTO> listaClientes;
+    string Mensaje = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LeerClientes();
+    }
+
+    private async Task LeerClientes()
+    {
+        var resp = await http.Get<List<GET_ClienteDTO>>("api/Clientes");
+        if (!resp.Error)
+        {
+            listaClientes = resp.Respuesta;
+        }
+        else
+        {
+            Mensaje = await resp.ObtenerError();
+        }
+    }
+}
