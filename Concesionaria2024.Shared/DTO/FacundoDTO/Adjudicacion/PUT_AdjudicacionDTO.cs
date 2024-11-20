@@ -20,5 +20,6 @@ namespace Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion
 
         [Required(ErrorMessage = "El ID del vehículo es obligatorio.")]
         public int VehiculoId { get; set; }
+        public object Fecha { get; set; }
     }
 }

@@ -95,13 +95,23 @@ namespace Concesionaria.Server.Mappers
 
             // Mapeado Adjudicacion ===============================================================
 
-            CreateMap<GET_AdjudicacionDTO, Adjudicacion>();
+            CreateMap<Adjudicacion, GET_AdjudicacionDTO>()
+                .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => src.FechaAdjudicacion)) 
+                .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.AutoEntregado ? "Entregado" : "Pendiente")) 
+                .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo)); 
 
+            // POST 
             CreateMap<POST_AdjudicacionDTO, Adjudicacion>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore()); 
+                .ForMember(dest => dest.FechaAdjudicacion, opt => opt.MapFrom(src => src.Fecha))  
+                .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo))
+                .ForMember(dest => dest.VehiculoId, opt => opt.MapFrom(src => src.VehiculoId)); 
 
+            // PUT
             CreateMap<PUT_AdjudicacionDTO, Adjudicacion>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
+                .ForMember(dest => dest.FechaAdjudicacion, opt => opt.MapFrom(src => src.Fecha)) 
+                .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo)) 
+                .ForMember(dest => dest.AutoEntregado, opt => opt.MapFrom(src => src.AutoEntregado)); 
+
 
             // Mapeado Tipo Plan ==================================================================
 
