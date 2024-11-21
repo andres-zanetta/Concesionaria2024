@@ -79,17 +79,32 @@ namespace Concesionaria.Server.Mappers
             // Mapeado Vehiculo ===================================================================
 
             CreateMap<Vehiculo, GET_VehiculoDTO>()
-                .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca))
-                .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
-                .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio));
+               .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.Codigo))
+               .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca))
+               .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
+               .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio))
+               .ForMember(dest => dest.Motor, opt => opt.MapFrom(src => src.Motor))
+               .ForMember(dest => dest.Combustible, opt => opt.MapFrom(src => src.Combustible));
+
+            // POST
 
             CreateMap<POST_VehiculoDTO, Vehiculo>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore()); 
-
-            CreateMap<PUT_VehiculoDTO, Vehiculo>()
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.Codigo))
                 .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca))
                 .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
-                .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio));
+                .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio))
+                .ForMember(dest => dest.Motor, opt => opt.MapFrom(src => src.Motor))
+                .ForMember(dest => dest.Combustible, opt => opt.MapFrom(src => src.Combustible));
+
+            // PUT
+
+            CreateMap<PUT_VehiculoDTO, Vehiculo>()
+                .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca))    
+                .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))  
+                .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio))   
+                .ForMember(dest => dest.Motor, opt => opt.MapFrom(src => src.Motor))     
+                .ForMember(dest => dest.Combustible, opt => opt.MapFrom(src => src.Combustible)) 
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.Codigo));
 
 
 
@@ -101,12 +116,14 @@ namespace Concesionaria.Server.Mappers
                 .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo)); 
 
             // POST 
+
             CreateMap<POST_AdjudicacionDTO, Adjudicacion>()
                 .ForMember(dest => dest.FechaAdjudicacion, opt => opt.MapFrom(src => src.Fecha))  
                 .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo))
                 .ForMember(dest => dest.VehiculoId, opt => opt.MapFrom(src => src.VehiculoId)); 
 
             // PUT
+
             CreateMap<PUT_AdjudicacionDTO, Adjudicacion>()
                 .ForMember(dest => dest.FechaAdjudicacion, opt => opt.MapFrom(src => src.Fecha)) 
                 .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo)) 
