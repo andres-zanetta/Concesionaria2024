@@ -1,0 +1,79 @@
+﻿@page "/api/Pagos/agregar"
+@using Concesionaria2024.Shared.DTO.BrunoDTO
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
+    <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
+        <!-- Encabezado con fondo sólido y texto blanco -->
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Registrar Pago</h3>
+        </div>
+        <div class="card-body p-4 bg-light">
+            <EditForm Model="postPago" OnValidSubmit="Grabar">
+                <DataAnnotationsValidator />
+
+                <!-- Campo de Monto Pagado -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Monto Pagado</label>
+                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPago.MontoPagado" />
+                    <ValidationMessage For="@(() => postPago.MontoPagado)" class="text-danger" />
+                </div>
+
+                <!-- Campo de Fecha de Pago -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Fecha de Pago</label>
+                    <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPago.FechaPago" />
+                    <ValidationMessage For="@(() => postPago.FechaPago)" class="text-danger" />
+                </div>
+
+                <!-- Campo de Método de Pago (ComboBox) -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Método de Pago</label>
+                    <InputSelect class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPago.MetodoPago">
+                        <option value="" disabled>Seleccione un método</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                        <option value="Transferencia">Transferencia</option>
+                        <option value="Otro">Otro</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => postPago.MetodoPago)" class="text-danger" />
+                </div>
+
+                <!-- Campo de Referencia de Pago -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Referencia de Pago</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPago.ReferenciaPago" />
+                    <ValidationMessage For="@(() => postPago.ReferenciaPago)" class="text-danger" />
+                </div>
+
+                <!-- Botón de Enviar -->
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary btn-lg w-100 shadow" style="border-radius: 8px;">Aceptar</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private POST_PagoDTO postPago = new POST_PagoDTO
+        {
+            FechaPago = DateTime.Now // Establecer la fecha actual como valor predeterminado
+        };
+
+    private async Task Grabar()
+    {
+        var httpRespuesta = await http.Post<POST_PagoDTO>("api/Pagos", postPago);
+
+        // Redirige al usuario a la lista de pagos o una página de confirmación
+        navigationManager.NavigateTo("/api/Pagos/mostrar");
+    }
+}
+
+
+
+
+
+
+
