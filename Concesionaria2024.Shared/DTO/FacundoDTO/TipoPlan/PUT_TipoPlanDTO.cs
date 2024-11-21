@@ -13,14 +13,14 @@ namespace Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
         public string? Descripcion { get; set; }
 
         [Required(ErrorMessage = "La cantidad de cuotas es obligatoria.")]
-        [Range(1, int.MaxValue, ErrorMessage = "La cantidad de cuotas debe ser un valor positivo")]
+        [Range(1, int.MaxValue, ErrorMessage = "La cantidad de cuotas debe ser un valor positivo.")]
         public int CantCuotas { get; set; }
 
         [Required(ErrorMessage = "El valor total del plan es obligatorio.")]
-        [Column(TypeName = "decimal(10,2)")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "El valor total del plan debe ser mayor a cero.")]
         public decimal ValorTotal { get; set; }
 
-        [Required(ErrorMessage = "El Vehiculo es obligatorio.")]
+        [Required(ErrorMessage = "El Vehículo es obligatorio.")]
         public int VehiculoId { get; set; }
     }
 

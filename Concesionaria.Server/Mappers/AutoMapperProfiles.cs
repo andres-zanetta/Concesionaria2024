@@ -136,8 +136,7 @@ namespace Concesionaria.Server.Mappers
 
             CreateMap<POST_TipoPlanDTO, TipoPlan>();
 
-            CreateMap<PUT_TipoPlanDTO, TipoPlan>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore()); 
+            CreateMap<PUT_TipoPlanDTO, TipoPlan>();
 
 
 
