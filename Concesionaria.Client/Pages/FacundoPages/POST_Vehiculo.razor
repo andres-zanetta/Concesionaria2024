@@ -1,0 +1,62 @@
+﻿@page "/api/Vehiculos"
+@using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO
+@using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo
+@inject IHttpServicio http
+@inject NavigationManager Navigation
+
+<h3>Agregar Vehículo</h3>
+
+<EditForm Model="@vehiculo" OnValidSubmit="EnviarVehiculo">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="Codigo">Código</label>
+        <InputText id="Codigo" class="form-control" @bind-Value="vehiculo.Codigo" />
+    </div>
+
+    <div class="form-group">
+        <label for="Marca">Marca</label>
+        <InputText id="Marca" class="form-control" @bind-Value="vehiculo.Marca" />
+    </div>
+
+    <div class="form-group">
+        <label for="Modelo">Modelo</label>
+        <InputText id="Modelo" class="form-control" @bind-Value="vehiculo.Modelo" />
+    </div>
+
+    <div class="form-group">
+        <label for="Precio">Precio</label>
+        <InputNumber id="Precio" class="form-control" @bind-Value="vehiculo.Precio" />
+    </div>
+
+    <div class="form-group">
+        <label for="Motor">Motor</label>
+        <InputText id="Motor" class="form-control" @bind-Value="vehiculo.Motor" />
+    </div>
+
+    <div class="form-group">
+        <label for="Combustible">Combustible</label>
+        <InputText id="Combustible" class="form-control" @bind-Value="vehiculo.Combustible" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Agregar Vehículo</button>
+</EditForm>
+
+@code {
+    private POST_VehiculoDTO vehiculo = new POST_VehiculoDTO();
+
+    private async Task EnviarVehiculo()
+    {
+        var response = await http.Post<POST_VehiculoDTO>("api/Vehiculos", vehiculo);
+
+        if (!response.Error)
+        {
+            Console.WriteLine("Vehículo agregado correctamente");
+        }
+        else
+        {
+            Console.WriteLine($"Error: {await response.ObtenerError()}");
+        }
+    }
+}

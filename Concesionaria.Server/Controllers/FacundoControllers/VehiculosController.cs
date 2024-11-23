@@ -66,6 +66,7 @@ public class VehiculosController : ControllerBase
         }
     }
 
+
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Update(int id, [FromBody] PUT_VehiculoDTO entidadDTO)
     {
@@ -92,6 +93,7 @@ public class VehiculosController : ControllerBase
             return BadRequest($"Error: {e.Message}");
         }
     }
+
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
