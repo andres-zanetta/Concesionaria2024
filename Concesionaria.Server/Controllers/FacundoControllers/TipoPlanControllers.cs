@@ -21,8 +21,6 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
             this.mapper = mapper;
         }
 
-        // GET ==========================================================================================
-
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -58,8 +56,6 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
             return Ok(existe);
         }
 
-        // POST ==========================================================================================
-
         [HttpPost]
         public async Task<ActionResult<int>> Post(POST_TipoPlanDTO entidadDTO)
         {
@@ -83,9 +79,6 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
                 return BadRequest(e.Message);
             }
         }
-
-
-        // PUT ==========================================================================================
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] PUT_TipoPlanDTO entidadDTO)
@@ -118,8 +111,6 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
                 return BadRequest($"Error al actualizar: {e.Message}");
             }
         }
-
-        // DELETE ==========================================================================================
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)

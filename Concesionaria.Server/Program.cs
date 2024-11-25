@@ -33,7 +33,7 @@ builder.Services.AddScoped<IVendedorRepositorio, VendedorRepositorio>();
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 builder.Services.AddScoped<ICuotaRepositorio, CuotaRepositorio>();
 builder.Services.AddScoped<IPagoRepositorio, PagoRepositorio>();
-builder.Services.AddScoped<IAdjudicacionRepositorio, AdjudicacionRepositorio>();
+builder.Services.AddScoped<IRepositorio<Adjudicacion>, AdjudicacionRepositorio>();
 builder.Services.AddScoped<ITipoPlanRepositorio, TipoPlanRepositorio>();
 builder.Services.AddScoped<IRepositorio<Vehiculo>, Repositorio<Vehiculo>>();
 

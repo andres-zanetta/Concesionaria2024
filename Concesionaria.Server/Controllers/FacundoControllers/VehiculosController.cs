@@ -5,8 +5,8 @@ using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.Facun
 using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo;
 using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
 [Route("api/Vehiculos")]
+[ApiController]
 public class VehiculosController : ControllerBase
 {
     private readonly IRepositorio<Vehiculo> repositorio;
@@ -22,7 +22,8 @@ public class VehiculosController : ControllerBase
     public async Task<ActionResult<List<GET_VehiculoDTO>>> GetAll()
     {
         var vehiculos = await repositorio.Select();
-        return Ok(mapper.Map<List<GET_VehiculoDTO>>(vehiculos));
+        var vehiculosDTO = mapper.Map<List<GET_VehiculoDTO>>(vehiculos);
+        return Ok(vehiculosDTO);
     }
 
     [HttpGet("{id:int}")]
@@ -31,7 +32,7 @@ public class VehiculosController : ControllerBase
         var vehiculo = await repositorio.SelectById(id);
         if (vehiculo == null)
         {
-            return NotFound();
+            return NotFound($"El vehículo con id {id} no se encontró.");
         }
         return Ok(mapper.Map<GET_VehiculoDTO>(vehiculo));
     }
@@ -54,7 +55,9 @@ public class VehiculosController : ControllerBase
         try
         {
             var vehiculo = mapper.Map<Vehiculo>(entidadDTO);
+
             var id = await repositorio.Insert(vehiculo);
+
             return CreatedAtAction(nameof(GetById), new { id }, vehiculo);
         }
         catch (Exception e)
@@ -62,6 +65,7 @@ public class VehiculosController : ControllerBase
             return BadRequest($"Error: {e.Message}");
         }
     }
+
 
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Update(int id, [FromBody] PUT_VehiculoDTO entidadDTO)
@@ -74,7 +78,7 @@ public class VehiculosController : ControllerBase
         var vehiculo = await repositorio.SelectById(id);
         if (vehiculo == null)
         {
-            return NotFound("No existe el vehículo buscado.");
+            return NotFound($"El vehículo con id {id} no existe.");
         }
 
         mapper.Map(entidadDTO, vehiculo);
@@ -86,16 +90,17 @@ public class VehiculosController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return BadRequest($"Error: {e.Message}");
         }
     }
+
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
         if (!await repositorio.Existe(id))
         {
-            return NotFound($"El vehículo {id} no existe.");
+            return NotFound($"El vehículo con id {id} no existe.");
         }
 
         await repositorio.Delete(id);

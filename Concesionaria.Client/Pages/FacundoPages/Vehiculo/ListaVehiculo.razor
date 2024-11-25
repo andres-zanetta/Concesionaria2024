@@ -1,0 +1,75 @@
+﻿@page "/api/Vehiculos/Mostrar"
+@using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO
+@using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo
+@inject IHttpServicio http
+@inject NavigationManager Navigation
+
+<h3>Vehículos</h3>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Precio</th>
+            <th>Motor</th>
+            <th>Combustible</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Mensaje == "")
+        {
+            @if (listaVehiculos == null)
+            {
+                <tr><td colspan="6">Buscando...</td></tr>
+            }
+            else if (listaVehiculos.Count == 0)
+            {
+                <tr><td colspan="6">No existen vehículos registrados.</td></tr>
+            }
+            else
+            {
+                @foreach (var vehiculo in listaVehiculos)
+                {
+                    <tr>
+                        <td>@vehiculo.Codigo</td>
+                        <td>@vehiculo.Marca</td>
+                        <td>@vehiculo.Modelo</td>
+                        <td>@vehiculo.Precio.ToString("C")</td>
+                        <td>@vehiculo.Motor</td>
+                        <td>@vehiculo.Combustible</td>
+                    </tr>
+                }
+            }
+        }
+        else
+        {
+            <tr><td colspan="6">Error: @Mensaje</td></tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<GET_VehiculoDTO> listaVehiculos;
+    string Mensaje = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LeerVehiculos();
+    }
+
+    private async Task LeerVehiculos()
+    {
+        var resp = await http.Get<List<GET_VehiculoDTO>>("api/Vehiculos");
+        if (!resp.Error)
+        {
+            listaVehiculos = resp.Respuesta;
+        }
+        else
+        {
+            Mensaje = await resp.ObtenerError();
+        }
+    }
+}

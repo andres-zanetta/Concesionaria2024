@@ -6,6 +6,9 @@
         public DateTime Fecha { get; set; }
         public decimal Monto { get; set; }
         public string? Estado { get; set; }
+        public object Codigo { get; set; }
+        public object PatenteVehiculo { get; set; }
+        public object VehiculoId { get; set; }
     }
 }
 

@@ -23,7 +23,7 @@ namespace Concesionaria.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<GET_AdjudicacionDTO>>> Get()
         {
-            var adjudicaciones = await repositorio.Select();  
+            var adjudicaciones = await repositorio.Select();
             if (adjudicaciones == null || !adjudicaciones.Any())
             {
                 return NotFound("No se encontraron adjudicaciones.");
@@ -34,23 +34,24 @@ namespace Concesionaria.Server.Controllers
             return Ok(adjudicacionesDTO);
         }
 
-
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Adjudicacion>> Get(int id)
+        public async Task<ActionResult<GET_AdjudicacionDTO>> Get(int id)
         {
-            Adjudicacion? sel = await repositorio.SelectById(id);
-            if (sel == null)
+            var adjudicacion = await repositorio.SelectById(id);
+            if (adjudicacion == null)
             {
-                return NotFound();
+                return NotFound("La adjudicación no fue encontrada.");
             }
-            return sel;
+
+            var adjudicacionDTO = mapper.Map<GET_AdjudicacionDTO>(adjudicacion);
+            return Ok(adjudicacionDTO);
         }
 
         [HttpGet("existe/{id:int}")]
         public async Task<ActionResult<bool>> Existe(int id)
         {
             var existe = await repositorio.Existe(id);
-            return existe;
+            return Ok(existe);
         }
 
         [HttpPost]
@@ -64,7 +65,8 @@ namespace Concesionaria.Server.Controllers
             try
             {
                 var entidad = mapper.Map<Adjudicacion>(entidadDTO);
-                return await repositorio.Insert(entidad);
+                var result = await repositorio.Insert(entidad);
+                return CreatedAtAction(nameof(Get), new { id = result }, result);
             }
             catch (DbUpdateException ex)
             {
@@ -81,27 +83,26 @@ namespace Concesionaria.Server.Controllers
         {
             if (id != entidadDTO.Id)
             {
-                return BadRequest("Datos incorrectos");
+                return BadRequest("El ID proporcionado no coincide con el ID de la adjudicación.");
             }
 
-            var sel = await repositorio.SelectById(id);
-            if (sel == null)
+            var adjudicacion = await repositorio.SelectById(id);
+            if (adjudicacion == null)
             {
-                return NotFound("No existe la adjudicación buscada.");
+                return NotFound("La adjudicación no fue encontrada.");
             }
 
-            mapper.Map(entidadDTO, sel);
+            mapper.Map(entidadDTO, adjudicacion);
 
             try
             {
-                await repositorio.Update(id, sel);
-                return Ok();
+                await repositorio.Update(id, adjudicacion);
+                return Ok("La adjudicación fue actualizada correctamente.");
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return BadRequest($"Error al actualizar la adjudicación: {e.Message}");
             }
-
         }
 
         [HttpDelete("{id:int}")]
@@ -110,18 +111,18 @@ namespace Concesionaria.Server.Controllers
             var existe = await repositorio.Existe(id);
             if (!existe)
             {
-                return NotFound($"La adjudicación {id} no existe");
+                return NotFound($"La adjudicación con ID {id} no existe.");
             }
 
-            if (await repositorio.Delete(id))
+            var success = await repositorio.Delete(id);
+            if (success)
             {
-                return Ok($"La adjudicación {id} fue eliminada");
+                return Ok($"La adjudicación con ID {id} fue eliminada.");
             }
             else
             {
-                return BadRequest();
+                return BadRequest("No se pudo eliminar la adjudicación.");
             }
         }
     }
 }
-
