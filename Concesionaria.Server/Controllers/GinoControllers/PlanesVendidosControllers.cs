@@ -132,6 +132,8 @@ namespace Concesionaria.Server.Controllers.GinoControllers
                     ClienteId = cliente.Id,
                     TipoPlanId = tipoPlan.Id,
 
+                    //Mapear
+
                 };
 
                 PlanVendido entidad = mapper.Map<PlanVendido>(POST_entidadDTO);
@@ -184,6 +186,9 @@ namespace Concesionaria.Server.Controllers.GinoControllers
                 ClienteId = cliente.Id,
                 TipoPlanId = tipoPlan.Id,
                 AdjudicacionId = adjudicacion.Id,
+
+                //Mapear
+
             };
 
             if (!await repositorio.Existe(id))
