@@ -77,13 +77,7 @@ namespace Concesionaria.Server.Mappers
 
             // Mapeado Vehiculo ===================================================================
 
-            CreateMap<Vehiculo, GET_VehiculoDTO>()
-               .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.Codigo))
-               .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca))
-               .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
-               .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio))
-               .ForMember(dest => dest.Motor, opt => opt.MapFrom(src => src.Motor))
-               .ForMember(dest => dest.Combustible, opt => opt.MapFrom(src => src.Combustible));
+            CreateMap<Vehiculo, GET_VehiculoDTO>();              
 
             // POST
 
@@ -94,17 +88,12 @@ namespace Concesionaria.Server.Mappers
             // PUT
 
             CreateMap<PUT_VehiculoDTO, Vehiculo>()
-                .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca))    
-                .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))  
-                .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio))   
-                .ForMember(dest => dest.Motor, opt => opt.MapFrom(src => src.Motor))     
-                .ForMember(dest => dest.Combustible, opt => opt.MapFrom(src => src.Combustible)) 
-                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.Codigo));
+				.ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.Marca}-{src.Modelo}-{src.Motor}"));
 
 
-            // Mapeado Adjudicacion ===============================================================
+			// Mapeado Adjudicacion ===============================================================
 
-            CreateMap<Adjudicacion, GET_AdjudicacionDTO>()
+			CreateMap<Adjudicacion, GET_AdjudicacionDTO>()
                 .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => src.FechaAdjudicacion)) 
                 .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.AutoEntregado ? "Entregado" : "Pendiente")) 
                 .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo)); 

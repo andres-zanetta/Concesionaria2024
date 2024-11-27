@@ -10,10 +10,16 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div class="form-group">
+@*     <div class="form-group">
         <label for="Codigo">Código</label>
         <InputText id="Codigo" class="form-control" @bind-Value="vehiculo.Codigo" />
-    </div>
+    </div> 
+    
+    El codigo se genera automaticamente a partir de, en este caso, la marca, modelo y version del motor, Ej: Toyota-Corola-1.6. Ver mapeado en caso de tener dudas.
+    
+    *@
+
+
 
     <div class="form-group">
         <label for="Marca">Marca</label>

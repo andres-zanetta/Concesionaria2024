@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 public class VehiculosController : ControllerBase
 {
 	private readonly IVehiculoRepositorio repositorio;
-	private readonly Mapper mapper;
+	private readonly IMapper mapper;
 
-	public VehiculosController(IVehiculoRepositorio repositorio, Mapper mapper) 
+	public VehiculosController(IVehiculoRepositorio repositorio, IMapper mapper) 
     {
 		this.repositorio = repositorio;
 		this.mapper = mapper;
@@ -28,7 +28,7 @@ public class VehiculosController : ControllerBase
         return Ok(vehiculosDTO);
     }
 
-    [HttpGet("Codigo/{string}")]
+    [HttpGet("Codigo/{codigo}")]
     public async Task<ActionResult<GET_VehiculoDTO>> GetByCod(string codigo)
     {
         try
@@ -39,7 +39,7 @@ public class VehiculosController : ControllerBase
 			{
 				return NotFound($"No existen vehiculos registrados con el codigo {codigo}");
 			}
-			var vehiculoDTO = mapper.Map<GET_PersonaDTO>(vehiculo);
+			var vehiculoDTO = mapper.Map<GET_VehiculoDTO>(vehiculo);
 			return Ok(vehiculoDTO);
 		}
         catch (Exception ex)
@@ -95,25 +95,25 @@ public class VehiculosController : ControllerBase
     }
 
 
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(int id, [FromBody] PUT_VehiculoDTO entidadDTO)
+    [HttpPut("CodigoAModificar/{codigo}")]
+    public async Task<ActionResult> Update(string codigo, [FromBody] PUT_VehiculoDTO entidadDTO)
     {
-        if (entidadDTO == null || id != entidadDTO.Id)
+        if (entidadDTO == null)
         {
             return BadRequest("Datos incorrectos.");
         }
 
-        var vehiculo = await repositorio.SelectById(id);
+        var vehiculo = await repositorio.SelectByCod(codigo);
         if (vehiculo == null)
         {
-            return NotFound($"El vehículo con id {id} no existe.");
+            return NotFound($"El vehículo con codigo {codigo} no existe.");
         }
 
         mapper.Map(entidadDTO, vehiculo);
 
         try
         {
-            await repositorio.Update(id, vehiculo);
+            await repositorio.Update(codigo, vehiculo);
             return NoContent();
         }
         catch (Exception e)
