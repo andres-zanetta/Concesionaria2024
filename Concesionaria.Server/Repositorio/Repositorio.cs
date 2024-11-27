@@ -31,8 +31,23 @@ namespace Concesionaria.Server.Repositorio
                 throw; // Relanzar la excepcion para que se maneje mas arriba
             }
         }
-        
-        public async Task<E> SelectById(int id)
+
+		public async Task<E?> SelectByCod(string cod)
+		{
+            try
+            {
+				E EntidadByCodigo = await context.Set<E>().FirstOrDefaultAsync(e => e.Codigo == cod);
+				return EntidadByCodigo;
+			}
+            catch (Exception ex)
+            {
+				Console.WriteLine($"Error al obtener los registros: {ex.Message}");
+				throw;
+            }
+
+		}
+
+		public async Task<E> SelectById(int id)
         {
             E? sel = await context.Set<E>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             return sel;
@@ -53,7 +68,23 @@ namespace Concesionaria.Server.Repositorio
             }
         }
 
-        public async Task<bool> Update(int id, E entidad)
+		public async Task<string> InsertDevuelveCodigo(E entidad)
+		{
+			try
+			{
+				await context.Set<E>().AddAsync(entidad);
+				await context.SaveChangesAsync();
+				return entidad.Codigo;
+			}
+
+			catch (Exception err)
+			{
+				throw err;
+			}
+		}
+
+
+		public async Task<bool> Update(int id, E entidad)
         {
             if (id != entidad.Id)
             {

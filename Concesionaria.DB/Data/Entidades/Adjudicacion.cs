@@ -11,11 +11,6 @@ namespace Concesionaria.DB.Data.Entidades
     [Index(nameof(PatenteVehiculo), Name = "Adjudicacion_UQ", IsUnique = true)]
     public class Adjudicacion : EntityBase
     {
-        // Codigo ---------------------------------------------------------------------------------
-
-        [Required(ErrorMessage = "El codigo es obligatorio.")]
-        [MaxLength(30, ErrorMessage = "Máximo número de caracteres {1}.")]
-        public string Codigo { get; set; }
 
         // Detalle ------------------------------------------------------------------------------------------
 

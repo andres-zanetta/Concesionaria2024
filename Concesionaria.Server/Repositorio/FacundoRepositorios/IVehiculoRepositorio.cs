@@ -4,6 +4,6 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
     public interface IVehiculoRepositorio : IRepositorio<Vehiculo>
     {
-        Task<Vehiculo?> SelectByIdAsync(int id);
-    }
+        Task<Vehiculo> GetByMarca(string marca);
+	}
 }

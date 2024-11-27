@@ -72,6 +72,6 @@ namespace Concesionaria.DB.Data.Entidades
         // Lista ------------------------------------------------------------------------------------------
 
 
-        public List<Pago> pagos { get; set; } = new List<Pago>();
+        public List<Pago> Pagos { get; set; } = new List<Pago>();
     }
 }

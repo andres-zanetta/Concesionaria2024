@@ -13,11 +13,6 @@ namespace Concesionaria.DB.Data.Entidades
     [Index(nameof(Marca), nameof(Modelo), Name = "MArca_Modelo_UQ", IsUnique = true)]
     public class Vehiculo : EntityBase
     {
-        // Codigo -----------------------------------------------------------------------------------------
-
-        [Required(ErrorMessage = "El codigo del Vehiculo es obligatoria.")]
-        [MaxLength(30, ErrorMessage = "Máximo número de caracteres {1}.")]
-        public string Codigo { get; set; }
 
         // Marca ------------------------------------------------------------------------------------------
 

@@ -14,9 +14,18 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
             this.context = context;
         }
 
-        public async Task<Vehiculo?> SelectByIdAsync(int id)
+        public async Task<Vehiculo> GetByMarca(string marca)
         {
-            return await context.Vehiculos.FirstOrDefaultAsync(v => v.Id == id);
+            try
+            {
+				var vehiculo = await context.Vehiculos.FirstOrDefaultAsync(m => m.Marca == marca);
+                return vehiculo;
+			}
+			catch (Exception e)
+            {
+				Console.WriteLine($"Error al obtener los registros: {e.Message}");
+				throw;
+            }
         }
     }
 }

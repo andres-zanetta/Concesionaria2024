@@ -87,13 +87,9 @@ namespace Concesionaria.Server.Mappers
 
             // POST
 
+            // Asigno el valor de marca,modelo y motor al codigo, para dejar de depender del id y trabajar con algo cercano al al lenguaje del cliente
             CreateMap<POST_VehiculoDTO, Vehiculo>()
-                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.Codigo))
-                .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca))
-                .ForMember(dest => dest.Modelo, opt => opt.MapFrom(src => src.Modelo))
-                .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Precio))
-                .ForMember(dest => dest.Motor, opt => opt.MapFrom(src => src.Motor))
-                .ForMember(dest => dest.Combustible, opt => opt.MapFrom(src => src.Combustible));
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.Marca}-{src.Modelo}-{src.Motor}"));
 
             // PUT
 
@@ -123,7 +119,7 @@ namespace Concesionaria.Server.Mappers
             // PUT
 
             CreateMap<PUT_AdjudicacionDTO, Adjudicacion>()
-                .ForMember(dest => dest.FechaAdjudicacion, opt => opt.MapFrom(src => src.Fecha)) 
+                .ForMember(dest => dest.FechaAdjudicacion, opt => opt.MapFrom(src => src.FechaAdjudicacion)) 
                 .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo)) 
                 .ForMember(dest => dest.AutoEntregado, opt => opt.MapFrom(src => src.AutoEntregado)); 
 

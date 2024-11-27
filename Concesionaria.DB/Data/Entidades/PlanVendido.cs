@@ -13,12 +13,6 @@ namespace Concesionaria.DB.Data.Entidades
     [Index(nameof(Estado), Name = "Estado", IsUnique = false)]
     public class PlanVendido : EntityBase
     {
-        // Codigo ---------------------------------------------------------------------------------
-
-        [Required(ErrorMessage = "El codigo es obligatorio.")]
-        [MaxLength(30, ErrorMessage = "Máximo número de caracteres {1}.")]
-        public string Codigo { get; set; }
-
 
         // Fecha cuando se suscribió ------------------------------------------------------------------------------------------
 

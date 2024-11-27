@@ -19,17 +19,9 @@ namespace Concesionaria.DB.Data.Entidades
         public string Nombre { get; set; }
 
 
-        // Codigo ------------------------------------------------------------------------------------------
-
-
-        [Required(ErrorMessage = "El código del tipo de documento es obligatorio.")]
-        [MaxLength(4, ErrorMessage = "Máximo número de caracteres {1}.")]
-        public string Codigo { get; set; }
-
-
         // Lista ------------------------------------------------------------------------------------------
 
 
-        public List<Persona> personas { get; set; } = new List<Persona>(); 
+        public List<Persona> Personas { get; set; } = new List<Persona>(); 
     }
 }
