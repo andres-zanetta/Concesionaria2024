@@ -64,8 +64,8 @@ namespace Concesionaria.DB.Data.Entidades
 
 
         [Required(ErrorMessage = "El número de documento es obligatorio.")]
-        //Agregar metodo que valide que sea un número del 1 al 15
-        public int NumDoc { get; set; }
+		[MaxLength(15, ErrorMessage = "Máximo número de caracteres {1}.")]
+		public string NumDoc { get; set; }
 
 
         // Clase de navegación ------------------------------------------------------------------------------------------

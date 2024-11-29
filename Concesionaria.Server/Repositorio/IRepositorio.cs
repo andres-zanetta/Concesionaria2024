@@ -12,6 +12,7 @@ namespace Concesionaria.Server.Repositorio
         Task<E> SelectById(int id);
         Task<bool> Update(int id, E entidad);
         Task<E> SelectByCod(string codigo);
-
+		Task<bool> ExisteByCodigo(string codigo);
+		Task<string> InsertDevuelveCodigo(E entidad);
 	}
 }

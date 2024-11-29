@@ -44,6 +44,5 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
         [Required(ErrorMessage = "El tipo de plan es obligatoria.")]
         public string TipoPlanNombre { get; set; }
 
-
     }
 }

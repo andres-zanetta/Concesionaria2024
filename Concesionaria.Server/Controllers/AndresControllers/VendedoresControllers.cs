@@ -5,6 +5,7 @@ using Concesionaria.Server.Repositorio;
 using Concesionaria.Server.Repositorio.AndresRepositorios;
 using Concesionaria2024.Shared.DTO.AndresDTO;
 using Concesionaria2024.Shared.DTO.GinoDTO;
+using Concesionaria2024.Shared.DTO.GinoDTO.Persona;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -109,39 +110,44 @@ namespace Concesionaria.Server.Controllers.AndresControllers
             }
         }
 
-        // PUT: ID ------------------------------------------------------------------------
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] PUT_VendedorDTO PUT_EntidadDTO)
-        {
-            if (!await repositorio.Existe(id))
-            {
-                return BadRequest("Datos incorrectos");
-            }
-            var vendedor = await repositorio.SelectById(id);
+		// PUT: ID ------------------------------------------------------------------------
+		[HttpPut("CodigoAModificar/{codigo}")]
+		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_VendedorDTO entidadDTO)
+		{
+			if (!await repositorio.ExisteByCodigo(codigo))
+			{
+				return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            if (vendedor == null)
-            {
-                return NotFound("No existe el vendedor buscado.");
-            }
+			var vendedor = await repositorio.SelectByCod(codigo);
 
-            mapper.Map(PUT_EntidadDTO, vendedor);
+			if (vendedor == null)
+			{
+				return NotFound($"No se encontró un vendedor con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            //Console.ForegroundColor = ConsoleColor.Green;
-            //Console.WriteLine($"Vendedor actualizado: {vendedor.Nombre}, {vendedor.Apellido}, {vendedor.NumDoc}, {vendedor.TipoDocumentoId}");
-            //Console.ResetColor();
+			mapper.Map(entidadDTO, vendedor);
 
-            try
-            {
-                await repositorio.Update(id, vendedor);
-                var vendedorDTO = mapper.Map<GET_VendedorDTO>(vendedor);
+			// Log para verificar los valores actualizados en verde 
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine($"TipoDocumento actualizado: {vendedor}");
+			Console.ResetColor();
 
-                return Ok(vendedorDTO);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
+			try
+			{
+				await repositorio.Update(vendedor.Id, vendedor);
+				var vendedorDTO = mapper.Map<PUT_VendedorDTO>(vendedor);
+				return Ok(vendedorDTO);
+			}
+			catch (Exception e)
+			{
+				if (e.InnerException != null)
+				{
+					return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+				}
+				return BadRequest(e.Message);
+			}
+		}
 
         // DELETE: ID ----------------------------------------------------------------------
         [HttpDelete("{id:int}")]

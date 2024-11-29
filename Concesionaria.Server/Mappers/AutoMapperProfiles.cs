@@ -21,7 +21,10 @@ namespace Concesionaria.Server.Mappers
 
             CreateMap<Persona, GET_PersonaDTO>().ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => src.TipoDocumento.Nombre));
             // Mapea el nombre del TipoDocumento a TipoDocumentoNombre en Persona
-            CreateMap<POST_PersonaDTO, Persona>();
+
+            CreateMap<POST_PersonaDTO, Persona>().ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.NumDoc}-{src.TipoDocumento.Nombre}"));
+
+
             CreateMap<PUT_PersonaDTO, Persona>();
 
             // Mapeado Plan Vendido ===============================================================
@@ -44,7 +47,6 @@ namespace Concesionaria.Server.Mappers
             // Mapeado Tipo Documento =============================================================
 
             CreateMap<TipoDocumento, GET_TipoDocumentoDTO>();
-            CreateMap<GET_TipoDocumentoDTO, TipoDocumento>();
             CreateMap<POST_TipoDocumentoDTO, TipoDocumento>();
             CreateMap<PUT_TipoDocumentoDTO, TipoDocumento>();
 
@@ -79,13 +81,11 @@ namespace Concesionaria.Server.Mappers
 
             CreateMap<Vehiculo, GET_VehiculoDTO>();              
 
-            // POST
 
             // Asigno el valor de marca,modelo y motor al codigo, para dejar de depender del id y trabajar con algo cercano al al lenguaje del cliente
             CreateMap<POST_VehiculoDTO, Vehiculo>()
                 .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.Marca}-{src.Modelo}-{src.Motor}"));
 
-            // PUT
 
             CreateMap<PUT_VehiculoDTO, Vehiculo>()
 				.ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.Marca}-{src.Modelo}-{src.Motor}"));

@@ -2,6 +2,8 @@
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria.Server.Repositorio.GinoRepositorios;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo;
 using Concesionaria2024.Shared.DTO.GinoDTO.Persona;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,29 +39,51 @@ namespace Concesionaria.Server.Controllers.GinoControllers
             }
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<GET_PersonaDTO>> Get(int id)
+        [HttpGet("Documento/{documento}")]
+        public async Task<ActionResult<GET_PersonaDTO>> Get(string documento)
         {
-            Persona? persona = await repositorio.SelectEntidadTDById(id);
-            if (persona == null)
+            try
             {
-                return NotFound();
-            }
-            var personaDTO = mapper.Map<GET_PersonaDTO>(persona);
-            return personaDTO;
+				Persona? persona = await repositorio.SelectByNumDoc(documento);
+				if (persona == null)
+				{
+					return NotFound();
+				}
+				var personaDTO = mapper.Map<GET_PersonaDTO>(persona);
+				return Ok(personaDTO);
+			}
+            catch (Exception ex)
+            {
+				if (ex.InnerException != null)
+				{
+					return BadRequest($"Error: {ex.Message}. Inner Exception: {ex.InnerException.Message}");
+				}
+				return BadRequest(ex.Message);
+			}
         }
 
-        [HttpGet("existe/{id:int}")]
-        public async Task<ActionResult<bool>> Existe(int id)
+
+
+        [HttpGet("existe/{documento}")]
+        public async Task<ActionResult<bool>> Existe(string documento)
         {
-            var existe = await repositorio.Existe(id);
-            return existe;
-        }
+			var existe = await repositorio.ExisteByDocumento(documento);
+			if (!existe)
+			{
+				return NotFound($"La persona con el número de docuemnto {documento} no se encuentra registrada.");
+			}
+			return Ok(existe);
+		}
 
         [HttpPost]
         public async Task<ActionResult<int>> Post(POST_PersonaDTO POST_entidadDTO)
         {
-            try
+			if (POST_entidadDTO == null)
+			{
+				return BadRequest("Los datos de la persona se encuentran nulos. Favor verificar los campos");
+			}
+
+			try
             {
                 Persona entidad = mapper.Map<Persona>(POST_entidadDTO);
                 return await repositorio.Insert(entidad);
@@ -74,43 +98,43 @@ namespace Concesionaria.Server.Controllers.GinoControllers
             }
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] PUT_PersonaDTO PUT_EntidadDTO)
-        {
-            if (!await repositorio.Existe(id))
-            {
-                return BadRequest("No existe el tipo de documento buscado.");
-            }
+		[HttpPut("CodigoAModificar/{codigo}")]
+		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_PersonaDTO entidadDTO)
+		{
+			if (!await repositorio.ExisteByCodigo(codigo))
+			{
+				return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            var persona = await repositorio.SelectEntidadTDById(id);
+			var persona = await repositorio.SelectByCod(codigo);
 
-            if (persona == null)
-            {
-                return NotFound("No existe el tipo de documento");
-            }
+			if (persona == null)
+			{
+				return NotFound($"No se encontró una persona con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            mapper.Map(PUT_EntidadDTO, persona);
+			mapper.Map(entidadDTO, persona);
 
-            // Log para verificar los valores actualizados en verde 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"TipoDocumento actualizado: {persona.Nombre}, {persona.Apellido}, {persona.NumDoc}, {persona.TipoDocumentoId}");
-            Console.ResetColor();
+			// Log para verificar los valores actualizados en verde 
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine($"Persona actualizada: {persona}");
+			Console.ResetColor();
 
-            try
-            {
-                await repositorio.Update(id, persona);
-                var personaDTO = mapper.Map<GET_PersonaDTO>(persona);
-                return Ok(personaDTO);
-            }
-            catch (Exception e)
-            {
-                if (e.InnerException != null)
-                {
-                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
-                }
-                return BadRequest(e.Message);
-            }
-        }
+			try
+			{
+				await repositorio.Update(persona.Id, persona);
+				var personaDTO = mapper.Map<GET_PersonaDTO>(persona);
+				return Ok(personaDTO);
+			}
+			catch (Exception e)
+			{
+				if (e.InnerException != null)
+				{
+					return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+				}
+				return BadRequest(e.Message);
+			}
+		}
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)

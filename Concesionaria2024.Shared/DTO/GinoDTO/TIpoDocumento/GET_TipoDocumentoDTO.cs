@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO.TIpoDocumento
 {
-    public class GET_TipoDocumentoDTO : EntityBase
+    public class GET_TipoDocumentoDTO
     {
 
         // Nombre ------------------------------------------------------------------------------------------

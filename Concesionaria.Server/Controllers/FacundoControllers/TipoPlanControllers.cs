@@ -2,7 +2,9 @@
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria.Server.Repositorio.FacundoRepositorios;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -80,37 +82,43 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
             }
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Put(int id, [FromBody] PUT_TipoPlanDTO entidadDTO)
-        {
-            if (entidadDTO == null)
-            {
-                return BadRequest("Los datos del tipo de plan son nulos.");
-            }
+		[HttpPut("CodigoAModificar/{codigo}")]
+		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_TipoPlanDTO entidadDTO)
+		{
+			if (!await repositorio.ExisteByCodigo(codigo))
+			{
+				return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            if (!await repositorio.Existe(id))
-            {
-                return NotFound($"Tipo de plan con ID {id} no encontrado.");
-            }
+			var tipoPlan = await repositorio.SelectByCod(codigo);
 
-            try
-            {
-                var tipoPlan = await repositorio.SelectById(id);
-                if (tipoPlan == null)
-                {
-                    return NotFound($"Tipo de plan con ID {id} no encontrado.");
-                }
+			if (tipoPlan == null)
+			{
+				return NotFound($"No se encontró un tipoPlan con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-                mapper.Map(entidadDTO, tipoPlan);
-                await repositorio.Update(id, tipoPlan);
-                var tipoPlanDTO = mapper.Map<GET_TipoPlanDTO>(tipoPlan);
-                return Ok(tipoPlanDTO);
-            }
-            catch (Exception e)
-            {
-                return BadRequest($"Error al actualizar: {e.Message}");
-            }
-        }
+			mapper.Map(entidadDTO, tipoPlan);
+
+			// Log para verificar los valores actualizados en verde 
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine($"TipoPlan actualizado: {tipoPlan}");
+			Console.ResetColor();
+
+			try
+			{
+				await repositorio.Update(tipoPlan.Id, tipoPlan);
+				var tipoPlanDTO = mapper.Map<GET_VehiculoDTO>(tipoPlan);
+				return Ok(tipoPlanDTO);
+			}
+			catch (Exception e)
+			{
+				if (e.InnerException != null)
+				{
+					return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+				}
+				return BadRequest(e.Message);
+			}
+		}
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)

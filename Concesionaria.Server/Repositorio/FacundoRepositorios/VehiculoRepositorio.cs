@@ -14,12 +14,12 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
             this.context = context;
         }
 
-        public async Task<Vehiculo> GetByMarca(string marca)
+        public async Task<List<Vehiculo>> SelectByMarca(string marca)
         {
             try
             {
-				var vehiculo = await context.Vehiculos.FirstOrDefaultAsync(m => m.Marca == marca);
-                return vehiculo;
+				var vehiculos = await context.Vehiculos.Where(m => m.Marca == marca).ToListAsync();
+                return vehiculos;
 			}
 			catch (Exception e)
             {

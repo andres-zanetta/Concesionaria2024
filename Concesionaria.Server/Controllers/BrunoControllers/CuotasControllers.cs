@@ -4,6 +4,8 @@ using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria.Server.Repositorio.BrunoRepositorios;
 using Concesionaria2024.Shared.DTO.BrunoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,33 +70,44 @@ namespace Concesionaria.Server.Controllers.BrunoControllers
             }
         }
 
-        // PUT: -----------------------------------------------------------------------
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Cuota entidad)
-        {
-            if (id != entidad.Id)
-            {
-                return BadRequest("Datos incorrectos");
-            }
-            var sel = await repositorio.SelectById(id);
+		// PUT: -----------------------------------------------------------------------
+		[HttpPut("CodigoAModificar/{codigo}")]
+		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_CuotaDTO entidadDTO)
+		{
+			if (!await repositorio.ExisteByCodigo(codigo))
+			{
+				return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            if (sel == null)
-            {
-                return NotFound("No existe la cuota buscada.");
-            }
+			var cuota = await repositorio.SelectByCod(codigo);
 
-            mapper.Map(entidad, sel);
+			if (cuota == null)
+			{
+				return NotFound($"No se encontró una cuota con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            try
-            {
-                await repositorio.Update(id, sel);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
+			mapper.Map(entidadDTO, cuota);
+
+			// Log para verificar los valores actualizados en verde 
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine($"TipoDocumento actualizado: {cuota}");
+			Console.ResetColor();
+
+			try
+			{
+				await repositorio.Update(cuota.Id, cuota);
+				var cuotaDTO = mapper.Map<PUT_CuotaDTO>(cuota);
+				return Ok(cuotaDTO);
+			}
+			catch (Exception e)
+			{
+				if (e.InnerException != null)
+				{
+					return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+				}
+				return BadRequest(e.Message);
+			}
+		}
 
         // DELETE: --------------------------------------------------------------------
         [HttpDelete("{ID:int}")]

@@ -5,6 +5,7 @@ using Concesionaria.Server.Repositorio.AndresRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using Concesionaria2024.Shared.DTO.AndresDTO;
 using Concesionaria2024.Shared.DTO.GinoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
 
 namespace Concesionaria.Server.Controllers.AndresControllers
 {
@@ -76,39 +77,44 @@ namespace Concesionaria.Server.Controllers.AndresControllers
             }
         }
 
-        // PUT: ID ------------------------------------------------------------------------
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] PUT_ClienteDTO cliente)
+		// PUT: ID ------------------------------------------------------------------------
+		[HttpPut("CodigoAModificar/{codigo}")]
+		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_ClienteDTO entidadDTO)
         {
-            if (id != cliente.Id)//no tocar
-            {
-                return BadRequest("Datos incorrectos");
-            }
-            var sel = await repositorio.SelectById(id);
+			if (!await repositorio.ExisteByCodigo(codigo))
+			{
+				return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            if (sel == null)//sel es el nombre de la variable de cliente seleccionado
-            {
-                return NotFound("No existe el cliente buscado.");
-            }
+			var cliente = await repositorio.SelectByCod(codigo);
 
-            mapper.Map(cliente, sel);
+			if (cliente == null)
+			{
+				return NotFound($"No se encontró un cliente con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            try
-            {
-                await repositorio.Update(id, sel);
-                var clienteDTO = mapper.Map<GET_ClienteDTO>(cliente);
-                return Ok(clienteDTO);
-            }
-            catch (Exception e)
-            {
+			mapper.Map(entidadDTO, cliente);
 
-                if (e.InnerException != null)
-                {
-                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
-                }
-                return BadRequest(e.Message);
-            }
-        }
+			// Log para verificar los valores actualizados en verde 
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine($"TipoDocumento actualizado: {cliente}");
+			Console.ResetColor();
+
+			try
+			{
+				await repositorio.Update(cliente.Id, cliente);
+				var clienteDTO = mapper.Map<GET_ClienteDTO>(cliente);
+				return Ok(clienteDTO);
+			}
+			catch (Exception e)
+			{
+				if (e.InnerException != null)
+				{
+					return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+				}
+				return BadRequest(e.Message);
+			}
+		}
 
         // DELETE: ID ----------------------------------------------------------------------
         [HttpDelete("{id:int}")]

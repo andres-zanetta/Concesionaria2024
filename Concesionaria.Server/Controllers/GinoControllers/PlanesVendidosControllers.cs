@@ -4,6 +4,7 @@ using Concesionaria.Server.Repositorio;
 using Concesionaria.Server.Repositorio.AndresRepositorios;
 using Concesionaria.Server.Repositorio.FacundoRepositorios;
 using Concesionaria.Server.Repositorio.GinoRepositorios;
+using Concesionaria2024.Shared.DTO.GinoDTO.Persona;
 using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,32 +50,12 @@ namespace Concesionaria.Server.Controllers.GinoControllers
             }
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<GET_PlanVendidoDTO>> Get(int id)
-        {
-            try
-            {
-                PlanVendido? planVendido = await repositorio.SelectPlanYAsociadosById(id);
-                if (planVendido == null)
-                {
-                    return NotFound($"No se encontró el plan {id}");
-                }
-                var planVendidoDTO = mapper.Map<GET_PlanVendidoDTO>(planVendido);
-                return Ok(planVendidoDTO);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error en el método GET: {e.Message}");
-                return StatusCode(500, $"Ocurrió un error interno: {e.Message}");
-            }
-        }
-
         [HttpGet("GetByCod/{cod}")]
         public async Task<ActionResult<GET_PlanVendidoDTO>> GetByCode(string cod)
         {
             try
             {
-                var planVendidoCod = await repositorio.SelectByCodigo(cod);
+                var planVendidoCod = await repositorio.SelectPlanYAsociadosByCodigo(cod);
                 if (planVendidoCod == null)
                 {
                     return NotFound($"No se encontró el plan {cod}");
@@ -149,9 +130,9 @@ namespace Concesionaria.Server.Controllers.GinoControllers
             }
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] PUT_PlanVendidoDNI_DTO PUT_EntidadDNI_DTO)
-        {
+		[HttpPut("CodigoAModificar/{codigo}")]
+		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_PlanVendidoDNI_DTO PUT_EntidadDNI_DTO)
+		{
             var cliente = await repoCliente.SelectByDNI(PUT_EntidadDNI_DTO.ClienteDNI);
             if (cliente == null)
             {
@@ -191,17 +172,17 @@ namespace Concesionaria.Server.Controllers.GinoControllers
 
             };
 
-            if (!await repositorio.Existe(id))
+            if (!await repositorio.ExisteByCodigo(codigo))
             {
-                return BadRequest("No existe el tipo de documento buscado.");
-            }
+				return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            var planVendido = await repositorio.SelectPlanYAsociadosById(id);
+            var planVendido = await repositorio.SelectPlanYAsociadosByCodigo(codigo);
 
             if (planVendido == null)
             {
-                return NotFound("No existe el tipo de documento");
-            }
+				return NotFound($"No se encontró una persona con el código {codigo}, compruebe el valor ingresado.");
+			}
 
             mapper.Map(EntidadDTO, planVendido);
 
@@ -212,7 +193,7 @@ namespace Concesionaria.Server.Controllers.GinoControllers
 
             try
             {
-                await repositorio.Update(id, planVendido);
+                await repositorio.Update(planVendido.Id, planVendido);
                 var personaDTO = mapper.Map<GET_PlanVendidoDTO>(planVendido);
                 return Ok(personaDTO);
             }

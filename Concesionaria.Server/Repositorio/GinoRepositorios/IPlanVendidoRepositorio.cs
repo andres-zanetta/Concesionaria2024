@@ -6,6 +6,6 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
     {
         Task<PlanVendido> SelectByCodigo(string codigo);
         Task<List<PlanVendido>> SelectPlanYAsociados();
-        Task<PlanVendido> SelectPlanYAsociadosById(int id);
+        Task<PlanVendido> SelectPlanYAsociadosByCodigo(string codigo);
     }
 }

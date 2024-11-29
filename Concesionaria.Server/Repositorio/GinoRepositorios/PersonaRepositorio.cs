@@ -13,6 +13,37 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
             this.context = context;
         }
 
+        public async Task<bool> ExisteByDocumento(string numDoc)
+        {
+            try
+            {
+				var Existe = await context.Personas.AnyAsync(p => p.NumDoc == numDoc);
+				return Existe;
+			}
+            catch (Exception e)
+            {
+				Console.WriteLine($"Error al obtener los registros: {e.Message}");
+
+				throw;
+            }
+
+        }
+
+        public async Task<Persona> SelectByNumDoc(string numDoc)
+        {
+            try
+            {
+                var persona = await context.Personas.Include(p => p.TipoDocumento).FirstOrDefaultAsync(p => p.NumDoc == numDoc);
+                return persona;
+
+			}
+            catch (Exception e)
+            {
+				Console.WriteLine($"Error al obtener los registros: {e.Message}");
+				throw;
+            }
+        }
+
         public async Task<List<Persona>> SelectEntidadTD()
         {
             try

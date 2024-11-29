@@ -4,7 +4,9 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
 {
     public interface IPersonaRepositorio : IRepositorio<Persona>
     {
-        Task<List<Persona>> SelectEntidadTD();
+		Task<bool> ExisteByDocumento(string numDoc);
+		Task<Persona> SelectByNumDoc(string numDoc);
+		Task<List<Persona>> SelectEntidadTD();
         Task<Persona> SelectEntidadTDById(int id);
     }
 }

@@ -21,12 +21,38 @@ public class VehiculosController : ControllerBase
 	}
 
     [HttpGet]
-    public async Task<ActionResult<List<GET_VehiculoDTO>>> GetAll()
+    public async Task<ActionResult<List<GET_VehiculoDTO>>> Get()
     {
-        var vehiculos = await repositorio.Select();
-        var vehiculosDTO = mapper.Map<List<GET_VehiculoDTO>>(vehiculos);
-        return Ok(vehiculosDTO);
+		try
+		{
+			var vehiculos = await repositorio.Select();
+			var vehiculosDTO = mapper.Map<List<GET_VehiculoDTO>>(vehiculos);
+			return Ok(vehiculosDTO);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error en el método GET: {ex.Message}");
+			return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+		}
+ 
     }
+
+    [HttpGet("Marca/{marca}")]
+    public async Task<ActionResult<List<Vehiculo>>> GetByMarca(string marca)
+    {
+		try
+		{
+			var vehiculos = await repositorio.SelectByMarca(marca);
+			var vehiculosDTO = mapper.Map<List<GET_VehiculoDTO>>(vehiculos);
+			return Ok(vehiculosDTO);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error en el método GET: {ex.Message}");
+			return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+		}
+
+	}
 
     [HttpGet("Codigo/{codigo}")]
     public async Task<ActionResult<GET_VehiculoDTO>> GetByCod(string codigo)
@@ -53,22 +79,14 @@ public class VehiculosController : ControllerBase
 		}
     }
 
-
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<GET_VehiculoDTO>> GetById(int id)
+    [HttpGet("existe/{codigo}")]
+    public async Task<ActionResult<bool>> ExisteByCod(string codigo)
     {
-        var vehiculo = await repositorio.SelectById(id);
-        if (vehiculo == null)
-        {
-            return NotFound($"El vehículo con id {id} no se encontró.");
-        }
-        return Ok(mapper.Map<GET_VehiculoDTO>(vehiculo));
-    }
-
-    [HttpGet("existe/{id:int}")]
-    public async Task<ActionResult<bool>> Exists(int id)
-    {
-        var existe = await repositorio.Existe(id);
+        var existe = await repositorio.ExisteByCodigo(codigo);
+		if (!existe)
+		{
+			return NotFound($"El código {codigo} no existe.");
+		}
         return Ok(existe);
     }
 
@@ -84,7 +102,7 @@ public class VehiculosController : ControllerBase
         {
             var vehiculo = mapper.Map<Vehiculo>(entidadDTO);
 
-            var id = await repositorio.Insert(vehiculo);
+            await repositorio.Insert(vehiculo);
 
             return Ok($"Vehiculo cargado correctamente. Codigo: {vehiculo.Codigo}");
         }
@@ -96,42 +114,68 @@ public class VehiculosController : ControllerBase
 
 
     [HttpPut("CodigoAModificar/{codigo}")]
-    public async Task<ActionResult> Update(string codigo, [FromBody] PUT_VehiculoDTO entidadDTO)
+    public async Task<ActionResult> Put(string codigo, [FromBody] PUT_VehiculoDTO entidadDTO)
     {
-        if (entidadDTO == null)
-        {
-            return BadRequest("Datos incorrectos.");
-        }
+		if (!await repositorio.ExisteByCodigo(codigo))
+		{
+			return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+		}
 
-        var vehiculo = await repositorio.SelectByCod(codigo);
-        if (vehiculo == null)
-        {
-            return NotFound($"El vehículo con codigo {codigo} no existe.");
-        }
+		var vehiculo = await repositorio.SelectByCod(codigo);
 
-        mapper.Map(entidadDTO, vehiculo);
+		if (vehiculo == null)
+		{
+			return NotFound($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+		}
 
-        try
-        {
-            await repositorio.Update(codigo, vehiculo);
-            return NoContent();
-        }
-        catch (Exception e)
-        {
-            return BadRequest($"Error: {e.Message}");
-        }
-    }
+		mapper.Map(entidadDTO, vehiculo);
+
+		// Log para verificar los valores actualizados en verde 
+		Console.ForegroundColor = ConsoleColor.Green;
+		Console.WriteLine($"Vehiculo actualizado: {vehiculo.Id}, {vehiculo.Codigo}");
+		Console.ResetColor();
+
+		try
+		{
+			await repositorio.Update(vehiculo.Id, vehiculo);
+			var vehiculoDTO = mapper.Map<GET_VehiculoDTO>(vehiculo);
+			return Ok(vehiculoDTO);
+		}
+		catch (Exception e)
+		{
+			if (e.InnerException != null)
+			{
+				return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+			}
+			return BadRequest(e.Message);
+		}
+	}
 
 
-    [HttpDelete("{id:int}")]
-    public async Task<ActionResult> Delete(int id)
+    [HttpDelete("EliminarCodigo/{codigo}")]
+    public async Task<ActionResult> Delete(string codigo)
     {
-        if (!await repositorio.Existe(id))
-        {
-            return NotFound($"El vehículo con id {id} no existe.");
-        }
+		var existe = await repositorio.ExisteByCodigo(codigo);
 
-        await repositorio.Delete(id);
-        return NoContent();
-    }
+		if (!existe)
+		{
+			return NotFound($"El vehiculo con código {codigo} no existe");
+		}
+
+		var EntidadABorrar = await repositorio.SelectByCod(codigo);
+
+		if (EntidadABorrar == null)
+		{
+			return  NotFound($"No se encontró un vehiculo con código {codigo}. Favor verificar");
+		}
+
+		if (await repositorio.Delete(EntidadABorrar.Id))
+		{
+			return Ok($"El vehiculo con código {codigo} fue eliminada");
+		}
+		else
+		{
+			return BadRequest("No se pudo llevar a cabo la acción");
+		}
+	}
 }

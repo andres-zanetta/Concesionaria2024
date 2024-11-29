@@ -2,6 +2,8 @@
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -78,32 +80,43 @@ namespace Concesionaria.Server.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] PUT_AdjudicacionDTO entidadDTO)
-        {
-            if (id != entidadDTO.Id)
-            {
-                return BadRequest("El ID proporcionado no coincide con el ID de la adjudicación.");
-            }
+		[HttpPut("CodigoAModificar/{codigo}")]
+		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_AdjudicacionDTO entidadDTO)
+		{
+			if (!await repositorio.ExisteByCodigo(codigo))
+			{
+				return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            var adjudicacion = await repositorio.SelectById(id);
-            if (adjudicacion == null)
-            {
-                return NotFound("La adjudicación no fue encontrada.");
-            }
+			var adjudicacion = await repositorio.SelectByCod(codigo);
 
-            mapper.Map(entidadDTO, adjudicacion);
+			if (adjudicacion == null)
+			{
+				return NotFound($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+			}
 
-            try
-            {
-                await repositorio.Update(id, adjudicacion);
-                return Ok("La adjudicación fue actualizada correctamente.");
-            }
-            catch (Exception e)
-            {
-                return BadRequest($"Error al actualizar la adjudicación: {e.Message}");
-            }
-        }
+			mapper.Map(entidadDTO, adjudicacion);
+
+			// Log para verificar los valores actualizados en verde 
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine($"TipoDocumento actualizado: {adjudicacion}");
+			Console.ResetColor();
+
+			try
+			{
+				await repositorio.Update(adjudicacion.Id, adjudicacion);
+				var adjudicacionDTO = mapper.Map<PUT_AdjudicacionDTO>(adjudicacion);
+				return Ok(adjudicacionDTO);
+			}
+			catch (Exception e)
+			{
+				if (e.InnerException != null)
+				{
+					return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+				}
+				return BadRequest(e.Message);
+			}
+		}
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)

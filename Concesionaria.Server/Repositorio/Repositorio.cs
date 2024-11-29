@@ -19,6 +19,12 @@ namespace Concesionaria.Server.Repositorio
             return existe;
         }
 
+        public async Task<bool> ExisteByCodigo(string codigo)
+        {
+            var existeEntidadByCodigo = await context.Set<E>().AnyAsync( e => e.Codigo == codigo);
+            return existeEntidadByCodigo;
+        }
+
         public async Task<List<E>> Select()
         {
             try
@@ -36,7 +42,7 @@ namespace Concesionaria.Server.Repositorio
 		{
             try
             {
-				E EntidadByCodigo = await context.Set<E>().FirstOrDefaultAsync(e => e.Codigo == cod);
+				E? EntidadByCodigo = await context.Set<E>().FirstOrDefaultAsync(e => e.Codigo == cod);
 				return EntidadByCodigo;
 			}
             catch (Exception ex)
@@ -49,7 +55,7 @@ namespace Concesionaria.Server.Repositorio
 
 		public async Task<E> SelectById(int id)
         {
-            E? sel = await context.Set<E>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            E? sel = await context.Set<E>().FirstOrDefaultAsync(x => x.Id == id);
             return sel;
         }
 
@@ -86,46 +92,46 @@ namespace Concesionaria.Server.Repositorio
 
 		public async Task<bool> Update(int id, E entidad)
         {
-            if (id != entidad.Id)
-            {
-                return false;
-            }
+			if (id != entidad.Id)
+			{
+				return false;
+			}
 
-            var EntidadExistente = await context.Set<E>().FirstOrDefaultAsync(x => x.Id == id); ; 
-            // <- no uso SelectByID por que necesito que trackee la entidad y ese metodo no la trackea.
+			var EntidadExistente = await context.Set<E>().FirstOrDefaultAsync(x => x.Id == id); ;
+			// <- no uso SelectByID por que necesito que trackee la entidad y ese metodo no la trackea.
 
-            if (EntidadExistente == null)
-            {
-                return false;
-            }
+			if (EntidadExistente == null)
+			{
+				return false;
+			}
 
-            try
-            {
-                context.Entry(EntidadExistente).CurrentValues.SetValues(entidad);
-                //El metodo de arriba toma los valores de la entidad seleccionada por id (EntidadExistente)
-                //y los actualiza con los de la entidad pasada como argumento (entidad).
+			try
+			{
+				context.Entry(EntidadExistente).CurrentValues.SetValues(entidad);
+				//El metodo de arriba toma los valores de la entidad seleccionada por id (EntidadExistente)
+				//y los actualiza con los de la entidad pasada como argumento (entidad).
 
-                await context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception e)
-            {
+				await context.SaveChangesAsync();
+				return true;
+			}
+			catch (Exception e)
+			{
 
-                throw e;
-            }
+				throw e;
+			}
 
-        }
+		}
 
         public async Task<bool> Delete(int id)
         {
-            var sel = await SelectById(id);
+            var EntidadSeleccionada = await SelectById(id);
 
-            if (sel == null)
+            if (EntidadSeleccionada == null)
             {
                 return false;
             }
 
-            context.Set<E>().Remove(sel);
+            context.Set<E>().Remove(EntidadSeleccionada);
             await context.SaveChangesAsync();
             return true;
         }      

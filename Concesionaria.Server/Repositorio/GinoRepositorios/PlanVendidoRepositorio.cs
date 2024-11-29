@@ -47,18 +47,18 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
 
         }
 
-        public async Task<PlanVendido> SelectPlanYAsociadosById(int id)
+        public async Task<PlanVendido> SelectPlanYAsociadosByCodigo(string codigo)
         {
 
             try
             {
-                var planVendidoById = await context.PlanesVendidos.Include(pv => pv.Cliente).ThenInclude(c => c.Persona)
+                var planVendidoByCodigo = await context.PlanesVendidos.Include(pv => pv.Cliente).ThenInclude(c => c.Persona)
                     .Include(pv => pv.Vendedor).ThenInclude(v => v.Persona)
                     .Include(pv => pv.TipoPlan)
                     .Include(pv => pv.Adjudicacion).ThenInclude(a => a.Vehiculo)
-                    .FirstOrDefaultAsync(pv => pv.Id == id);
+                    .FirstOrDefaultAsync(pv => pv.Codigo == codigo);
 
-                return planVendidoById;
+                return planVendidoByCodigo;
             }
             catch (Exception e)
             {

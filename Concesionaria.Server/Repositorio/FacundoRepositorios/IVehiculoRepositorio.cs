@@ -4,6 +4,6 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
     public interface IVehiculoRepositorio : IRepositorio<Vehiculo>
     {
-        Task<Vehiculo> GetByMarca(string marca);
+		Task<List<Vehiculo>> SelectByMarca(string marca);
 	}
 }

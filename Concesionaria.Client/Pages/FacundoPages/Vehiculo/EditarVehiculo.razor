@@ -7,82 +7,86 @@
 <h3>Actualizar Vehículo</h3>
 
 <EditForm Model="@vehiculo" OnValidSubmit="ActualizarVehiculo">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+	<DataAnnotationsValidator />
+	<ValidationSummary />
 
-    <div class="form-group">
-        <label for="Codigo">Código</label>
-        <InputText id="Codigo" class="form-control" @bind-Value="vehiculo.Codigo" />
-        <ValidationMessage For="@(() => vehiculo.Codigo)" />
-    </div>
+	@* <div class="form-group">
+		<label for="Codigo">Código</label>
+		<InputText id="Codigo" class="form-control" @bind-Value="vehiculo.Codigo" />
+		<ValidationMessage For="@(() => vehiculo.Codigo)" />
+	</div> 
+	
+	El codigo se genera automaticamente a partir de, en este caso, la marca, modelo y version del motor, Ej: Toyota-Corola-1.6. Ver mapeado en caso de tener dudas.
+	
+	*@
 
-    <div class="form-group">
-        <label for="Marca">Marca</label>
-        <InputText id="Marca" class="form-control" @bind-Value="vehiculo.Marca" />
-        <ValidationMessage For="@(() => vehiculo.Marca)" />
-    </div>
+	<div class="form-group">
+		<label for="Marca">Marca</label>
+		<InputText id="Marca" class="form-control" @bind-Value="vehiculo.Marca" />
+		<ValidationMessage For="@(() => vehiculo.Marca)" />
+	</div>
 
-    <div class="form-group">
-        <label for="Modelo">Modelo</label>
-        <InputText id="Modelo" class="form-control" @bind-Value="vehiculo.Modelo" />
-        <ValidationMessage For="@(() => vehiculo.Modelo)" />
-    </div>
+	<div class="form-group">
+		<label for="Modelo">Modelo</label>
+		<InputText id="Modelo" class="form-control" @bind-Value="vehiculo.Modelo" />
+		<ValidationMessage For="@(() => vehiculo.Modelo)" />
+	</div>
 
-    <div class="form-group">
-        <label for="Precio">Precio</label>
-        <InputNumber id="Precio" class="form-control" @bind-Value="vehiculo.Precio" />
-        <ValidationMessage For="@(() => vehiculo.Precio)" />
-    </div>
+	<div class="form-group">
+		<label for="Precio">Precio</label>
+		<InputNumber id="Precio" class="form-control" @bind-Value="vehiculo.Precio" />
+		<ValidationMessage For="@(() => vehiculo.Precio)" />
+	</div>
 
-    <div class="form-group">
-        <label for="Motor">Motor</label>
-        <InputText id="Motor" class="form-control" @bind-Value="vehiculo.Motor" />
-    </div>
+	<div class="form-group">
+		<label for="Motor">Motor</label>
+		<InputText id="Motor" class="form-control" @bind-Value="vehiculo.Motor" />
+	</div>
 
-    <div class="form-group">
-        <label for="Combustible">Combustible</label>
-        <InputText id="Combustible" class="form-control" @bind-Value="vehiculo.Combustible" />
-    </div>
+	<div class="form-group">
+		<label for="Combustible">Combustible</label>
+		<InputText id="Combustible" class="form-control" @bind-Value="vehiculo.Combustible" />
+	</div>
 
-    <button type="submit" class="btn btn-primary">Actualizar Vehículo</button>
+	<button type="submit" class="btn btn-primary">Actualizar Vehículo</button>
 </EditForm>
 
 @code {
-    [Parameter] public int Id { get; set; }
-    private PUT_VehiculoDTO vehiculo = new PUT_VehiculoDTO();
-    private string mensajeError = "";
+	[Parameter] public int Id { get; set; }
+	private PUT_VehiculoDTO vehiculo = new PUT_VehiculoDTO();
+	private string mensajeError = "";
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        await CargarVehiculo();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		await CargarVehiculo();
+	}
 
-    private async Task CargarVehiculo()
-    {
-        var respuesta = await http.Get<PUT_VehiculoDTO>($"api/Vehiculos/{Id}");
+	private async Task CargarVehiculo()
+	{
+		var respuesta = await http.Get<PUT_VehiculoDTO>($"api/Vehiculos/{Id}");
 
-        if (!respuesta.Error)
-        {
-            vehiculo = respuesta.Respuesta;
-        }
-        else
-        {
-            mensajeError = await respuesta.ObtenerError();
-        }
-    }
+		if (!respuesta.Error)
+		{
+			vehiculo = respuesta.Respuesta;
+		}
+		else
+		{
+			mensajeError = await respuesta.ObtenerError();
+		}
+	}
 
-    private async Task ActualizarVehiculo()
-    {
-        var respuesta = await http.Put<PUT_VehiculoDTO>($"api/Vehiculos/{Id}", vehiculo);
+	private async Task ActualizarVehiculo()
+	{
+		var respuesta = await http.Put<PUT_VehiculoDTO>($"api/Vehiculos/{Id}", vehiculo);
 
-        if (!respuesta.Error)
-        {
-            Navigation.NavigateTo("/vehiculos/get");
-        }
-        else
-        {
-            mensajeError = await respuesta.ObtenerError();
-        }
-    }
+		if (!respuesta.Error)
+		{
+			Navigation.NavigateTo("/vehiculos/get");
+		}
+		else
+		{
+			mensajeError = await respuesta.ObtenerError();
+		}
+	}
 }
