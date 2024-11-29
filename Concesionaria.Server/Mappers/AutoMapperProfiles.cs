@@ -22,7 +22,7 @@ namespace Concesionaria.Server.Mappers
             CreateMap<Persona, GET_PersonaDTO>().ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => src.TipoDocumento.Nombre));
             // Mapea el nombre del TipoDocumento a TipoDocumentoNombre en Persona
 
-           // CreateMap<POST_PersonaDTO, Persona>().ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.NumDoc}-{src.TipoDocumento.Nombre}"));
+            //CreateMap<POST_PersonaDTO, Persona>().ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.NumDoc}-{src.TipoDocumento.Nombre}"));
 
 
             CreateMap<PUT_PersonaDTO, Persona>();

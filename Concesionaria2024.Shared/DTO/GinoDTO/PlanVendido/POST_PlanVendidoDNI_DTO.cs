@@ -34,11 +34,11 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 
 
         [Required(ErrorMessage = "El venderdor es obligatoria.")]
-        public int VendedorDNI { get; set; }
+        public string VendedorDNI { get; set; }
 
 
         [Required(ErrorMessage = "El clienteo es obligatoria.")]
-        public int ClienteDNI { get; set; }
+        public string ClienteDNI { get; set; }
 
 
         [Required(ErrorMessage = "El tipo de plan es obligatoria.")]

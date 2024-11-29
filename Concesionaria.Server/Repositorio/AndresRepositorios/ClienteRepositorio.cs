@@ -14,7 +14,7 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             this.context = context;
         }
 
-        public async Task<Cliente> SelectByDNI(int numDoc)
+        public async Task<Cliente> SelectByDNI(string numDoc)
         {
             try
             {
