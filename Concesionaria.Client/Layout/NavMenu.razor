@@ -33,6 +33,23 @@
                 </a>
             </div>
         </div>
+         <!-- Menú desplegable para Vehículos -->
+        <div class="nav-item dropdown px-3" @onmouseover="OpenVehiculosDropdown" @onmouseout="CloseVehiculosDropdown">
+            <a class="nav-link dropdown-toggle" role="button" aria-expanded="false" @onclick="ToggleVehiculosDropdown">
+                <span class="bi bi-car-front-fill" aria-hidden="true"></span> Vehículos
+            </a>
+            <div class="dropdown-menu" style="display: @(showVehiculosDropdown ? "block" : "none")">
+                <a class="dropdown-item" href="/api/Vehiculos/Mostrar">
+                    <span class="bi bi-eye-fill" aria-hidden="true"></span> Mostrar Vehículos
+                </a>
+                <a class="dropdown-item" href="/api/Vehiculos/Crear">
+                    <span class="bi bi-plus-square-fill" aria-hidden="true"></span> Agregar Vehículo
+                </a>
+                <a class="dropdown-item" href="/api/Vehiculos/Editar">
+                    <span class="bi bi-pencil-fill" aria-hidden="true"></span> Editar Vehículo
+                </a>
+            </div>
+        </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="weather">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
@@ -88,6 +105,23 @@
 @code {
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private bool showVehiculosDropdown = false;
+
+    // Métodos para controlar el menú Vehículos
+    private void ToggleVehiculosDropdown()
+    {
+        showVehiculosDropdown = !showVehiculosDropdown;
+    }
+
+    private void OpenVehiculosDropdown()
+    {
+        showVehiculosDropdown = true;
+    }
+
+    private void CloseVehiculosDropdown()
+    {
+        showVehiculosDropdown = false;
+    }
 
     private void ToggleNavMenu()
     {
