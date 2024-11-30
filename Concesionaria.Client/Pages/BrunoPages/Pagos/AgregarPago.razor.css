@@ -1,0 +1,78 @@
+﻿/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Formulario */
+.form-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #dcdcdc;
+    background-color: #fff;
+}
+
+/* Botones */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+.text-danger {
+    font-size: 0.875rem;
+    color: #e3342f;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Encabezado */
+.card-header {
+    background-color: #1a73e8;
+    color: #ffffff;
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 15px;
+}
+
+/* Estilo para campos de selección */
+.input-group {
+    margin-top: 10px;
+}
+
+/* Mensajes de validación */
+.validation-message {
+    font-size: 0.875rem;
+    color: #d9534f;
+}
+
+.shadow-sm {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo de la tarjeta */
+.card-body {
+    padding: 30px;
+    background-color: #f8f9fa;
+}
