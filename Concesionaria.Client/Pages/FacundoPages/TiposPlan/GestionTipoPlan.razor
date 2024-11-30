@@ -1,0 +1,78 @@
+﻿@page "/api/TipoPlan/Gestion"
+@using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
+    <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
+        <!-- Encabezado con fondo sólido y texto blanco -->
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Registrar Plan</h3>
+        </div>
+        <div class="card-body p-4 bg-light">
+            <EditForm Model="nuevoTipoPlan" OnValidSubmit="RegistrarTipoPlan">
+                <DataAnnotationsValidator />
+                <!-- Campo de Nombre del Plan -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Nombre del Plan</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.NombrePlan" />
+                    <ValidationMessage For="@(() => nuevoTipoPlan.NombrePlan)" class="text-danger" />
+                </div>
+
+                <!-- Campo de Descripción del Plan -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Descripción del Plan</label>
+                    <InputTextArea class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.Descripcion" />
+                    <ValidationMessage For="@(() => nuevoTipoPlan.Descripcion)" class="text-danger" />
+                </div>
+
+                <!-- Campo de Cantidad de Cuotas -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Cantidad de Cuotas</label>
+                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.CantCuotas" />
+                    <ValidationMessage For="@(() => nuevoTipoPlan.CantCuotas)" class="text-danger" />
+                </div>
+
+                <!-- Campo de Valor Total -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Valor Total</label>
+                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.ValorTotal" />
+                    <ValidationMessage For="@(() => nuevoTipoPlan.ValorTotal)" class="text-danger" />
+                </div>
+
+                <!-- Campo de Vehículo -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Vehículo ID</label>
+                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.VehiculoId" />
+                    <ValidationMessage For="@(() => nuevoTipoPlan.VehiculoId)" class="text-danger" />
+                </div>
+
+                <!-- Botón de Enviar -->
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary btn-lg w-100 shadow" style="border-radius: 8px;">Registrar Plan</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private POST_TipoPlanDTO nuevoTipoPlan = new POST_TipoPlanDTO();
+
+    private async Task RegistrarTipoPlan()
+    {
+        try
+        {
+            var respuesta = await http.Post<POST_TipoPlanDTO>("api/TipoPlan", nuevoTipoPlan);
+
+            if (respuesta != null)
+            {
+                navigationManager.NavigateTo("/tipoplan/mostrar");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}
