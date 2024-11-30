@@ -4,12 +4,10 @@
 
 <div class="container mt-5">
     <div class="card border-0 shadow-lg">
-        <!-- Encabezado con fondo sólido y texto blanco -->
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
             <h3 class="mb-0" style="font-weight: 600;">Listado de Tipos de Planes</h3>
         </div>
 
-        <!-- Cuerpo de la tarjeta con un fondo claro -->
         <div class="card-body p-4 bg-light">
             <h5 class="mb-4">Aquí podrás ver todos los tipos de plan registrados</h5>
 
@@ -18,7 +16,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nombre del Plan</th>  <!-- Cambiado a NombrePlan -->
+                        <th>Nombre del Plan</th>  
                         <th>Descripción</th>
                         <th>Precio</th>
                     </tr>
@@ -40,9 +38,9 @@
                             {
                                 <tr>
                                     <td>@plan.Id</td>
-                                    <td>@plan.NombrePlan</td>  <!-- Cambiado a NombrePlan -->
+                                    <td>@plan.NombrePlan</td>  
                                     <td>@plan.Descripcion</td>
-                                    <td>@plan.ValorTotal.ToString("C")</td>  <!-- Muestra el valor total con formato de moneda -->
+                                    <td>@plan.ValorTotal.ToString("C")</td>  
                                 </tr>
                             }
                         }
