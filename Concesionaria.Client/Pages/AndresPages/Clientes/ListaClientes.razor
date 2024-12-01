@@ -2,33 +2,57 @@
 @using Concesionaria2024.Shared.DTO.AndresDTO
 @using Concesionaria2024.Shared.DTO.GinoDTO.Persona
 @inject IHttpServicio http
+@inject NavigationManager Navigation
 
-<h3>ListaClientes</h3>
-<br />
-<table class="table table-borderless table-dark">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>""</td>
-            <td>""</td>
-            
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>""</td>
-            <td>""</td>
-            
-        </tr>
-    </tbody>
-</table>
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
+    <div class="card border-0 shadow-lg" style="width: 100%; border-radius: 10px;">
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Listado de Clientes</h3>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+            <h5 class="mb-4">Aquí podrás ver todos los Clientes registrados</h5>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>FechaInicio</th>
+                        <th>FechaFin</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Mensaje == "")
+                    {
+                        @if (listaClientes == null)
+                        {
+                            <tr><td colspan="6">Buscando...</td></tr>
+                        }
+                        else if (listaClientes.Count == 0)
+                        {
+                            <tr><td colspan="6">No existen Clientes registrados.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var clientes in listaClientes)
+                            {
+                                <tr>
+                                    <td>@clientes.FechaInicio.ToString("dd/MM/yyyy")</td>
+                                    <td>@clientes.FechaFin?.ToString("dd/MM/yyyy")</td>
+                                    
+                                </tr>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="6">Error: @Mensaje</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 @code {
     List<GET_ClienteDTO> listaClientes;

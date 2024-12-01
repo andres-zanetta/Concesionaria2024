@@ -29,20 +29,19 @@
     </div>
 </div>
 
-
-    @code {
+@code{
     private POST_ClienteDTO postCliente = new POST_ClienteDTO
-    {
-        FechaInicio=DateTime.Now//fecha de hoy cliente
-    };
+        {
+            FechaInicio = DateTime.Today
+        };
 
     private async Task Grabar()
+
     {
-        var httpRespuesta = await http.Post<POST_ClienteDTO>("api/Vendedor", postCliente);
+        var httpRespuesta = await http.Post<POST_ClienteDTO>("api/Clientes", postCliente);
 
-        navigationManager.NavigateTo("/api/Cliente/mostrar");
-        
+        navigationManager.NavigateTo("/api/Clientes/mostrar");
     }
-
-
 }
+
+  
