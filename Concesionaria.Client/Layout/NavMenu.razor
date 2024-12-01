@@ -19,6 +19,37 @@
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
             </NavLink>
         </div>
+        <!-- Menú desplegable para Tipo de Plan -->
+        <div class="nav-item dropdown px-3" @onmouseover="OpenTipoPlanDropdown" @onmouseout="CloseTipoPlanDropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" aria-expanded="false" @onclick="ToggleTipoPlanDropdown">
+                <span class="bi bi-file-earmark-text-fill" aria-hidden="true"></span> Planes
+            </a>
+            <div class="dropdown-menu" style="display: @(showTipoPlanDropdown ? "block" : "none")">
+                <a class="dropdown-item" href="/api/TipoPlan/Gestion">
+                    <span class="bi bi-clipboard-plus" aria-hidden="true"></span> Registro de Plan
+                </a>
+                <a class="dropdown-item" href="/api/TipoPlan/mostrar">
+                    <span class="bi bi-eye-fill" aria-hidden="true"></span> Mostrar Planes
+                </a>
+            </div>
+        </div>
+         <!-- Menú desplegable para Vehículos -->
+        <div class="nav-item dropdown px-3" @onmouseover="OpenVehiculosDropdown" @onmouseout="CloseVehiculosDropdown">
+            <a class="nav-link dropdown-toggle" role="button" aria-expanded="false" @onclick="ToggleVehiculosDropdown">
+                <span class="bi bi-car-front-fill" aria-hidden="true"></span> Vehículos
+            </a>
+            <div class="dropdown-menu" style="display: @(showVehiculosDropdown ? "block" : "none")">
+                <a class="dropdown-item" href="/api/Vehiculos/Mostrar">
+                    <span class="bi bi-eye-fill" aria-hidden="true"></span> Mostrar Vehículos
+                </a>
+                <a class="dropdown-item" href="/api/Vehiculos/Crear">
+                    <span class="bi bi-plus-square-fill" aria-hidden="true"></span> Agregar Vehículo
+                </a>
+                <a class="dropdown-item" href="/api/Vehiculos/Editar">
+                    <span class="bi bi-pencil-fill" aria-hidden="true"></span> Editar Vehículo
+                </a>
+            </div>
+        </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="weather">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
@@ -47,12 +78,12 @@
             </NavLink>
         </div>
 
-        <!---------------------------------------- Menu Desplagable de Planes Vendidos ------------------------------------>
-        <div class="nav-item dropdown px-3" @onmouseover="OpenDropdown" @onmouseout="CloseDropdown">
-            <a class="nav-link dropdown-toggle" role="button" aria-expanded="false" @onclick="ToggleDropdown">
+        <!-- Menú desplegable para Planes Vendidos -->
+        <div class="nav-item dropdown px-3" @onmouseover="OpenPlanesVendidoDropdown" @onmouseout="ClosePlanesVendidoDropdown">
+            <a class="nav-link dropdown-toggle" role="button" aria-expanded="false" @onclick="TogglePlanesVendidoDropdown">
                 <span class="icon-file-earmark-text"></span> Planes Vendidos
             </a>
-            <div class="dropdown-menu" style="display: @(showDropdown ? "block" : "none")">
+            <div class="dropdown-menu" style="display: @(showPlanesVendidoDropdown ? "block" : "none")">
                 <a class="dropdown-item" href="api/PlanVendido/mostrar">
                     <span class="icon-eye-fill"></span> Mostrar Planes
                 </a>
@@ -74,28 +105,62 @@
 @code {
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private bool showVehiculosDropdown = false;
+
+    // Métodos para controlar el menú Vehículos
+    private void ToggleVehiculosDropdown()
+    {
+        showVehiculosDropdown = !showVehiculosDropdown;
+    }
+
+    private void OpenVehiculosDropdown()
+    {
+        showVehiculosDropdown = true;
+    }
+
+    private void CloseVehiculosDropdown()
+    {
+        showVehiculosDropdown = false;
+    }
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
 
-    // Control para la visibilidad del dropdown de Planes Vendidos
-    private bool showDropdown;
+    // Estado para los menús desplegables
+    private bool showTipoPlanDropdown = false;   // Para el menú Tipo de Plan
+    private bool showPlanesVendidoDropdown = false;   // Para el menú Planes Vendidos
 
-    private void ToggleDropdown()
+    // Métodos para controlar el menú Tipo de Plan
+    private void ToggleTipoPlanDropdown()
     {
-        showDropdown = !showDropdown;
+        showTipoPlanDropdown = !showTipoPlanDropdown;
     }
 
-    private void OpenDropdown()
+    private void OpenTipoPlanDropdown()
     {
-        showDropdown = true;
+        showTipoPlanDropdown = true;
     }
 
-    private void CloseDropdown()
+    private void CloseTipoPlanDropdown()
     {
-        showDropdown = false;
+        showTipoPlanDropdown = false;
+    }
+
+    // Métodos para controlar el menú Planes Vendidos
+    private void TogglePlanesVendidoDropdown()
+    {
+        showPlanesVendidoDropdown = !showPlanesVendidoDropdown;
+    }
+
+    private void OpenPlanesVendidoDropdown()
+    {
+        showPlanesVendidoDropdown = true;
+    }
+
+    private void ClosePlanesVendidoDropdown()
+    {
+        showPlanesVendidoDropdown = false;
     }
 }
-

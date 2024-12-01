@@ -1,0 +1,88 @@
+﻿@page "/api/TipoPlan/mostrar"
+@using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
+@inject IHttpServicio http
+
+<div class="container mt-5">
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Listado de Tipos de Planes</h3>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+            <h5 class="mb-4">Aquí podrás ver todos los tipos de plan registrados</h5>
+
+            <!-- Tabla de tipos de planes -->
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre del Plan</th>  
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Mensaje == "")
+                    {
+                        @if (listaTipoPlanes == null)
+                        {
+                            <tr><td colspan="4">Buscando...</td></tr>
+                        }
+                        else if (listaTipoPlanes.Count == 0)
+                        {
+                            <tr><td colspan="4">No existen tipos de planes.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var plan in listaTipoPlanes)
+                            {
+                                <tr>
+                                    <td>@plan.Id</td>
+                                    <td>@plan.NombrePlan</td>  
+                                    <td>@plan.Descripcion</td>
+                                    <td>@plan.ValorTotal.ToString("C")</td>  
+                                </tr>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="4">Error: @Mensaje</td></tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Mensaje de error -->
+            @if (!string.IsNullOrEmpty(Mensaje))
+            {
+                <div class="alert alert-danger mt-3">
+                    @Mensaje
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    List<GET_TipoPlanDTO> listaTipoPlanes;
+    string Mensaje = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LeerTipoPlanes();
+    }
+
+    private async Task LeerTipoPlanes()
+    {
+        var resp = await http.Get<List<GET_TipoPlanDTO>>("api/TipoPlan");
+        if (!resp.Error)
+        {
+            listaTipoPlanes = resp.Respuesta;
+        }
+        else
+        {
+            Mensaje = await resp.ObtenerError();
+        }
+    }
+}
