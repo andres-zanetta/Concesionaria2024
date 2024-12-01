@@ -66,14 +66,14 @@
 
     private async Task LeerClientes()
     {
-        var resp = await http.Get<List<GET_ClienteDTO>>("api/Clientes");
-        if (!resp.Error)
+        var respuesta = await http.Get<List<GET_ClienteDTO>>("api/Clientes");
+        if (!respuesta.Error)
         {
-            listaClientes = resp.Respuesta;
+            listaClientes = respuesta.Respuesta;
         }
         else
         {
-            Mensaje = await resp.ObtenerError();
+            Mensaje = await respuesta.ObtenerError();
         }
     }
 }

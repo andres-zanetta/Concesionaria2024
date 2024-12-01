@@ -50,7 +50,7 @@
 @code {
     private int personaId;
     private PUT_ClienteDTO cliente = new PUT_ClienteDTO();
-    private string errorMessage;
+    private string errorMessage="";
 
     protected override async Task OnInitializedAsync()
     {
@@ -73,22 +73,23 @@
             }
         }
     }
+
+
     private async Task Grabar()
     {
         // Al hacer clic en "Aceptar", enviamos los cambios a la API
-        if (personaId > 0)
-        {
+         
             var httpRespuesta = await http.Put<PUT_ClienteDTO>($"api/Cliente/{personaId}", cliente);
             if (!httpRespuesta.Error)
             {
                 // Si la actualización es exitosa, navegamos a la lista de Clientes
-                navigationManager.NavigateTo("/api/Cliente");
+                navigationManager.NavigateTo("/api/Clientes/mostrar");
             }
             else
             {
                 errorMessage = await httpRespuesta.ObtenerError();
             }
-        }
+        
     }
 
 }

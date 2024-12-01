@@ -1,7 +1,7 @@
-﻿@page "/api/Cliente/agregar"
+﻿@page "/api/Clientes/Agregar"
 @using Concesionaria2024.Shared.DTO.AndresDTO
 @inject IHttpServicio http
-@inject NavigationManager navigationManager
+@inject NavigationManager Navigation
 
 <div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
     <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
@@ -9,39 +9,46 @@
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
             <h3 class="mb-0" style="font-weight: 600;">Registrar Cliente</h3>
         </div>
-        <div class="card-body p-4 bg-light">
-            <EditForm Model="postCliente" OnValidSubmit="Grabar">
+        <div class="card-body  p-4 bg-light">
+            <EditForm Model="@cliente" OnValidSubmit="RegistrarCliente">
                 <DataAnnotationsValidator />
+                <ValidationSummary />
 
-                @* Campo Cliente *@
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Fecha Inicio</label>
-                    <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postCliente.FechaInicio" />
-                    <ValidationMessage For="@(() => postCliente.FechaInicio)" class="text-danger" />
-                </div>
+                <div class="form-group">
+                    <date class="Fecha Incio">Fecha Incio</date>
+                    <InputDate id="FechaIncio" class="form-control"@bind-Value="cliente.FechaInicio"/>
+               </div>
 
-                <!-- Botón de Enviar -->
-                <div class="text-center mt-4">
-                    <button class="btn btn-primary btn-lg w-100 shadow" style="border-radius: 8px;">Aceptar</button>
-                </div>
+                <button type="submit" class="btn btn-primary w-100">Agregar Cliente</button>
+
             </EditForm>
         </div>
     </div>
 </div>
 
 @code{
-    private POST_ClienteDTO postCliente = new POST_ClienteDTO
-        {
-            FechaInicio = DateTime.Today
-        };
+    private POST_ClienteDTO cliente = new POST_ClienteDTO();
 
-    private async Task Grabar()
-
+    private async Task RegistrarCliente()
     {
-        var httpRespuesta = await http.Post<POST_ClienteDTO>("api/Clientes", postCliente);
+        var respuesta = await http.Post<POST_ClienteDTO>("api/Clientes", cliente);
 
-        navigationManager.NavigateTo("/api/Clientes/mostrar");
+        if (respuesta.Error)
+        {
+            Console.WriteLine("Cliente agregado correctamente");
+            Navigation.NavigateTo("/Clientes");
+
+        }
+        else
+        {
+            Console.WriteLine($"Error: {await respuesta.ObtenerError()}");
+        }
+        
     }
 }
+
+
+   
+
 
   
