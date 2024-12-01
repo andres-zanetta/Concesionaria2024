@@ -83,13 +83,13 @@
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="api/Pagos/agregar">
-                <span class="bi bi-cash-coin" aria-hidden="true"></span>  Registrar Pago
+                <span class="bi bi-cash-coin-fill" aria-hidden="true"></span>  Registrar Pago
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="api/Pagos/mostrar">
-                <span class="bi bi-cash-stack" aria-hidden="true"></span> Mostrar Pago
+                <span class="bi bi-cash-stack-fill" aria-hidden="true"></span> Mostrar Pago
             </NavLink>
         </div>
 
@@ -102,7 +102,7 @@
         <!-- Menú desplegable para Planes Vendidos -->
         <div class="nav-item dropdown px-3" @onmouseover="OpenPlanesVendidoDropdown" @onmouseout="ClosePlanesVendidoDropdown">
             <a class="nav-link dropdown-toggle" role="button" aria-expanded="false" @onclick="TogglePlanesVendidoDropdown">
-                <span class="icon-file-earmark-text"></span> Planes Vendidos
+                <span class="icon-file-earmark-text-fill"></span> Planes Vendidos
             </a>
             <div class="dropdown-menu" style="display: @(showPlanesVendidoDropdown ? "block" : "none")">
                 <a class="dropdown-item" href="api/PlanVendido/mostrar">
