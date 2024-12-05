@@ -5,7 +5,6 @@
 
 <div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
     <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
-        <!-- Encabezado con fondo sólido y texto blanco -->
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
             <h3 class="mb-0" style="font-weight: 600;">Registrar Plan</h3>
         </div>
@@ -47,6 +46,10 @@
                     <button class="btn btn-primary btn-lg w-100 shadow" style="border-radius: 8px;">Registrar Plan</button>
                 </div>
             </EditForm>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-primary btn-lg w-100 shadow" style="border-radius: 8px;" @onclick="NavigateToMostrar">Volver al listado</button>
+            </div>
         </div>
     </div>
 </div>
@@ -69,5 +72,9 @@
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+    }
+    private void NavigateToMostrar()
+    {
+        navigationManager.NavigateTo("/api/TipoPlan/mostrar");
     }
 }

@@ -1,5 +1,6 @@
 ﻿@page "/api/Vehiculos/Mostrar"
 @using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO
+@using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo
 @inject IHttpServicio http
 @inject NavigationManager Navigation
 
@@ -55,12 +56,16 @@
                     }
                 </tbody>
             </table>
+
+            <button @onclick="IrACrearVehiculo" class="btn btn-primary w-100 mt-3">Agregar Nuevo Vehículo</button>
+
+            <button @onclick="IrAEditarVehiculo" class="btn btn-outline-primary w-100 mt-3">Editar Vehículos</button>
         </div>
     </div>
 </div>
 
 @code {
-    List<GET_VehiculoDTO> listaVehiculos;
+    List<GET_VehiculoDTO> listaVehiculos = null!;
     string Mensaje = "";
 
     protected override async Task OnInitializedAsync()
@@ -80,5 +85,15 @@
         {
             Mensaje = await resp.ObtenerError();
         }
+    }
+
+    private void IrACrearVehiculo()
+    {
+        Navigation.NavigateTo("/api/Vehiculos/Crear");
+    }
+
+    private void IrAEditarVehiculo()
+    {
+        Navigation.NavigateTo("/api/Vehiculos/Editar");
     }
 }

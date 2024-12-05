@@ -40,6 +40,8 @@
 
                 <button type="submit" class="btn btn-primary w-100">Agregar Vehículo</button>
             </EditForm>
+
+            <button @onclick="IrALaLista" class="btn btn-outline-primary w-100 mt-3">Ver Lista de Vehículos</button>
         </div>
     </div>
 </div>
@@ -54,11 +56,16 @@
         if (!response.Error)
         {
             Console.WriteLine("Vehículo agregado correctamente");
-            Navigation.NavigateTo("/Vehiculos"); 
+            Navigation.NavigateTo("/Vehiculos");  
         }
         else
         {
             Console.WriteLine($"Error: {await response.ObtenerError()}");
         }
+    }
+
+    private void IrALaLista()
+    {
+        Navigation.NavigateTo("/api/Vehiculos/Mostrar");
     }
 }

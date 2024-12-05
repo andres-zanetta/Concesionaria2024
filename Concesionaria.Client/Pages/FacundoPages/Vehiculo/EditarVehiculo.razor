@@ -51,14 +51,16 @@
 
                 <button type="submit" class="btn btn-primary w-100">Actualizar Vehículo</button>
             </EditForm>
+
+            <button @onclick="IrALaLista" class="btn btn-outline-primary w-100 mt-3">Volver a la Lista</button>
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public string Codigo { get; set; } // Parámetro para el código del vehículo
-    private PUT_VehiculoDTO vehiculo = new PUT_VehiculoDTO(); 
-    private string mensajeError = ""; 
+    [Parameter] public string Codigo { get; set; } = null!;
+    private PUT_VehiculoDTO vehiculo = new PUT_VehiculoDTO();
+    private string mensajeError = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,7 +73,7 @@
 
         if (!respuesta.Error)
         {
-            vehiculo = respuesta.Respuesta; 
+            vehiculo = respuesta.Respuesta;
         }
         else
         {
@@ -91,5 +93,10 @@
         {
             mensajeError = await respuesta.ObtenerError();
         }
+    }
+
+    private void IrALaLista()
+    {
+        Navigation.NavigateTo("/api/Vehiculos/Mostrar");
     }
 }
