@@ -10,7 +10,7 @@
         </div>
 
         <div class="card-body p-4 bg-light">
-            <h5 class="mb-4">Aquí podrás ver todos los vehículos registrados</h5>
+            <h5 class="mb-4">Vehículos registrados</h5>
 
             <div class="row">
                 <div class="col-md-6">
@@ -22,7 +22,7 @@
             </div>
 
             <div class="my-3">
-                <button class="btn btn-outline-info" @onclick="VerificarExistenciaPorCodigo">Verificar Existencia</button>
+                <button class="btn btn-outline-primary" @onclick="VerificarExistenciaPorCodigo">Verificar Existencia</button>
                 @if (codigoExistente.HasValue)
                 {
                     <div class="mt-2 text-success">
