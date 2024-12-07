@@ -1,74 +1,56 @@
 ﻿@page "/api/PlanVendido/mostrar"
 @using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 @inject IHttpServicio http
+@inject NavigationManager navigationManager
 
-<h3>Planes Vendidos</h3>
-<br />
-<table class="table">
-    <thead>
-        <tr>
-            <th>Código</th> 
-            <th>Fecha Suscripción</th>
-            <th>Fecha Sorteo</th>
-            <th>Descripción</th>
-            <th>Estado</th>
-            <th>Fecha Inicio</th>
-            <th>Fecha Fin</th>
-            <th>Plan en Mora</th>
-            <th>Cliente</th>
-            <th>Vendedor</th>
-            <th>Tipo de Plan</th>
-            <th>Valor Total</th>
-            <th>Adjudicación</th>
-            <th>Auto Entregado</th>
-            <th>Patente</th>
-            <th>Modelo</th>
-            <th>Marca</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Mensaje == "")
-        {
-            @if (listaPlanesVendidos == null)
-            {
-                <tr><td colspan="16">Buscando...</td></tr>
-            }
-            else if (listaPlanesVendidos.Count == 0)
-            {
-                <tr><td colspan="16">No existen planes vendidos.</td></tr>
-            }
-            else
-            {
-                @foreach (var plan in listaPlanesVendidos)
-                {
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
+    <div class="card border-0 shadow-lg" style="width: 100%; border-radius: 10px;">
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Listado de Planes Vendidos</h3>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+            <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-primary me-2" @onclick="AgregarPlanVendido">Agregar Plan Vendido</button>
+                <button class="btn btn-secondary me-2" @onclick="BuscarPlanVendido">Buscar Plan Vendido</button>
+                <button class="btn btn-warning" @onclick="EditarPlanVendido">Editar Plan Vendido</button>
+            </div>
+
+            <table class="table tabla-cuotas">
+                <thead>
                     <tr>
-                        <td>@plan.Codigo</td> 
-                        <td>@plan.FechaSuscripcion?.ToString("dd/MM/yyyy")</td>
-                        <td>@plan.FechaSorteo?.ToString("dd/MM/yyyy")</td>
-                        <td>@plan.Descripcion</td>
-                        <td>@plan.Estado</td>
-                        <td>@plan.FechaInicio.ToString("dd/MM/yyyy")</td>
-                        <td>@plan.FechaFin?.ToString("dd/MM/yyyy")</td>
-                        <td>@plan.PlanEnMora ? "Sí" : "No"</td>
-                        <td>@plan.NombreCliente</td>
-                        <td>@plan.NombreVendedor</td>
-                        <td>@plan.NombrePlan</td>
-                        <td>@plan.ValorTotal.ToString("C")</td>
-                        <td>@plan.AdjudicacionId</td>
-                        <td>@plan.AutoEntregado ? "Sí" : "No"</td>
-                        <td>@plan.PatenteVehiculo</td>
-                        <td>@plan.ModeloVehiculo</td>
-                        <td>@plan.MarcaVehiculo</td>
+                        <th>Cliente</th>
+                        <th>Plan</th>
+                        <th>Estado</th>
+                        <th>Plan en Mora</th>
+                        <th>Valor Total</th>
                     </tr>
-                }
-            }
-        }
-        else
-        {
-            <tr><td colspan="16">Error: @Mensaje</td></tr>
-        }
-    </tbody>
-</table>
+                </thead>
+                <tbody>
+                    @if (listaPlanesVendidos != null && listaPlanesVendidos.Any())
+                    {
+                        foreach (var plan in listaPlanesVendidos)
+                        {
+                            <tr>
+                                <td>@plan.NombreCliente</td>
+                                <td>@plan.NombrePlan</td>
+                                <td>@plan.Estado</td>
+                                <td>@(plan.PlanEnMora ? "Sí" : "No")</td>
+                                <td>@plan.ValorTotal.ToString("C")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary">No hay planes vendidos registrados.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 @code {
     List<GET_PlanVendidoDTO> listaPlanesVendidos;
@@ -92,6 +74,20 @@
             Mensaje = await resp.ObtenerError();
         }
     }
+
+    private void AgregarPlanVendido()
+    {
+        // Navegar a la misma página para "agregar plan vendido"
+        navigationManager.NavigateTo("/api/PlanVendido/agregar");
+    }
+
+    private void BuscarPlanVendido()
+    {
+        navigationManager.NavigateTo("/api/PlanVendido/buscar");
+    }
+
+    private void EditarPlanVendido()
+    {
+        navigationManager.NavigateTo("/api/PlanVendido/editar");
+    }
 }
-
-

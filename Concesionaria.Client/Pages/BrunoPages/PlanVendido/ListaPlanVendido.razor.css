@@ -1,0 +1,98 @@
+﻿.container {
+    margin-top: 50px;
+}
+
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #1a73e8;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+.table.tabla-cuotas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .table.tabla-cuotas thead {
+        background-color: #1a73e8;
+        color: white;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.05em;
+    }
+
+        .table.tabla-cuotas thead th {
+            padding: 12px;
+            text-align: left;
+        }
+
+    .table.tabla-cuotas tbody tr {
+        border-bottom: 1px solid #ddd;
+        transition: background-color 0.3s ease;
+    }
+
+        .table.tabla-cuotas tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table.tabla-cuotas tbody tr:hover {
+            background-color: #f1f8ff;
+        }
+
+    .table.tabla-cuotas tbody td {
+        padding: 12px;
+        font-size: 0.95rem;
+        color: #333333;
+    }
+
+        .table.tabla-cuotas tbody td:last-child {
+            text-align: right;
+        }
+
+        .table.tabla-cuotas tbody td .btn {
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+.btn-primary {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+}
+
+    .btn-primary:hover {
+        background-color: #155ab2;
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+    .btn-secondary:hover {
+        background-color: #565e64;
+    }
+
+.btn-warning {
+    background-color: #ffc107;
+    color: white;
+    border: none;
+}
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+    }
