@@ -47,6 +47,13 @@
                 </div>
             </EditForm>
 
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger mt-3">
+                    @errorMessage
+                </div>
+            }
+
             <div class="text-center mt-4">
                 <button class="btn btn-outline-primary btn-lg w-100 shadow" style="border-radius: 8px;" @onclick="NavigateToMostrar">Volver al listado</button>
             </div>
@@ -56,6 +63,7 @@
 
 @code {
     private POST_TipoPlanDTO nuevoTipoPlan = new POST_TipoPlanDTO();
+    private string errorMessage = "";
 
     private async Task RegistrarTipoPlan()
     {
@@ -67,14 +75,20 @@
             {
                 navigationManager.NavigateTo("/tipoplan/mostrar");
             }
+            else
+            {
+                errorMessage = "Hubo un problema al registrar el tipo de plan. Intente nuevamente.";
+            }
         }
         catch (Exception ex)
         {
+            errorMessage = $"Error: {ex.Message}";
             Console.WriteLine($"Error: {ex.Message}");
         }
     }
+
     private void NavigateToMostrar()
     {
-        navigationManager.NavigateTo("/api/TipoPlan/mostrar");
+        navigationManager.NavigateTo("/api/tipoplan/mostrar");
     }
 }
