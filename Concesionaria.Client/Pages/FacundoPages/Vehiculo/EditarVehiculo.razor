@@ -61,6 +61,7 @@
     [Parameter] public string Codigo { get; set; } = null!;
     private PUT_VehiculoDTO vehiculo = new PUT_VehiculoDTO();
     private string mensajeError = "";
+    private bool isSuccess = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,16 +88,19 @@
 
         if (!respuesta.Error)
         {
-            Navigation.NavigateTo("/vehiculos/get"); 
+            isSuccess = true;
+            mensajeError = ""; 
+            Navigation.NavigateTo("/vehiculos/get");
         }
         else
         {
+            isSuccess = false;
             mensajeError = await respuesta.ObtenerError();
         }
     }
 
     private void IrALaLista()
     {
-        Navigation.NavigateTo("/api/Vehiculos/Mostrar");
+        Navigation.NavigateTo("/api/vehiculos/lista");
     }
 }

@@ -1,6 +1,5 @@
-﻿@page "/api/Vehiculos/Mostrar"
+﻿@page "/api/vehiculos/lista"
 @using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO
-@using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo
 @inject IHttpServicio http
 @inject NavigationManager Navigation
 
@@ -12,6 +11,32 @@
 
         <div class="card-body p-4 bg-light">
             <h5 class="mb-4">Aquí podrás ver todos los vehículos registrados</h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Buscar por marca" @bind="marcaFiltro" @oninput="FiltrarVehiculos" />
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Buscar por código" @bind="codigoBusqueda" @oninput="FiltrarVehiculos" />
+                </div>
+            </div>
+
+            <div class="my-3">
+                <button class="btn btn-outline-info" @onclick="VerificarExistenciaPorCodigo">Verificar Existencia</button>
+                @if (codigoExistente.HasValue)
+                {
+                    <div class="mt-2 text-success">
+                        @if (codigoExistente.Value)
+                        {
+                            <span>El código existe en la base de datos.</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">El código no existe en la base de datos.</span>
+                        }
+                    </div>
+                }
+            </div>
 
             <table class="table table-striped">
                 <thead>
@@ -27,11 +52,7 @@
                 <tbody>
                     @if (Mensaje == "")
                     {
-                        @if (listaVehiculos == null)
-                        {
-                            <tr><td colspan="6">Buscando...</td></tr>
-                        }
-                        else if (listaVehiculos.Count == 0)
+                        @if (listaVehiculos == null || !listaVehiculos.Any())
                         {
                             <tr><td colspan="6">No existen vehículos registrados.</td></tr>
                         }
@@ -58,15 +79,17 @@
             </table>
 
             <button @onclick="IrACrearVehiculo" class="btn btn-primary w-100 mt-3">Agregar Nuevo Vehículo</button>
-
             <button @onclick="IrAEditarVehiculo" class="btn btn-outline-primary w-100 mt-3">Editar Vehículos</button>
         </div>
     </div>
 </div>
 
 @code {
-    List<GET_VehiculoDTO> listaVehiculos = null!;
+    List<GET_VehiculoDTO> listaVehiculos = new();
     string Mensaje = "";
+    string marcaFiltro = "";
+    string codigoBusqueda = "";
+    bool? codigoExistente = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,13 +110,50 @@
         }
     }
 
+    private async Task FiltrarVehiculos()
+    {
+        var filtroMarca = marcaFiltro.Trim().ToLower();
+        var filtroCodigo = codigoBusqueda.Trim().ToLower();
+
+        if (string.IsNullOrEmpty(filtroMarca) && string.IsNullOrEmpty(filtroCodigo))
+        {
+            await LeerVehiculos();
+        }
+        else
+        {
+            listaVehiculos = listaVehiculos
+                .Where(v => (string.IsNullOrEmpty(filtroMarca) || v.Marca.ToLower().Contains(filtroMarca)) &&
+                            (string.IsNullOrEmpty(filtroCodigo) || v.Codigo.ToLower().Contains(filtroCodigo)))
+                .ToList();
+        }
+    }
+
+    private async Task VerificarExistenciaPorCodigo()
+    {
+        if (string.IsNullOrEmpty(codigoBusqueda))
+        {
+            codigoExistente = null;
+            return;
+        }
+
+        var resp = await http.Get<bool>($"api/Vehiculos/existe/{codigoBusqueda}");
+        if (!resp.Error)
+        {
+            codigoExistente = resp.Respuesta;
+        }
+        else
+        {
+            Mensaje = await resp.ObtenerError();
+        }
+    }
+
     private void IrACrearVehiculo()
     {
-        Navigation.NavigateTo("/api/Vehiculos/Crear");
+        Navigation.NavigateTo("/api/vehiculos/crear");
     }
 
     private void IrAEditarVehiculo()
     {
-        Navigation.NavigateTo("/api/Vehiculos/Editar");
+        Navigation.NavigateTo("/api/vehiculos/editar");
     }
 }

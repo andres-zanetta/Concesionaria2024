@@ -1,4 +1,4 @@
-﻿@page "/api/Vehiculos/Crear"
+﻿@page "/api/vehiculos/crear"
 @using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo
 @inject IHttpServicio http
 @inject NavigationManager Navigation
@@ -9,37 +9,56 @@
             <h3 class="mb-0" style="font-weight: 600;">Agregar Vehículo</h3>
         </div>
         <div class="card-body">
-            <EditForm Model="@vehiculo" OnValidSubmit="EnviarVehiculo">
+            <EditForm Model="@vehiculo" OnValidSubmit="EnviarVehiculo" Context="editContext">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
                 <div class="form-group">
                     <label for="Marca">Marca</label>
                     <InputText id="Marca" class="form-control" @bind-Value="vehiculo.Marca" />
+                    <ValidationMessage For="@(() => vehiculo.Marca)" />
                 </div>
 
                 <div class="form-group">
                     <label for="Modelo">Modelo</label>
                     <InputText id="Modelo" class="form-control" @bind-Value="vehiculo.Modelo" />
+                    <ValidationMessage For="@(() => vehiculo.Modelo)" />
                 </div>
 
                 <div class="form-group">
                     <label for="Precio">Precio</label>
                     <InputNumber id="Precio" class="form-control" @bind-Value="vehiculo.Precio" />
+                    <ValidationMessage For="@(() => vehiculo.Precio)" />
                 </div>
 
                 <div class="form-group">
                     <label for="Motor">Motor</label>
                     <InputText id="Motor" class="form-control" @bind-Value="vehiculo.Motor" />
+                    <ValidationMessage For="@(() => vehiculo.Motor)" />
                 </div>
 
                 <div class="form-group">
                     <label for="Combustible">Combustible</label>
                     <InputText id="Combustible" class="form-control" @bind-Value="vehiculo.Combustible" />
+                    <ValidationMessage For="@(() => vehiculo.Combustible)" />
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">Agregar Vehículo</button>
+                @if (isSubmitting)
+                {
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                }
+
+                <button type="submit" class="btn btn-primary w-100 mt-3" @disabled="isSubmitting">Agregar Vehículo</button>
             </EditForm>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger mt-3">
+                    @errorMessage
+                </div>
+            }
 
             <button @onclick="IrALaLista" class="btn btn-outline-primary w-100 mt-3">Ver Lista de Vehículos</button>
         </div>
@@ -48,24 +67,32 @@
 
 @code {
     private POST_VehiculoDTO vehiculo = new POST_VehiculoDTO();
+    private bool isSubmitting = false;
+    private string errorMessage;
 
     private async Task EnviarVehiculo()
     {
+        isSubmitting = true;
+        errorMessage = null;
+
         var response = await http.Post<POST_VehiculoDTO>("api/Vehiculos", vehiculo);
 
         if (!response.Error)
         {
             Console.WriteLine("Vehículo agregado correctamente");
-            Navigation.NavigateTo("/Vehiculos");  
+            Navigation.NavigateTo("/Vehiculos");
         }
         else
         {
-            Console.WriteLine($"Error: {await response.ObtenerError()}");
+            errorMessage = $"Error: {await response.ObtenerError()}";
+            Console.WriteLine(errorMessage);
         }
+
+        isSubmitting = false;
     }
 
     private void IrALaLista()
     {
-        Navigation.NavigateTo("/api/Vehiculos/Mostrar");
+        Navigation.NavigateTo("/api/vehiculos/lista");
     }
 }
