@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.AndresDTO
 {
-    public class PUT_ClienteDTO:EntityBase
+    public class PUT_ClienteDTO
     {
         // Fecha ------------------------------------------------------------------------------------------
         [Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
@@ -17,11 +17,10 @@ namespace Concesionaria2024.Shared.DTO.AndresDTO
 
         public DateTime? FechaFin { get; set; }
 
-        // Clase de navegación ------------------------------------------------------------------------------------------
 
-        [Required(ErrorMessage = "La persona es obligatoria.")]
-        public int PersonaId { get; set; }
-        public Persona Persona { get; set; }
+		[Required(ErrorMessage = "El número de documento es obligatorio.")]
+		[MaxLength(15, ErrorMessage = "Máximo número de caracteres {1}.")]
+		public string NumDoc { get; set; }
 
-    }
+	}
 }

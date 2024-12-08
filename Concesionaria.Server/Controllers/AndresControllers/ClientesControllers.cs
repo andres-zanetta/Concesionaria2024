@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Concesionaria2024.Shared.DTO.AndresDTO;
 using Concesionaria2024.Shared.DTO.GinoDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
+using Concesionaria.Server.Repositorio.GinoRepositorios;
+using Concesionaria2024.Shared.DTO.GinoDTO.Persona;
 
 namespace Concesionaria.Server.Controllers.AndresControllers
 {
@@ -13,60 +15,105 @@ namespace Concesionaria.Server.Controllers.AndresControllers
     [Route("api/Cliente")]
     public class ClientesController : ControllerBase
     {
-        private readonly IClienteRepositorio repositorio;
+		private readonly IPersonaRepositorio personaRepositorio;
+		private readonly IClienteRepositorio repositorio;
         private readonly IMapper mapper;
 
 
-        public ClientesController(IClienteRepositorio repositorio, IMapper mapper)
+        public ClientesController( IPersonaRepositorio personaRepositorio, IClienteRepositorio repositorio, IMapper mapper)
         {
-            this.repositorio = repositorio;
+			this.personaRepositorio = personaRepositorio;
+			this.repositorio = repositorio;
             this.mapper = mapper;
 
         }
 
-        // GET:-------------------------------------------------------------------
-        [HttpGet] //api/Clientes
-        public async Task<ActionResult<List<GET_ClienteDTO>>> Get()
-        {
-            var ListPersonaSelect = await repositorio.Select();
-            var ListPersona = mapper.Map<List<GET_ClienteDTO>>(ListPersonaSelect);
-            return Ok(ListPersona);
-        }
+		// GET:-------------------------------------------------------------------
+		[HttpGet]
+		public async Task<ActionResult<List<GET_ClienteDTO>>> Get()
+		{
+			try
+			{
+				var ListClienteSelect = await repositorio.SelectConPersona();
+				var ListCliente = mapper.Map<List<GET_ClienteDTO>>(ListClienteSelect);
+				return Ok(ListCliente);
+			}
+			catch (Exception ex)
+			{
+				// Registrar el error para el diagnóstico
+				Console.WriteLine($"Error en el método GET: {ex.Message}");
+				return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+			}
+		}
 
-        // GET: ID 
-        [HttpGet("{id:int}")]//api/Clientes/2
-        public async Task<ActionResult<GET_ClienteDTO>> Get(int id)
-        {
-            Cliente? C = await repositorio.SelectById(id);
-            if (C == null)
-            {
-                return NotFound();
-            }
-            var clienteDTO = mapper.Map<GET_ClienteDTO>(C);
-            return clienteDTO;
-        }
+		[HttpGet("Documento/{documento}")]
+		public async Task<ActionResult<GET_ClienteDTO>> Get(string documento)
+		{
+			try
+			{
+				Cliente? cliente = await repositorio.SelectByDNI(documento);
+				if (cliente == null)
+				{
+					return NotFound($"No se encontro un Cliente con el número de docuemnto: {documento}. Favor verificar");
+				}
+				var clienteDTO = mapper.Map<GET_ClienteDTO>(cliente);
+				return Ok(clienteDTO);
+			}
+			catch (Exception ex)
+			{
+				if (ex.InnerException != null)
+				{
+					return BadRequest($"Error: {ex.Message}. Inner Exception: {ex.InnerException.Message}");
+				}
+				return BadRequest(ex.Message);
+			}
+		}
 
-        [HttpGet("existe/{id:int}")]
-        public async Task<ActionResult<bool>> Existe(int id)
-        {
-            var existe = await repositorio.Existe(id);
-            return existe;
-        }
+		[HttpGet("Codigo/{codigo}")]
+		public async Task<ActionResult<GET_ClienteDTO>> GetByCodigo(string codigo)
+		{
+			try
+			{
+				Cliente? cliente = await repositorio.SelectByCodConPersona(codigo);
+				if (cliente == null)
+				{
+					return NotFound($"No se encontro un Cliente con el codigo: {codigo}. Favor verificar");
+				}
+				var clienteDTO = mapper.Map<GET_ClienteDTO>(cliente);
+				return Ok(clienteDTO);
+			}
+			catch (Exception ex)
+			{
+				if (ex.InnerException != null)
+				{
+					return BadRequest($"Error: {ex.Message}. Inner Exception: {ex.InnerException.Message}");
+				}
+				return BadRequest(ex.Message);
+			}
+		}
 
-        // POST: ----------------------------------------------------------------------
-        [HttpPost]
-        public async Task<ActionResult<int>> Post(POST_ClienteSinFechaInicio  clienteDTO)
+		// POST: ----------------------------------------------------------------------
+		[HttpPost]
+        public async Task<ActionResult<int>> Post(POST_ClienteConNumDocDTO POST_EntidadConNumDocDTO)
         {
-            var DTOCliente = new POST_ClienteDTO
+			try
             {
-                FechaInicio = DateTime.Today,
-                PersonaId = clienteDTO.PersonaId,
-            };
-            try
-            {
-                Cliente entidad = mapper.Map<Cliente>(DTOCliente);
-                return await repositorio.Insert(entidad);
-            }
+				if (POST_EntidadConNumDocDTO == null)
+				{
+					return BadRequest("Los datos ingresados son nulos. Favor verificar.");
+				}
+
+
+				var personaConTipoDoc = await personaRepositorio.SelectByNumDoc(POST_EntidadConNumDocDTO.NumDoc);
+				if (personaConTipoDoc == null)
+				{
+					return NotFound($"No se encontró una Persona asociada al Número de Docuemnto: {POST_EntidadConNumDocDTO.NumDoc}. Favor verificar.");
+				}
+
+				Cliente entidad = mapper.Map<Cliente>(POST_EntidadConNumDocDTO);
+                await repositorio.Insert(entidad);
+				return Ok($"Persona cargada correctamente. Codigo: {entidad.Codigo}, Fecha de Inicio: {entidad.FechaInicio}");
+			}
             catch (Exception e)
             {
                 if (e.InnerException != null)
@@ -77,34 +124,44 @@ namespace Concesionaria.Server.Controllers.AndresControllers
             }
         }
 
-		// PUT: ID ------------------------------------------------------------------------
+		// PUT ------------------------------------------------------------------------
 		[HttpPut("CodigoAModificar/{codigo}")]
-		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_ClienteDTO entidadDTO)
+		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_ClienteDTO PUT_entidadNumDocDTO)
         {
-			if (!await repositorio.ExisteByCodigo(codigo))
+			if (PUT_entidadNumDocDTO == null)
 			{
-				return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
+				return BadRequest("Los datos ingresados son nulos. Favor verificar.");
 			}
 
-			var cliente = await repositorio.SelectByCod(codigo);
-
-			if (cliente == null)
+			var clienteSeleccionado = await repositorio.SelectByCod(codigo);
+			if (clienteSeleccionado == null)
 			{
-				return NotFound($"No se encontró un cliente con el código {codigo}, compruebe el valor ingresado.");
+				return NotFound($"No se encontró un Cliente con el codigo: {codigo}. Favor verificar.");
 			}
 
-			mapper.Map(entidadDTO, cliente);
+			var persona = await personaRepositorio.SelectByNumDoc(PUT_entidadNumDocDTO.NumDoc);
+			if (persona == null)
+			{
+				return NotFound($"No se encontró una Persona con el Número de Docuemtno: {PUT_entidadNumDocDTO.NumDoc}. Favor verificar.");
+			}
+
+			//var PUT_entidadDTO = mapper.Map<PUT_PersonaDTO>(PUT_entidadNumDocDTO); <-- en esta línea perdia el Id de la Persona seleccionada a causa del mapeo
+			// solución: modificar el mapeo
+
+			var ClienteModificado = mapper.Map(PUT_entidadNumDocDTO, clienteSeleccionado);
 
 			// Log para verificar los valores actualizados en verde 
+
 			Console.ForegroundColor = ConsoleColor.Green;
-			Console.WriteLine($"TipoDocumento actualizado: {cliente}");
+			Console.WriteLine($"Persona actualizada: {ClienteModificado.Id} - {ClienteModificado.Codigo}");
 			Console.ResetColor();
 
 			try
 			{
-				await repositorio.Update(cliente.Id, cliente);
-				var clienteDTO = mapper.Map<GET_ClienteDTO>(cliente);
-				return Ok(clienteDTO);
+				await repositorio.Update(ClienteModificado.Id, ClienteModificado);
+				var ClienteDTO = mapper.Map<GET_ClienteDTO>(ClienteModificado);
+				return Ok(ClienteDTO);
+
 			}
 			catch (Exception e)
 			{
@@ -116,32 +173,31 @@ namespace Concesionaria.Server.Controllers.AndresControllers
 			}
 		}
 
-        // DELETE: ID ----------------------------------------------------------------------
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var existe = await repositorio.Existe(id);
-            if (!existe)
-            {
-                return NotFound($"El cliente {id} no existe");
-            }
+		[HttpDelete("EliminarCodigo/{codigo}")]
+		public async Task<ActionResult> Delete(string codigo)
+		{
+			var existe = await repositorio.ExisteByCodigo(codigo);
 
-            Cliente EntidadABorrar = new Cliente();
-            EntidadABorrar.Id = id;
+			if (!existe)
+			{
+				return NotFound($"El Cliente con código {codigo} no existe");
+			}
 
-            if (await repositorio.Delete(id))
-            {
-                return Ok($"El cliente {id} fue eliminado");
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-    }
+			var EntidadABorrar = await repositorio.SelectByCod(codigo);
 
+			if (EntidadABorrar == null)
+			{
+				return NotFound($"No se encontró un Cliente con código {codigo}. Favor verificar");
+			}
 
-
-
-
+			if (await repositorio.Delete(EntidadABorrar.Id))
+			{
+				return Ok($"El Cliente con código {codigo} fue eliminada");
+			}
+			else
+			{
+				return BadRequest("No se pudo llevar a cabo la acción");
+			}
+		}
+	}
 }

@@ -12,21 +12,52 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             this.context = context;
         }
 
-        public async Task<Vendedor> SelectByDNI(string numDoc)
-        {
-            try
-            {
-                var vendedor = await context.Vendedores.Include(V => V.Persona).FirstOrDefaultAsync(V => V.Persona.NumDoc == numDoc);
-                return vendedor;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error al obtener el registro {e.Message}");
-                throw e;
-            }
-        }
+		public async Task<Vendedor> SelectByDNI(string numDoc)
+		{
+			try
+			{
+				var vendedor = await context.Vendedores.Include(V => V.Persona).FirstOrDefaultAsync(V => V.Persona.NumDoc == numDoc);
+				return vendedor;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Error al obtener los registros:  {e.Message}");
+				throw e;
+			}
+		}
 
-        public async Task<Vendedor?> SelectByFechaInicio(DateTime fechaInicio)
+		public async Task<Vendedor> SelectByCodConPersona(string codigo)
+		{
+			try
+			{
+				var vendedor = await context.Vendedores.Include(V => V.Persona).FirstOrDefaultAsync(V => V.Codigo == codigo);
+				return vendedor;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Error al obtener los registros:  {e.Message}");
+				throw e;
+			}
+		}
+
+		public async Task<List<Vendedor>> SelectConPersona()
+		{
+			try
+			{
+				var vendedor = await context.Vendedores.Include(V => V.Persona).ToListAsync();
+				return vendedor;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Error al obtener los registros:  {e.Message}");
+				throw e;
+			}
+		}
+
+
+
+
+		public async Task<Vendedor?> SelectByFechaInicio(DateTime fechaInicio)
         {
             Vendedor? V = await context.Vendedores.
                       FirstOrDefaultAsync(x => x.FechaInicio== fechaInicio);
@@ -47,8 +78,5 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
                         FirstOrDefaultAsync(x => x.CantPlanesVendidos == cantPlanesVendidos);
             return V;
         }
-
-  
     }
-
 }

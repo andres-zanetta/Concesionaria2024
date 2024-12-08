@@ -7,8 +7,9 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
     {
 
         Task<List<Cliente>> Select();
-        Task<Cliente> SelectByDNI(string numDoc);
+		Task<Cliente> SelectByCodConPersona(string codigo);
+		Task<Cliente> SelectByDNI(string numDoc);
         Task<Cliente> SelectById(int id);
-
-    }
+		Task<List<Cliente>> SelectConPersona();
+	}
 }

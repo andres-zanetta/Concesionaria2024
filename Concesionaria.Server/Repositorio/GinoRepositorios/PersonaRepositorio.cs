@@ -29,7 +29,21 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
 
         }
 
-        public async Task<Persona> SelectByNumDoc(string numDoc)
+		public async Task<Persona> SelectCodWhithTipoDoc(string codigo)
+		{
+			try
+			{
+				var persona = await context.Personas.Include(p => p.TipoDocumento).FirstOrDefaultAsync(p => p.Codigo == codigo);
+				return persona;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Error al obtener los registros: {e.Message}");
+				throw;
+			}
+		}
+
+		public async Task<Persona> SelectByNumDoc(string numDoc)
         {
             try
             {

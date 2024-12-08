@@ -27,7 +27,7 @@ namespace Concesionaria.DB.Data.Entidades
         public string? Descripcion { get; set; }
 
 
-        // Cantidad de cuotas ------------------------------------------------------------------------------------------
+        // Cantidad de cuotas -------------------------------------------------------------------------------------
 
 
         [Required(ErrorMessage = "La cantidad de cuotas es obligatoria.")]

@@ -8,12 +8,18 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO.Persona
 {
-    public class GET_PersonaDTO : EntityBase
+    public class GET_PersonaDTO 
     {
-        // Nombre ------------------------------------------------------------------------------------------
 
 
-        [Required(ErrorMessage = "El nombre es obligatorio.")]
+		[Required(ErrorMessage = "El codigo es obligatorio.")]
+		[MaxLength(50, ErrorMessage = "Máximo número de caracteres {1}.")]
+		public string? Codigo { get; set; }
+
+		// Nombre ------------------------------------------------------------------------------------------
+
+
+		[Required(ErrorMessage = "El nombre es obligatorio.")]
         [MaxLength(100, ErrorMessage = "Máximo número de caracteres {1}.")]
         public string Nombre { get; set; }
 
@@ -62,13 +68,10 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.Persona
 
         [Required(ErrorMessage = "El número de documento es obligatorio.")]
         //Agregar metodo que valide que sea un número del 1 al 15
-        public int NumDoc { get; set; }
+        public string NumDoc { get; set; }
 
 
         // Tipo Documento ------------------------------------------------------------------------------------------
-        [Required(ErrorMessage = "El tipo de documento es obligatorio.")]
-        public int TipoDocumentoId { get; set; }
-
         [Required(ErrorMessage = "El tipo de documento es obligatorio.")]
         public string TipoDocumentoNombre { get; set; }
     }

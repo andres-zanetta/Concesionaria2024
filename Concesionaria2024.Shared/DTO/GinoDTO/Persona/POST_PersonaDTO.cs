@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Concesionaria.DB.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO.Persona
 {
-    public class POST_PersonaDTO
+    public class POST_PersonaDTO : EntityBase
     {
         // Nombre ------------------------------------------------------------------------------------------
 
@@ -61,7 +62,7 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.Persona
 
         [Required(ErrorMessage = "El número de documento es obligatorio.")]
         //Agregar metodo que valide que sea un número del 1 al 15
-        public int NumDoc { get; set; }
+        public string NumDoc { get; set; }
 
 
         // Tipo Documento ------------------------------------------------------------------------------------------

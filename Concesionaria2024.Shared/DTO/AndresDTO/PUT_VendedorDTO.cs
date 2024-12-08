@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.AndresDTO
 {
-    public class PUT_VendedorDTO:EntityBase
+    public class PUT_VendedorDTO
     {
+		// Fecha ------------------------------------------------------------------------------------------
+		[Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
+		public DateTime FechaInicio { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "El precio del vehiculo debe ser un numero positivo")]
-        public int? CantPlanesVendidos { get; set; }
+		public DateTime? FechaFin { get; set; }
 
 
-        [Required(ErrorMessage = "La fecha de inicio es obligatoria.")]
-        public DateTime FechaInicio { get; set; }
+		[Required(ErrorMessage = "El número de documento es obligatorio.")]
+		[MaxLength(15, ErrorMessage = "Máximo número de caracteres {1}.")]
+		public string NumDoc { get; set; }
 
-        public DateTime? FechaFin { get; set; }
-
-    }
+	}
 }

@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
+using Concesionaria.Server.Resolvers.ClienteResolver;
+using Concesionaria.Server.Resolvers.PersonaResolvers;
+using Concesionaria.Server.Resolvers.TipoPlanResolvers;
+using Concesionaria.Server.Resolvers.VendedorResolver;
 using Concesionaria2024.Shared.DTO.AndresDTO;
 using Concesionaria2024.Shared.DTO.BrunoDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion;
@@ -22,10 +26,13 @@ namespace Concesionaria.Server.Mappers
             CreateMap<Persona, GET_PersonaDTO>().ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => src.TipoDocumento.Nombre));
             // Mapea el nombre del TipoDocumento a TipoDocumentoNombre en Persona
 
-            //CreateMap<POST_PersonaDTO, Persona>().ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.NumDoc}-{src.TipoDocumento.Nombre}"));
+            CreateMap<POST_PersonaNumDocDTO, POST_PersonaDTO>().ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.NumDoc}-{src.DocumentoCodigo}"))
+                .ForMember(dest => dest.TipoDocumentoId, opt => opt.MapFrom<TipoDocumentoResolverPost>());
+            CreateMap<POST_PersonaDTO, Persona>();
 
+            CreateMap<PUT_PersonaNumDocDTO, Persona>().ForMember(dest => dest.TipoDocumentoId, opt => opt.MapFrom<TipoDocumentoResolverPut>())
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.NumDoc}-{src.DocumentoCodigo}"));
 
-            CreateMap<PUT_PersonaDTO, Persona>();
 
             // Mapeado Plan Vendido ===============================================================
 
@@ -53,33 +60,42 @@ namespace Concesionaria.Server.Mappers
             // Mapeado Cliente ====================================================================
 
             CreateMap<Cliente, GET_ClienteDTO>()
-           .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.FechaInicio))
-           .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.FechaFin))
-           .ForMember(dest => dest.PersonaId, opt => opt.MapFrom(src => src.PersonaId));
+           .ForMember(dest => dest.NombrePersona, opt => opt.MapFrom(src => $"{src.Persona.Nombre}-{src.Persona.Apellido}"))
+           .ForMember(dest => dest.NumDoc, opt => opt.MapFrom(src => src.Persona.NumDoc));
 
-            ///info util de Cliente
-            ///
+            CreateMap<POST_ClienteConNumDocDTO, Cliente>()
+                .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.PersonaId, opt => opt.MapFrom<PersonaResolverPost>())
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"Cliente-{src.NumDoc}"));
 
-            CreateMap<POST_ClienteDTO, Cliente>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<PUT_ClienteDTO, Cliente>()
+                .ForMember(dest => dest.PersonaId, opt => opt.MapFrom<PersonaResolverPut>())
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"Cliente-{src.NumDoc}"));
 
 
             // Mapeado Vendedor ===================================================================
 
 
             CreateMap<Vendedor, GET_VendedorDTO>()
-            .ForMember(dest => dest.CantPlanesVendidos, opt => opt.MapFrom(src => src.CantPlanesVendidos))
-            .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => src.FechaInicio))
-            .ForMember(dest => dest.FechaFin, opt => opt.MapFrom(src => src.FechaFin))
-            .ForMember(dest => dest.NombrePersona, opt => opt.MapFrom(src => $"{src.Persona.Nombre}"));
+		        .ForMember(dest => dest.NombrePersona, opt => opt.MapFrom(src => $"{src.Persona.Nombre}-{src.Persona.Apellido}"))
+		        .ForMember(dest => dest.NumDoc, opt => opt.MapFrom(src => src.Persona.NumDoc))
+                .ForMember(dest => dest.CantPlanesVendidos, opt => opt.MapFrom(src => src.planVendidos.Count));
 
 
-            CreateMap<POST_VendedorDTO, Vendedor>();
+			CreateMap<POST_VendedorDTO, Vendedor>()
+				.ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => DateTime.Now))
+				.ForMember(dest => dest.PersonaId, opt => opt.MapFrom<PersonaVendedorResolverPost>())
+				.ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"Vendedor-{src.NumDoc}"));
+
+			CreateMap<PUT_VendedorDTO, Vendedor>()
+	            .ForMember(dest => dest.PersonaId, opt => opt.MapFrom<PersonaVendedorResolverPut>())
+	            .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"Vendedor-{src.NumDoc}"));
 
 
-            // Mapeado Vehiculo ===================================================================
+			// Mapeado Vehiculo ===================================================================
 
-            CreateMap<Vehiculo, GET_VehiculoDTO>();              
+			CreateMap<Vehiculo, GET_VehiculoDTO>();              
 
 
             // Asigno el valor de marca,modelo y motor al codigo, para dejar de depender del id y trabajar con algo cercano al al lenguaje del cliente
@@ -115,11 +131,13 @@ namespace Concesionaria.Server.Mappers
 
             // Mapeado Tipo Plan ==================================================================
 
-            CreateMap<TipoPlan, GET_TipoPlanDTO>();
+            CreateMap<TipoPlan, GET_TipoPlanDTO>().ForMember(dest => dest.CodigoVehiculo, opt => opt.MapFrom(src => src.Vehiculo.Codigo));
 
-            CreateMap<POST_TipoPlanDTO, TipoPlan>();
+            CreateMap<POST_TipoPlanDTO, TipoPlan>().ForMember(dest => dest.VehiculoId, opt => opt.MapFrom<TipoPlanResolverPost>())
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.NombrePlan}-{src.ValorTotal}"));
 
-            CreateMap<PUT_TipoPlanDTO, TipoPlan>();
+            CreateMap<PUT_TipoPlanDTO, TipoPlan>().ForMember(dest => dest.VehiculoId, opt => opt.MapFrom<TipoPlanResolverPut>())
+				.ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.NombrePlan}-{src.ValorTotal}")); ;
 
 
             // Mapeado Cuota ======================================================================

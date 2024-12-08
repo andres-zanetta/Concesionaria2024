@@ -21,7 +21,7 @@ namespace Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
         public decimal ValorTotal { get; set; }
 
         [Required(ErrorMessage = "El Vehículo es obligatorio.")]
-        public int VehiculoId { get; set; }
+        public string CodigoVehiculo { get; set; }
     }
 
 }

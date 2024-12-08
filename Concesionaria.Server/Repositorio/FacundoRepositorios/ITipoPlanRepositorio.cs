@@ -6,5 +6,7 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
     {
         Task<TipoPlan?> SelectByIdAsync(int id);
         Task<TipoPlan> SelectByNombre(string nombre);
-    }
+		Task<TipoPlan> SelectCodWhithVehiculo(string codigo);
+		Task<List<TipoPlan>> SelectWithVehiculo();
+	}
 }

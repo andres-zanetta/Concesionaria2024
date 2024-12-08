@@ -14,7 +14,7 @@ namespace Concesionaria.DB.Data.Entidades
         // Cantidad de planes vendidos ------------------------------------------------------------------------------------------
 
 
-        [Range(1, int.MaxValue, ErrorMessage = "El precio del vehiculo debe ser un numero positivo")]
+        [Range(1, int.MaxValue, ErrorMessage = "La cantidad de planes vendidos debe ser un numero positivo")]
         public int? CantPlanesVendidos { get; set; }
 
 

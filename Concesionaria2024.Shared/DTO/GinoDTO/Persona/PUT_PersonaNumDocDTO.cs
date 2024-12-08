@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Concesionaria.DB.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO.Persona
 {
-	public class POST_PersonaNumDocDTO
+	public class PUT_PersonaNumDocDTO 
 	{
+
 		// Nombre ------------------------------------------------------------------------------------------
 
 
@@ -69,5 +71,6 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.Persona
 		[Required(ErrorMessage = "El número de documento es obligatorio.")]
 		[MaxLength(15, ErrorMessage = "Máximo número de caracteres {1}.")]
 		public string DocumentoCodigo { get; set; }
+
 	}
 }

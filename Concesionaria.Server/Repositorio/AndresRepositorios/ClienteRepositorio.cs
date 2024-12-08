@@ -28,12 +28,33 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             }
         }
 
-        public async Task<Cliente> SelectById(int id)
+        public async Task<Cliente> SelectByCodConPersona(string codigo)
         {
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.PersonaId == id);
-            return cliente;
+            try
+            {
+				var cliente = await context.Clientes.Include(C => C.Persona).FirstOrDefaultAsync(C => C.Codigo == codigo);
+				return cliente;
+			}
+            catch (Exception e)
+            {
+				Console.WriteLine($"Error al obtener los registros:  {e.Message}");
+				throw e;
+			}
         }
-        
+
+        public async Task<List<Cliente>> SelectConPersona()
+        {
+            try
+            {
+				var clientes = await context.Clientes.Include(C => C.Persona).ToListAsync();
+				return clientes;
+			}
+            catch (Exception e)
+            {
+				Console.WriteLine($"Error al obtener los registros:  {e.Message}");
+				throw e;
+			}
+		}
 
         public async Task<Cliente> SelectByFechaInicio(DateTime fechaInicio)
         {
@@ -52,7 +73,5 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
             }
          
         }
-
-       
     }
 }

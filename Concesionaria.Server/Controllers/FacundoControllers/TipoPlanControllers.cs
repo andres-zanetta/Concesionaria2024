@@ -5,6 +5,7 @@ using Concesionaria.Server.Repositorio.FacundoRepositorios;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo;
+using Concesionaria2024.Shared.DTO.GinoDTO.Persona;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,21 +15,23 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
     [Route("api/TipoPlan")]
     public class TipoPlanController : ControllerBase
     {
-        private readonly ITipoPlanRepositorio repositorio;
+		private readonly IVehiculoRepositorio vehiculoRepositorio;
+		private readonly ITipoPlanRepositorio repositorio;
         private readonly IMapper mapper;
 
-        public TipoPlanController( ITipoPlanRepositorio repositorio , IMapper mapper)
+        public TipoPlanController( IVehiculoRepositorio vehiculoRepositorio, ITipoPlanRepositorio repositorio , IMapper mapper)
         {
-            this.repositorio = repositorio;
+			this.vehiculoRepositorio = vehiculoRepositorio;
+			this.repositorio = repositorio;
             this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<List<GET_TipoPlanDTO>>> GET()
         {
             try
             {
-                var tipoPlanes = await repositorio.Select();
+                var tipoPlanes = await repositorio.SelectWithVehiculo();
                 var tipoPlanesDTO = mapper.Map<List<GET_TipoPlanDTO>>(tipoPlanes);
                 return Ok(tipoPlanesDTO);
             }
@@ -39,76 +42,54 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
             }
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var tipoPlan = await repositorio.SelectById(id);
-            if (tipoPlan == null)
-            {
-                return NotFound($"Tipo de plan con ID {id} no encontrado.");
-            }
-            var tipoPlanDTO = mapper.Map<GET_TipoPlanDTO>(tipoPlan);
-            return Ok(tipoPlanDTO);
-        }
 
-        [HttpGet("existe/{id:int}")]
-        public async Task<IActionResult> Existe(int id)
-        {
-            var existe = await repositorio.Existe(id);
-            return Ok(existe);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<int>> Post(POST_TipoPlanDTO entidadDTO)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var entidad = mapper.Map<TipoPlan>(entidadDTO);
-                var id = await repositorio.Insert(entidad);
-                return CreatedAtAction(nameof(Get), new { id }, entidad);
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest($"Error al insertar en la base de datos: {ex.Message}");
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-		[HttpPut("CodigoAModificar/{codigo}")]
-		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_TipoPlanDTO entidadDTO)
+		[HttpGet("Codigo/{codigo}")]
+		public async Task<ActionResult<GET_TipoPlanDTO>> GetByCodigo(string codigo)
 		{
-			if (!await repositorio.ExisteByCodigo(codigo))
-			{
-				return BadRequest($"No se encontró un vehiculo con el código {codigo}, compruebe el valor ingresado.");
-			}
-
-			var tipoPlan = await repositorio.SelectByCod(codigo);
-
-			if (tipoPlan == null)
-			{
-				return NotFound($"No se encontró un tipoPlan con el código {codigo}, compruebe el valor ingresado.");
-			}
-
-			mapper.Map(entidadDTO, tipoPlan);
-
-			// Log para verificar los valores actualizados en verde 
-			Console.ForegroundColor = ConsoleColor.Green;
-			Console.WriteLine($"TipoPlan actualizado: {tipoPlan}");
-			Console.ResetColor();
-
 			try
 			{
-				await repositorio.Update(tipoPlan.Id, tipoPlan);
-				var tipoPlanDTO = mapper.Map<GET_VehiculoDTO>(tipoPlan);
+				TipoPlan? tipoPlan = await repositorio.SelectCodWhithVehiculo(codigo);  // Revisar, el GetByCodigo no trae el codigo de vehiculo.
+				if (tipoPlan == null)
+				{
+					return NotFound($"No se encontro una Persona con el codigo: {codigo}. Favor verificar");
+				}
+				var tipoPlanDTO = mapper.Map<GET_TipoPlanDTO>(tipoPlan);
 				return Ok(tipoPlanDTO);
+			}
+			catch (Exception ex)
+			{
+				if (ex.InnerException != null)
+				{
+					return BadRequest($"Error: {ex.Message}. Inner Exception: {ex.InnerException.Message}");
+				}
+				return BadRequest(ex.Message);
+			}
+		}
+
+		[HttpPost]
+        public async Task<ActionResult<int>> Post(POST_TipoPlanDTO POST_entidadCodVehDTO)
+        {
+			try
+			{
+				if (POST_entidadCodVehDTO == null)
+				{
+					return BadRequest("Los datos ingresados son nulos. Favor verificar.");
+				}
+
+
+				// el bloque de 92 a 96 me permite validar si realmente existe el codigo seleccionado, cotejando con lo que está cargado en tipoDocumento.
+				var vehiculo = await vehiculoRepositorio.SelectByCod(POST_entidadCodVehDTO.CodigoVehiculo);
+				if (vehiculo == null)
+				{
+					return NotFound($"No se encontró un Vehiculo con el codigo: {POST_entidadCodVehDTO.CodigoVehiculo}. Favor verificar.");
+				}
+
+				TipoPlan NuevoTipoPlan = mapper.Map<TipoPlan>(POST_entidadCodVehDTO);
+
+
+				await repositorio.Insert(NuevoTipoPlan);
+				return Ok($"Tipo de Plan cargado correctamente. Nombre del Plan: {NuevoTipoPlan.NombrePlan}, Codigo: {NuevoTipoPlan.Codigo}");
+
 			}
 			catch (Exception e)
 			{
@@ -120,23 +101,79 @@ namespace Concesionaria.Server.Controllers.FacundoControllers
 			}
 		}
 
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var existe = await repositorio.Existe(id);
-            if (!existe)
-            {
-                return NotFound($"El tipo de plan con ID {id} no existe.");
-            }
+		[HttpPut("CodigoAModificar/{codigo}")]
+		public async Task<ActionResult> Put(string codigo, [FromBody] PUT_TipoPlanDTO PUT_entidadCodVehDTO)
+		{
+			if (PUT_entidadCodVehDTO == null)
+			{
+				return BadRequest("Los datos ingresados son nulos. Favor verificar.");
+			}
 
-            if (await repositorio.Delete(id))
-            {
-                return Ok($"El tipo de plan con ID {id} fue eliminado.");
-            }
-            else
-            {
-                return BadRequest("No se pudo eliminar el tipo de plan.");
-            }
-        }
-    }
+			var tipoPlanSeleccionado = await repositorio.SelectCodWhithVehiculo(codigo);
+			if (tipoPlanSeleccionado == null)
+			{
+				return NotFound($"No se encontró una Persona con el codigo: {codigo}. Favor verificar.");
+			}
+
+			var vehiculo = await vehiculoRepositorio.SelectByCod(PUT_entidadCodVehDTO.CodigoVehiculo);
+			if (vehiculo == null)
+			{
+				return NotFound($"No se encontró un Tipo de Documento con el código: {PUT_entidadCodVehDTO.CodigoVehiculo}. Favor verificar.");
+			}
+
+			//var PUT_entidadDTO = mapper.Map<PUT_PersonaDTO>(PUT_entidadNumDocDTO); <-- en esta línea perdia el Id de la Persona seleccionada a causa del mapeo
+			// solución: modificar el mapeo
+
+			var tipoPlanModificado = mapper.Map(PUT_entidadCodVehDTO, tipoPlanSeleccionado);
+
+			// Log para verificar los valores actualizados en verde 
+
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine($"Persona actualizada: {tipoPlanModificado.Id} - {tipoPlanModificado.Codigo} - {tipoPlanModificado.NombrePlan}");
+			Console.ResetColor();
+
+			try
+			{
+				await repositorio.Update(tipoPlanModificado.Id, tipoPlanModificado);
+				var GET_personaDTO = mapper.Map<GET_TipoPlanDTO>(tipoPlanModificado);
+				return Ok(GET_personaDTO);
+
+			}
+			catch (Exception e)
+			{
+				if (e.InnerException != null)
+				{
+					return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+				}
+				return BadRequest(e.Message);
+			}
+		}
+
+		[HttpDelete("Eliminar-Tipo-Plan/{codigo}")]
+		public async Task<ActionResult> Delete(string codigo)
+		{
+			var existe = await repositorio.ExisteByCodigo(codigo);
+
+			if (!existe)
+			{
+				return NotFound($"El Tipo de Plan con código {codigo} no existe");
+			}
+
+			var EntidadABorrar = await repositorio.SelectByCod(codigo);
+
+			if (EntidadABorrar == null)
+			{
+				return NotFound($"No se encontró un Tipo de Plan con código {codigo}. Favor verificar");
+			}
+
+			if (await repositorio.Delete(EntidadABorrar.Id))
+			{
+				return Ok($"\"El Tipo de Plan con código {codigo} fue eliminado");
+			}
+			else
+			{
+				return BadRequest("No se pudo llevar a cabo la acción");
+			}
+		}
+	}
 }

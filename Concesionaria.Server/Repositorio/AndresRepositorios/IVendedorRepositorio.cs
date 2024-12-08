@@ -7,5 +7,7 @@ namespace Concesionaria.Server.Repositorio.AndresRepositorios
         
         Task<Vendedor> SelectById(int id);
         Task<Vendedor> SelectByDNI(string numDoc);
-    }
+		Task<Vendedor> SelectByCodConPersona(string codigo);
+		Task<List<Vendedor>> SelectConPersona();
+	}
 }
