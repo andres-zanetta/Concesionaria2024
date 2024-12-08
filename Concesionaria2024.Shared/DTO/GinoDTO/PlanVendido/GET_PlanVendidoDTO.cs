@@ -10,13 +10,8 @@ using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 {
-    public class GET_PlanVendidoDTO : EntityBase
+    public class GET_PlanVendidoDTO 
     {
-        // Id -----------------------------------------------------------------------------------
-
-        public int Id { get; set; }
-
-        // Fecha cuando se suscribió ------------------------------------------------------------------------------------------
 
         [Required(ErrorMessage = "El codigo es obligatorio.")]
         [MaxLength(30, ErrorMessage = "Máximo número de caracteres {1}.")]
@@ -76,25 +71,21 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 
 
         [Required(ErrorMessage = "El cliente es obligatorio.")]
-        public int ClienteId { get; set; }
         public string NombreCliente { get; set; }
 
 
 
         [Required(ErrorMessage = "El vendedor es obligatorio.")]
-        public int VendedorId { get; set; }
         public string NombreVendedor { get; set; }
 
 
 
         [Required(ErrorMessage = "El tipo de plan es obligatorio.")]
-        public int TipoPlanId { get; set; }
         public string NombrePlan { get; set; }
         public decimal ValorTotal { get; set; }
 
 
 
-        public int? AdjudicacionId { get; set; }
         public bool AutoEntregado { get; set; }
         public string PatenteVehiculo { get; set; }
         public string ModeloVehiculo { get; set; }

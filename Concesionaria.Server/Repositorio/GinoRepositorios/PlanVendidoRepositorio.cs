@@ -32,20 +32,24 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
             }
         }
 
-        public async Task<PlanVendido> SelectByCodigo (string codigo)
+        public async Task<PlanVendido> SelectByIdCliente(int id)
         {
             try
             {
-                var planVendido = await context.PlanesVendidos.FirstOrDefaultAsync(pv => pv.Codigo == codigo);
+                var planVendido = await context.PlanesVendidos.Include(pv => pv.Cliente).ThenInclude(c => c.Persona)
+                    .Include(pv => pv.Vendedor).ThenInclude(v => v.Persona)
+                    .Include(pv => pv.TipoPlan)
+                    .Include(pv => pv.Adjudicacion).ThenInclude(a => a.Vehiculo)
+                    .FirstOrDefaultAsync(pv => pv.Cliente.Id == id);
                 return planVendido;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error al obtener los registros:  {e.Message}");
-                throw e;
+                Console.WriteLine($"Error al obtener los registros: {e.Message}");
+                throw;
             }
-
         }
+
 
         public async Task<PlanVendido> SelectPlanYAsociadosByCodigo(string codigo)
         {

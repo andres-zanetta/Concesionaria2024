@@ -2,6 +2,8 @@
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Resolvers.ClienteResolver;
 using Concesionaria.Server.Resolvers.PersonaResolvers;
+using Concesionaria.Server.Resolvers.PlanVendidoResolver.POST;
+using Concesionaria.Server.Resolvers.PlanVendidoResolver.PUT;
 using Concesionaria.Server.Resolvers.TipoPlanResolvers;
 using Concesionaria.Server.Resolvers.VendedorResolver;
 using Concesionaria2024.Shared.DTO.AndresDTO;
@@ -48,8 +50,20 @@ namespace Concesionaria.Server.Mappers
 
             // El metodo de arriba agregar al DTO info util trackeada desde persona asociada a un CL o V e info util del TipoPlan y adjudic.
 
-            CreateMap<POST_PlanVendidoDTO, PlanVendido>();
-            CreateMap<PUT_PlanVendidoDTO, PlanVendido>();
+            CreateMap<POST_PlanVendidoDNI_DTO, PlanVendido>()
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.TipoPlanCodigo}-{src.ClienteDNI}"))
+                .ForMember(dest => dest.ClienteId, opt => opt.MapFrom<ClienteResolverPost>())
+                .ForMember(dest => dest.VendedorId, opt => opt.MapFrom<VendedorResolverPost>())
+                .ForMember(dest => dest.TipoPlanId, opt => opt.MapFrom<TipoPlanResolverPlanVendidoPost>())
+                .ForMember(dest => dest.FechaInicio, opt => opt.MapFrom(src => DateTime.Today))
+                .ForMember(dest => dest.FechaSuscripcion, opt => opt.MapFrom<ClienteFechaSuscripcionPost>());
+
+
+            CreateMap<PUT_PlanVendidoDNI_DTO, PlanVendido>()
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.TipoPlanCodigo}-{src.ClienteDNI}"))
+                .ForMember(dest => dest.ClienteId, opt => opt.MapFrom<ClienteResolverPut>())
+                .ForMember(dest => dest.VendedorId, opt => opt.MapFrom<VendedorResolverPut>())
+                .ForMember(dest => dest.TipoPlanId, opt => opt.MapFrom<TipoPlanResolverPlanVendidoPut>());
 
             // Mapeado Tipo Documento =============================================================
 

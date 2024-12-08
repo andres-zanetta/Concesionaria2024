@@ -9,10 +9,6 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 {
     public class POST_PlanVendidoDTO
     {
-        [Required(ErrorMessage = "El codigo es obligatorio.")]
-        [MaxLength(30, ErrorMessage = "Máximo número de caracteres {1}.")]
-        public string Codigo { get; set; }
-
         // Fecha cuando se suscribió --------------------------------------------------------------
 
 
@@ -56,7 +52,6 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 
         [Required(ErrorMessage = "El tipo de plan es obligatoria.")]
         public int TipoPlanId { get; set; }
-
 
     }
 }

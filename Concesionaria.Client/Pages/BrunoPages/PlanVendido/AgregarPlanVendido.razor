@@ -14,11 +14,15 @@
                 <DataAnnotationsValidator />
 
                 <!-- Campo de Código -->
-                <div class="form-group mb-4">
+@*                 <div class="form-group mb-4">
                     <label class="form-label fw-bold text-secondary">Código</label>
                     <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPlanVendido.Codigo" />
                     <ValidationMessage For="@(() => postPlanVendido.Codigo)" class="text-danger" />
                 </div>
+                
+                El codigo se genera de manera automatica con el dni de la persona y el nombre del tipo de plan
+                
+                *@
 
                 <!-- Campo de Descripción -->
                 <div class="form-group mb-4">
@@ -56,8 +60,8 @@
                 <!-- Campo de Tipo de Plan -->
                 <div class="form-group mb-4">
                     <label class="form-label fw-bold text-secondary">Tipo de Plan</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPlanVendido.TipoPlanNombre" />
-                    <ValidationMessage For="@(() => postPlanVendido.TipoPlanNombre)" class="text-danger" />
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPlanVendido.TipoPlanCodigo" />
+                    <ValidationMessage For="@(() => postPlanVendido.TipoPlanCodigo)" class="text-danger" />
                 </div>
 
                 <!-- Botón de Enviar -->

@@ -15,7 +15,7 @@
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        @* <th>ID</th>  no usar ID, se tiene q usar codigo  *@
                         <th>Nombre del Plan</th>
                         <th>Descripción</th>
                         <th>Precio</th>
@@ -37,7 +37,7 @@
                             @foreach (var plan in listaTipoPlanes)
                             {
                                 <tr>
-                                    <td>@plan.Id</td>
+                                  @*   <td>@plan.Id</td>  no usar ID, se tiene q usar codigo  *@
                                     <td>@plan.NombrePlan</td>
                                     <td>@plan.Descripcion</td>
                                     <td>@plan.ValorTotal.ToString("C")</td>

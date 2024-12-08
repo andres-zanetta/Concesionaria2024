@@ -4,7 +4,7 @@ namespace Concesionaria.Server.Repositorio.GinoRepositorios
 {
     public interface IPlanVendidoRepositorio : IRepositorio<PlanVendido>
     {
-        Task<PlanVendido> SelectByCodigo(string codigo);
+        Task<PlanVendido> SelectByIdCliente(int id);
         Task<List<PlanVendido>> SelectPlanYAsociados();
         Task<PlanVendido> SelectPlanYAsociadosByCodigo(string codigo);
     }

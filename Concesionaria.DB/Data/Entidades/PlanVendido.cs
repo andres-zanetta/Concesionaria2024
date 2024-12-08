@@ -17,7 +17,7 @@ namespace Concesionaria.DB.Data.Entidades
         // Fecha cuando se suscribió ------------------------------------------------------------------------------------------
 
 
-        public DateTime? FechaSuscripcion { get; set; }
+        public DateTime FechaSuscripcion { get; set; }
 
 
         // Fecha del sorteo ------------------------------------------------------------------------------------------
