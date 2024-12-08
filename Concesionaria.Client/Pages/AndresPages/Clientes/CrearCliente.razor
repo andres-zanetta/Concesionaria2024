@@ -1,46 +1,54 @@
-﻿@page "/api/Cliente/agregar"
+﻿@page "/api/Clientes/Agregar"
 @using Concesionaria2024.Shared.DTO.AndresDTO
 @inject IHttpServicio http
-@inject NavigationManager navigationManager
-<h3>Nuevo Cliente</h3>
+@inject NavigationManager Navigation
 
-<EditForm Model="postCliente" OnValidSubmit="Grabar">
-    <DataAnnotationsValidator />
-
-    <!-- Campo de Fecha Inicio agregado -->
-    <div class="form-group">
-        <label>FechaInicio</label>
-        <div>
-            <InputDate class="form-control" @bind-Value="@postCliente.FechaInicio" />
-            <ValidationMessage For="@(() => postCliente.FechaInicio)" />
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
+    <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
+        <!-- Encabezado con fondo sólido y texto blanco -->
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Registrar Cliente</h3>
         </div>
+        <div class="card-body  p-4 bg-light">
+            <EditForm Model="@cliente" OnValidSubmit="RegistrarCliente">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-    </div>
-    <!-- Campo de Fecha Fin agregado -->
-    <div class="form-group">
-        <label>FechaFin</label>
-        <div>
-            <InputDate class="form-control" @bind-Value="@postCliente.FechaInicio" />
-            <ValidationMessage For="@(() => postCliente.FechaInicio)" />
+                <div class="form-group">
+                    <date class="Fecha Incio">Fecha Incio</date>
+                    <InputDate id="FechaIncio" class="form-control"@bind-Value="cliente.FechaInicio"/>
+               </div>
+
+                <button type="submit" class="btn btn-primary w-100">Agregar Cliente</button>
+
+            </EditForm>
         </div>
-
     </div>
-   
-    <br />
-    <button class="btn btn-primary" type="submit">Aceptar</button>
+</div>
 
-</EditForm>
+@code{
+    private POST_ClienteDTO cliente = new POST_ClienteDTO();
 
-@code {
-    private POST_ClienteDTO postCliente = new POST_ClienteDTO();
-
-    private async Task Grabar()
+    private async Task RegistrarCliente()
     {
-        var httpRespuesta = await http.Post<POST_ClienteDTO>("api/Vendedor", postCliente);
+        var respuesta = await http.Post<POST_ClienteDTO>("api/Clientes", cliente);
 
-        navigationManager.NavigateTo("/api/Cliente/mostrar");
+        if (respuesta.Error)
+        {
+            Console.WriteLine("Cliente agregado correctamente");
+            Navigation.NavigateTo("/Clientes");
+
+        }
+        else
+        {
+            Console.WriteLine($"Error: {await respuesta.ObtenerError()}");
+        }
         
     }
-
-
 }
+
+
+   
+
+
+  

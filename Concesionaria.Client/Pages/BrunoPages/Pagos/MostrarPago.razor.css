@@ -1,0 +1,115 @@
+﻿/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+.container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 90vh;
+}
+
+/* Estilo de la tarjeta */
+.card {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Encabezado de la tarjeta */
+.card-header {
+    background-color: #1a73e8;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Cuerpo de la tarjeta */
+.card-body {
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+/* Estilos de la tabla */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #fff;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+}
+
+    .table th, .table td {
+        padding: 15px;
+        text-align: left;
+        color: #333333;
+        border: 1px solid #dcdcdc;
+    }
+
+    /* Encabezado de la tabla */
+    .table th {
+        background-color: #1a73e8;
+        color: #ffffff;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
+    /* Filas de la tabla */
+    .table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table tr:hover {
+        background-color: #f1f8ff;
+    }
+
+/* Fila centrada para mensajes */
+.texto-centrado {
+    text-align: center;
+    font-style: italic;
+    color: #666666;
+}
+
+/* Estilo para el mensaje de error */
+.texto-error {
+    text-align: center;
+    color: #d9534f;
+    font-weight: bold;
+}
+
+/* Estilo para los bordes de la tabla y las celdas */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .table td, .table th {
+        border-radius: 8px;
+    }
+
+/* Estilo de los botones, si los necesitas en el futuro */
+.btn {
+    background-color: #1a73e8;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+    .btn:hover {
+        background-color: #1558b1;
+    }

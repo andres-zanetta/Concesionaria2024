@@ -1,0 +1,95 @@
+﻿@page "/api/Cliente/editar"
+@using Concesionaria2024.Shared.DTO.AndresDTO
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+
+<h3>EditarCliente</h3>
+
+<EditForm Model="cliente" OnValidSubmit="Grabar">
+    <DataAnnotationsValidator />
+    <!-- Campo para introducir el ID del Cliente -->
+    <div class="form-group">
+        <label>ID de la persona</label>
+        <div>
+            <InputNumber class="form-control" @bind-Value="@personaId" />
+            <ValidationMessage For="@(() => personaId)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Fecha Inicio</label>
+        <div>
+            <InputDate class="form-control" @bind-Value="@cliente.FechaInicio" />
+            <ValidationMessage For="@(() => cliente.FechaInicio)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Fecha Fin</label>
+        <div>
+            <InputDate class="form-control" @bind-Value="@cliente.FechaFin" />
+            <ValidationMessage For="@(() => cliente.FechaFin)" />
+        </div>
+    </div>
+
+    <br />
+    <button class="btn btn-primary" type="submit">Aceptar</button>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    }
+
+   
+
+</EditForm>
+
+
+@code {
+    private int personaId;
+    private PUT_ClienteDTO cliente = new PUT_ClienteDTO();
+    private string errorMessage="";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await Mostrar();
+    }
+    private async Task Mostrar()
+    {
+        if(personaId>0)
+        {
+            var respuesta = await http.Get<PUT_ClienteDTO>($"api/Cliente/{personaId}");
+            if (!respuesta.Error)
+            {
+                cliente = respuesta.Respuesta; // Asignamos los datos al DTO
+            }
+            else
+            {
+                navigationManager.NavigateTo("/api/Cliente"); // Si no se encuentra el cliente, redirigimos
+            }
+        }
+    }
+
+
+    private async Task Grabar()
+    {
+        // Al hacer clic en "Aceptar", enviamos los cambios a la API
+         
+            var httpRespuesta = await http.Put<PUT_ClienteDTO>($"api/Cliente/{personaId}", cliente);
+            if (!httpRespuesta.Error)
+            {
+                // Si la actualización es exitosa, navegamos a la lista de Clientes
+                navigationManager.NavigateTo("/api/Clientes/mostrar");
+            }
+            else
+            {
+                errorMessage = await httpRespuesta.ObtenerError();
+            }
+        
+    }
+
+}

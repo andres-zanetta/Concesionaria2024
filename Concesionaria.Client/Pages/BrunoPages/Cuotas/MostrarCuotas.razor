@@ -1,0 +1,115 @@
+﻿@page "/api/Cuotas/mostrar"
+@using Concesionaria2024.Shared.DTO.BrunoDTO
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+@inject HttpClient http
+@inject IJSRuntime js
+
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
+    <div class="card border-0 shadow-lg" style="width: 100%; border-radius: 10px;">
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Listado de Cuotas</h3>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+            <table class="table tabla-cuotas">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Valor</th>
+                        <th>Vencimiento</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (cuotas != null && cuotas.Any())
+                    {
+                        foreach (var cuota in cuotas)
+                        {
+                            <tr>
+                                <td>@cuota.NumeroCuota</td>
+                                <td>@cuota.ValorCuota.ToString("C")</td>
+                                <td>@cuota.FechaVencimiento.ToString("dd/MM/yyyy")</td>
+                                <td>@cuota.Estado</td>
+                                <td>
+                                    <button class="btn btn-info btn-sm me-2" @onclick="() => VerPago(cuota.PlanVendidoId)">Ver Pago</button>
+                                    <button class="btn btn-success btn-sm" @onclick="() => RegistrarPago(cuota.PlanVendidoId)">Registrar Pago</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary">
+                                No hay cuotas registradas, pero puede probar las opciones de Pago:
+                                <br />
+                                <button class="btn btn-info btn-sm me-2" @onclick="VerPagoGenerico">Ver Pago</button>
+                                <button class="btn btn-success btn-sm" @onclick="RegistrarPagoGenerico">Registrar Pago</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<GET_CuotaDTO> cuotas = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Llamar al endpoint y manejar la respuesta con HttpRespuesta
+        var respuesta = await http.GetFromJsonAsync<HttpRespuesta<List<GET_CuotaDTO>>>("api/Cuotas");
+
+        if (respuesta != null && !respuesta.Error)
+        {
+            cuotas = respuesta.Respuesta; // Acceder al contenido de la respuesta
+        }
+        else
+        {
+            var mensajeError = respuesta != null
+                ? await respuesta.ObtenerError()
+                : "Error desconocido al comunicarse con el servidor.";
+            await js.InvokeVoidAsync("alert", $"Error al cargar las cuotas: {mensajeError}");
+        }
+    }
+
+    private async Task VerPago(int cuotaId)
+    {
+        var respuesta = await http.GetFromJsonAsync<HttpRespuesta<GET_PagoDTO>>($"api/Pagos/{cuotaId}");
+
+        if (respuesta != null && !respuesta.Error && respuesta.Respuesta != null)
+        {
+            navigationManager.NavigateTo($"/api/Pagos/mostrar");
+        }
+        else
+        {
+            var mensajeError = respuesta != null
+                ? await respuesta.ObtenerError()
+                : "Error desconocido al intentar obtener el pago.";
+            await js.InvokeVoidAsync("alert", mensajeError);
+        }
+    }
+
+    private void RegistrarPago(int cuotaId)
+    {
+        navigationManager.NavigateTo($"/api/Pagos/agregar");
+    }
+
+    // Métodos genéricos para probar botones
+    private void VerPagoGenerico()
+    {
+        navigationManager.NavigateTo($"/api/Pagos/mostrar");
+    }
+
+    private void RegistrarPagoGenerico()
+    {
+        navigationManager.NavigateTo($"/api/Pagos/agregar");
+    }
+}
+
+
+

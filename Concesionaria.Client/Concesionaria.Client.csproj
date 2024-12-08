@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\FacundoPages\TiposPlan\" />
     <Folder Include="Pages\GinoPages\PlanVendido\" />
     <Folder Include="Pages\GinoPages\Persona\" />
   </ItemGroup>
