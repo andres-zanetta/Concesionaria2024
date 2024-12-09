@@ -1,47 +1,115 @@
-﻿@page "/api/PlanVendido/buscar"
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Plan Vendido</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+﻿@page "/api/PlanVendido/Buscar"
+@using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
 
-    <!-- Contenedor principal -->
-    <div class="container">
-        <!-- Cuadro de búsqueda DNI -->
-        <div class="search-box">
-            <form id="searchForm">
-                <div class="form-group">
-                    <label for="dni">DNI del Cliente</label>
-                    <input type="text" id="dni" class="form-control" placeholder="Ingrese el DNI" required>
-                </div>
-                <button type="submit" class="btn">Buscar</button>
-            </form>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh; padding-top: 10px;">
+    <div class="card border-0 shadow-lg" style="width: 80%; max-width: 900px; border-radius: 10px;">
+        <!-- Encabezado -->
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Buscar Plan Vendido</h3>
         </div>
 
-        <!-- Card para mostrar detalles o resultados -->
-        <div class="card">
-            <div class="card-header">
-                <h2>Buscar Plan Vendido</h2>
+        <!-- Contenido principal -->
+        <div class="card-body p-4 bg-light">
+            <!-- Formulario de búsqueda centrado -->
+            <div class="d-flex justify-content-center mb-4">
+                <!-- Campo para buscar Plan Vendido por DNI -->
+                <div class="form-group mb-3 w-50">
+                    <label class="form-label fw-bold text-secondary">DNI:</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="dniCliente" />
+                </div>
+
+                <!-- Botón para buscar el Plan Vendido -->
+                <div class="d-flex align-items-center ms-2">
+                    <button class="btn btn-primary" style="height: 36px; line-height: 22px; margin-top: 10px;" @onclick="BuscarPorDni">Buscar</button>
+                </div>
             </div>
-            <div class="card-body">
-                <p>Ingrese el DNI del cliente para buscar el plan vendido.</p>
+
+            <!-- Tabla para mostrar los resultados de la búsqueda -->
+            <div class="table-responsive">
+                <table class="table tabla-cuotas">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Plan</th>
+                            <th>Estado</th>
+                            <th>Plan en Mora</th>
+                            <th>Valor Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (planVendidoEncontrado != null)
+                        {
+                            <tr>
+                                <td>@planVendidoEncontrado.NombreCliente</td>
+                                <td>@planVendidoEncontrado.NombrePlan</td>
+                                <td>@planVendidoEncontrado.Estado</td>
+                                <td>@(planVendidoEncontrado.PlanEnMora ? "Sí" : "No")</td>
+                                <td>@planVendidoEncontrado.ValorTotal.ToString("C")</td>
+                            </tr>
+                        }
+                        else if (buscando)
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-secondary">Buscando plan...</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-secondary">No se encontró el plan vendido para el DNI ingresado.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        document.getElementById('searchForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const dni = document.getElementById('dni').value;
-            alert("DNI ingresado: " + dni);
-            // Aquí puedes agregar la lógica para hacer la llamada al servidor usando el DNI
-        });
-    </script>
+@code {
+    private string dniCliente;  // Almacena el DNI ingresado por el usuario
+    private bool buscando = false;  // Indicador para saber si está en proceso de búsqueda
+    private GET_PlanVendidoDTO planVendidoEncontrado;  // Almacena el resultado de la búsqueda
 
-</body>
-</html>
+    // Método para buscar el plan vendido por DNI
+    private async Task BuscarPorDni()
+    {
+        if (string.IsNullOrEmpty(dniCliente))
+        {
+            return;
+        }
+
+        buscando = true;
+
+        try
+        {
+            // Realiza la solicitud HTTP para buscar el plan vendido por DNI
+            var respuesta = await http.Get<GET_PlanVendidoDTO>($"api/PlanVendido/{dniCliente}");
+            if (respuesta.Error)
+            {
+                planVendidoEncontrado = null;
+            }
+            else
+            {
+                planVendidoEncontrado = respuesta.Respuesta;
+            }
+        }
+        catch (Exception ex)
+        {
+            planVendidoEncontrado = null;
+        }
+
+        buscando = false;
+    }
+}
+
+
+
+
+
+
+
+
 
