@@ -10,54 +10,64 @@
         </div>
 
         <div class="card-body p-4 bg-light">
-            <table class="table tabla-pagos">
+            <table class="table tabla-cuotas" style="border-collapse: collapse; width: 100%;">
                 <thead>
-                    <tr>
-                        <th>Código Plan Vendido</th>
-                        <th>Número de Cuota</th>
-                        <th>Valor de Cuota</th>
-                        <th>Monto Pagado</th>
-                        <th>Fecha de Pago</th>
-                        <th>Método de Pago</th>
-                        <th>Referencia de Pago</th>
+                    <tr style="background-color: white; color: black; border: 1px solid #e0e0e0;">
+                        <th style="border: 1px solid #e0e0e0; text-align: center;">Código Plan Vendido</th>
+                        <th style="border: 1px solid #e0e0e0; text-align: center;">Número de Cuota</th>
+                        <th style="border: 1px solid #e0e0e0; text-align: center;">Valor de Cuota</th>
+                        <th style="border: 1px solid #e0e0e0; text-align: center;">Monto Pagado</th>
+                        <th style="border: 1px solid #e0e0e0; text-align: center;">Fecha de Pago</th>
+                        <th style="border: 1px solid #e0e0e0; text-align: center;">Método de Pago</th>
+                        <th style="border: 1px solid #e0e0e0; text-align: center;">Referencia de Pago</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="background-color: #f1f1f1; border: 1px solid #e0e0e0;">
                     @if (Mensaje == "")
                     {
                         @if (listaPagos == null)
                         {
-                            <tr><td colspan="7" class="texto-centrado">Buscando...</td></tr>
+                            <tr>
+                                <td colspan="7" class="text-center text-secondary">Buscando...</td>
+                            </tr>
                         }
                         else if (listaPagos.Count == 0)
                         {
-                            <tr><td colspan="7" class="texto-centrado">No existen pagos realizados.</td></tr>
+                            <tr>
+                                <td colspan="7" class="text-center text-secondary">No existen pagos realizados.</td>
+                            </tr>
                         }
                         else
                         {
                             @foreach (var pago in listaPagos)
                             {
                                 <tr>
-                                    <td>@pago.Cuota.NumeroCuota</td>
-                                    <td>@pago.Cuota.ValorCuota.ToString("C")</td>
-                                    <td>@pago.Cuota.Estado</td>
-                                    <td>@pago.MontoPagado.ToString("C")</td>
-                                    <td>@pago.FechaPago.ToString("dd/MM/yyyy")</td>
-                                    <td>@pago.MetodoPago</td>
-                                    <td>@pago.ReferenciaPago</td>
+                                    <td style="border: 1px solid #e0e0e0; text-align: center;">@pago.Cuota.PlanVendidoId</td>
+                                    <td style="border: 1px solid #e0e0e0; text-align: center;">@pago.Cuota.NumeroCuota</td>
+                                    <td style="border: 1px solid #e0e0e0; text-align: center;">@pago.Cuota.ValorCuota.ToString("C")</td>
+                                    <td style="border: 1px solid #e0e0e0; text-align: center;">@pago.MontoPagado.ToString("C")</td>
+                                    <td style="border: 1px solid #e0e0e0; text-align: center;">@pago.FechaPago.ToString("dd/MM/yyyy")</td>
+                                    <td style="border: 1px solid #e0e0e0; text-align: center;">@pago.MetodoPago</td>
+                                    <td style="border: 1px solid #e0e0e0; text-align: center;">@pago.ReferenciaPago</td>
                                 </tr>
                             }
                         }
                     }
                     else
                     {
-                        <tr><td colspan="7" class="texto-error">Error: @Mensaje</td></tr>
+                        <tr>
+                            <td colspan="7" class="text-danger text-center">Error: @Mensaje</td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+
+
+
 
 @code {
     List<GET_PagoDTO> listaPagos;
@@ -82,8 +92,3 @@
         }
     }
 }
-
-
-
-
-
