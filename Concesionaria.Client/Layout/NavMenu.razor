@@ -32,7 +32,14 @@
             </NavLink>
         </div>
 
-        <!-- Menú desplegable para Clientes-->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="personas">
+                <span class="bi bi-people-fill" aria-hidden="true"></span> Personas
+            </NavLink>
+        </div>
+
+
+       @*  <!-- Menú desplegable para Clientes-->
         <div class="nav-item dropdown px-3" @onmouseover="OpenClienteDropdown" @onmouseout="CloseClienteDropdown">
             <a class="nav-link dropdown-toggle" role="button" aria-expanded="false" @onclick="ToggleClienteDropdown">
                 <span class="bi bi-people-fill"></span> Clientes
@@ -41,7 +48,7 @@
                 <a class="dropdown-item" href="api/Cliente/mostrar">
                     <span class="icon-eye-fill"></span> Mostrar Cliente
                 </a>
-                <a class="dropdown-item" href="api/Cliente/agregar">
+                <a class="dropdown-item" href="api/Clientes/Agregar">
                     <span class="icon-plus-circle-fill"></span> Agregar Cliente
                 </a>
                 <a class="dropdown-item" href="api/Cliente/editar">
@@ -51,7 +58,7 @@
                     <span class="icon-trash-fill"></span> Eliminar Cliente
                 </a>
             </div>
-        </div>
+        </div> *@
          <!-- Vehículos -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="api/vehiculos/lista">

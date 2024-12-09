@@ -1,0 +1,105 @@
+﻿@page "/api/Vendedores/Ver"
+@using Concesionaria2024.Shared.DTO.AndresDTO
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+
+<div class="container mt-5">
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Listado de Vendedores</h3>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+            <!-- Indicador de carga -->
+            @if (listaVendedores == null)
+            {
+                <div class="text-center">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Cargando vendedores...
+                </div>
+            }
+            else
+            {
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Vendedor</th>
+                            <th>Código</th>
+                            <th>Documento</th>
+                            <th>Fecha de Inicio</th>
+                            <th>Fecha de Fin</th>
+                            <th>Cant. Planes Vendidos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (listaVendedores.Count == 0)
+                        {
+                            <tr><td colspan="6" class="text-center">No existen vendedores registrados.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var vendedor in listaVendedores)
+                            {
+                                <tr>
+                                    <td>@vendedor.NombrePersona</td>
+                                    <td>@vendedor.Codigo</td>
+                                    <td>@vendedor.NumDoc</td>
+                                    <td>@vendedor.FechaInicio.ToString("d")</td>
+                                    <td>@(vendedor.FechaFin?.ToString("d") ?? "N/A")</td>
+                                    <td>@vendedor.CantPlanesVendidos</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <!-- Mostrar mensaje de error si existe -->
+            @if (!string.IsNullOrEmpty(Mensaje))
+            {
+                <div class="alert alert-danger mt-3">
+                    @Mensaje
+                </div>
+            }
+
+            <!-- Botón para agregar vendedor -->
+            <div class="text-center mt-4">
+                <button class="btn btn-success btn-lg w-100 shadow" style="border-radius: 8px;" @onclick="NavigateToAgregarVendedor">
+                    <i class="fas fa-plus-circle"></i> Agregar Vendedor
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<GET_VendedorDTO> listaVendedores = null!;
+    string Mensaje = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LeerVendedores();
+    }
+
+    private async Task LeerVendedores()
+    {
+        var resp = await http.Get<List<GET_VendedorDTO>>("api/Vendedor");
+        if (!resp.Error)
+        {
+            listaVendedores = resp.Respuesta;
+        }
+        else
+        {
+            Mensaje = await resp.ObtenerError();
+        }
+    }
+
+    // Método para navegar al formulario de agregar vendedor
+    private void NavigateToAgregarVendedor()
+    {
+        navigationManager.NavigateTo("/api/Vendedores/Crear");
+    }
+}
+
+

@@ -1,0 +1,111 @@
+﻿@page "/api/Clientes/Crear"
+@using Concesionaria2024.Shared.DTO.GinoDTO.Persona
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
+    <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
+        <!-- Encabezado con fondo sólido y texto blanco -->
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Registrar Cliente</h3>
+        </div>
+        <div class="card-body p-4 bg-light">
+            <EditForm Model="postPersona" OnValidSubmit="Grabar">
+                <DataAnnotationsValidator />
+
+                <!-- Nombre -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Nombre</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Nombre" />
+                    <ValidationMessage For="@(() => postPersona.Nombre)" class="text-danger" />
+                </div>
+
+                <!-- Apellido -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Apellido</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Apellido" />
+                    <ValidationMessage For="@(() => postPersona.Apellido)" class="text-danger" />
+                </div>
+
+                <!-- Dirección -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Dirección</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Direccion" />
+                    <ValidationMessage For="@(() => postPersona.Direccion)" class="text-danger" />
+                </div>
+
+                <!-- Teléfono -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Teléfono</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Telefono" />
+                    <ValidationMessage For="@(() => postPersona.Telefono)" class="text-danger" />
+                </div>
+
+                <!-- Email -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Email</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Email" />
+                    <ValidationMessage For="@(() => postPersona.Email)" class="text-danger" />
+                </div>
+
+                <!-- Es Empresa -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">¿Es una empresa?</label>
+                    <InputCheckbox class="form-check-input" style="border-radius: 8px;" @bind-Value="@postPersona.EsEmpresa" />
+                    <ValidationMessage For="@(() => postPersona.EsEmpresa)" class="text-danger" />
+                </div>
+
+                <!-- Número de Documento -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Número de Documento</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.NumDoc" />
+                    <ValidationMessage For="@(() => postPersona.NumDoc)" class="text-danger" />
+                </div>
+
+                <!-- Tipo de Documento -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Tipo de Documento</label>
+                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.TipoDocumentoId" />
+                    <ValidationMessage For="@(() => postPersona.TipoDocumentoId)" class="text-danger" />
+                </div>
+
+
+                @* ARREGLAR:------------------------------------------------------------------------------ *@
+
+
+            @*     <!-- Fecha de Inicio (automáticamente la fecha actual) -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Fecha de Inicio</label>
+                    <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.FechaInicio" />
+                    <ValidationMessage For="@(() => postPersona.FechaInicio)" class="text-danger" />
+                </div> *@
+                @* ------------------------------------------------------------------------------------------ *@
+
+                <!-- Botón de Enviar -->
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary btn-lg w-100 shadow" style="border-radius: 8px;">Aceptar</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private POST_PersonaDTO postPersona = new POST_PersonaDTO
+        {
+            //ARREGLAR-----------------------------------------------------------------------------------
+
+            //FechaInicio = DateTime.Now  //Establecer la fecha actual como valor predeterminado
+
+            //-------------------------------------------------------------------------------------------
+        };
+
+    private async Task Grabar()
+    {
+        // Enviar el DTO al backend
+        var httpRespuesta = await http.Post<POST_PersonaDTO>("api/Clientes", postPersona);
+
+        // Redirigir al usuario a la lista de clientes o a una página de confirmación
+        navigationManager.NavigateTo("/api/Clientes/Ver");
+    }
+}
