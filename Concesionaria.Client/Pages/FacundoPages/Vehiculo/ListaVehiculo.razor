@@ -47,6 +47,7 @@
                         <th>Precio</th>
                         <th>Motor</th>
                         <th>Combustible</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +55,7 @@
                     {
                         @if (listaVehiculos == null || !listaVehiculos.Any())
                         {
-                            <tr><td colspan="6">No existen vehículos registrados.</td></tr>
+                            <tr><td colspan="7">No existen vehículos registrados.</td></tr>
                         }
                         else
                         {
@@ -67,19 +68,21 @@
                                     <td>@vehiculo.Precio.ToString("C")</td>
                                     <td>@vehiculo.Motor</td>
                                     <td>@vehiculo.Combustible</td>
+                                    <td>
+                                        <button class="btn btn-outline-secondary" @onclick="() => IrAEditarVehiculo(vehiculo.Codigo)">Editar</button>
+                                    </td>
                                 </tr>
                             }
                         }
                     }
                     else
                     {
-                        <tr><td colspan="6">Error: @Mensaje</td></tr>
+                        <tr><td colspan="7">Error: @Mensaje</td></tr>
                     }
                 </tbody>
             </table>
 
-            <button @onclick="IrACrearVehiculo" class="btn btn-primary w-100 mt-3">Agregar Nuevo Vehículo</button>
-            <button @onclick="IrAEditarVehiculo" class="btn btn-outline-primary w-100 mt-3">Editar Vehículos</button>
+            <button @onclick="IrACrearVehiculo" class="btn btn-primary w-100 mt-3">Agregar nuevo vehículo</button>
         </div>
     </div>
 </div>
@@ -152,8 +155,19 @@
         Navigation.NavigateTo("/api/vehiculos/crear");
     }
 
-    private void IrAEditarVehiculo()
+    private void IrAEditarVehiculo(string codigoVehiculo)
     {
-        Navigation.NavigateTo("/api/vehiculos/editar");
+        Navigation.NavigateTo($"/api/vehiculos/editar/{codigoVehiculo}");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            return;
+        }
+
+        await LeerVehiculos();
+        StateHasChanged(); 
     }
 }

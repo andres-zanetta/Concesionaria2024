@@ -1,101 +1,96 @@
-﻿@page "/api/Vehiculos/Editar"
+﻿@page "/api/vehiculos/editar/{codigoVehiculo}"
+@using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO
 @using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo
 @inject IHttpServicio http
 @inject NavigationManager Navigation
 
 <div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
-    <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
+    <div class="card border-0 shadow-lg" style="width: 100%; border-radius: 10px;">
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
-            <h3 class="mb-0" style="font-weight: 600;">Actualizar Vehículo</h3>
+            <h3 class="mb-0" style="font-weight: 600;">Editar Vehículo</h3>
         </div>
 
-        <div class="card-body">
-            @if (!string.IsNullOrEmpty(mensajeError))
+        <div class="card-body p-4 bg-light">
+            <h5 class="mb-4">Editar los detalles del vehículo</h5>
+
+            @if (vehiculo == null)
             {
-                <div class="alert alert-danger">@mensajeError</div>
+                <p>Cargando vehículo...</p>
             }
+            else
+            {
+                <EditForm Model="vehiculo" OnValidSubmit="GuardarVehiculo">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
 
-            <EditForm Model="@vehiculo" OnValidSubmit="ActualizarVehiculo">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+                    <div class="form-group">
+                        <label for="codigo">Código</label>
+                        <InputText id="codigo" class="form-control" @bind-Value="vehiculo.Codigo" disabled />
+                    </div>
 
-                <div class="form-group">
-                    <label for="Marca">Marca</label>
-                    <InputText id="Marca" class="form-control" @bind-Value="vehiculo.Marca" />
-                    <ValidationMessage For="@(() => vehiculo.Marca)" />
-                </div>
+                    <div class="form-group">
+                        <label for="marca">Marca</label>
+                        <InputText id="marca" class="form-control" @bind-Value="vehiculo.Marca" />
+                    </div>
 
-                <div class="form-group">
-                    <label for="Modelo">Modelo</label>
-                    <InputText id="Modelo" class="form-control" @bind-Value="vehiculo.Modelo" />
-                    <ValidationMessage For="@(() => vehiculo.Modelo)" />
-                </div>
+                    <div class="form-group">
+                        <label for="modelo">Modelo</label>
+                        <InputText id="modelo" class="form-control" @bind-Value="vehiculo.Modelo" />
+                    </div>
 
-                <div class="form-group">
-                    <label for="Precio">Precio</label>
-                    <InputNumber id="Precio" class="form-control" @bind-Value="vehiculo.Precio" step="0.01" />
-                    <ValidationMessage For="@(() => vehiculo.Precio)" />
-                </div>
+                    <div class="form-group">
+                        <label for="precio">Precio</label>
+                        <InputNumber id="precio" class="form-control" @bind-Value="vehiculo.Precio" />
+                    </div>
 
-                <div class="form-group">
-                    <label for="Motor">Motor</label>
-                    <InputText id="Motor" class="form-control" @bind-Value="vehiculo.Motor" />
-                    <ValidationMessage For="@(() => vehiculo.Motor)" />
-                </div>
+                    <div class="form-group">
+                        <label for="motor">Motor</label>
+                        <InputText id="motor" class="form-control" @bind-Value="vehiculo.Motor" />
+                    </div>
 
-                <div class="form-group">
-                    <label for="Combustible">Combustible</label>
-                    <InputText id="Combustible" class="form-control" @bind-Value="vehiculo.Combustible" />
-                    <ValidationMessage For="@(() => vehiculo.Combustible)" />
-                </div>
+                    <div class="form-group">
+                        <label for="combustible">Combustible</label>
+                        <InputText id="combustible" class="form-control" @bind-Value="vehiculo.Combustible" />
+                    </div>
 
-                <button type="submit" class="btn btn-primary w-100">Actualizar Vehículo</button>
-            </EditForm>
-
-            <button @onclick="IrALaLista" class="btn btn-outline-primary w-100 mt-3">Volver a la Lista</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Cambios</button>
+                    <button @onclick="IrALaLista" class="btn btn-outline-primary w-100 mt-3">Volver a la lista</button>
+                </EditForm>
+            }
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public string Codigo { get; set; } = null!;
-    private PUT_VehiculoDTO vehiculo = new PUT_VehiculoDTO();
-    private string mensajeError = "";
-    private bool isSuccess = false;
+    [Parameter] public string codigoVehiculo { get; set; }
+
+    private GET_VehiculoDTO vehiculo;
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await CargarVehiculo();
     }
 
     private async Task CargarVehiculo()
     {
-        var respuesta = await http.Get<PUT_VehiculoDTO>($"api/Vehiculos/Codigo/{Codigo}");
-
-        if (!respuesta.Error)
+        var resp = await http.Get<GET_VehiculoDTO>($"api/Vehiculos/Codigo/{codigoVehiculo}");
+        if (!resp.Error)
         {
-            vehiculo = respuesta.Respuesta;
+            vehiculo = resp.Respuesta;
         }
         else
         {
-            mensajeError = "No se encontró el vehículo con el código proporcionado.";
+            Navigation.NavigateTo("/error");
         }
     }
 
-    private async Task ActualizarVehiculo()
+    private async Task GuardarVehiculo()
     {
-        var respuesta = await http.Put<PUT_VehiculoDTO>($"api/Vehiculos/CodigoAModificar/{Codigo}", vehiculo);
-
-        if (!respuesta.Error)
+        var resp = await http.Put($"api/Vehiculos/Codigo/{codigoVehiculo}", vehiculo);
+        if (!resp.Error)
         {
-            isSuccess = true;
-            mensajeError = ""; 
-            Navigation.NavigateTo("/vehiculos/get");
-        }
-        else
-        {
-            isSuccess = false;
-            mensajeError = await respuesta.ObtenerError();
+            Navigation.NavigateTo("/api/vehiculos/lista", true);
         }
     }
 
