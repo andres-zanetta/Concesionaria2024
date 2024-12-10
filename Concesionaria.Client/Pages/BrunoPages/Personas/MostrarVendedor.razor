@@ -84,16 +84,24 @@
 
     private async Task LeerVendedores()
     {
-        var resp = await http.Get<List<GET_VendedorDTO>>("api/Vendedor");
-        if (!resp.Error)
+        try
         {
-            listaVendedores = resp.Respuesta;
+            var resp = await http.Get<List<GET_VendedorDTO>>("api/Vendedores");
+            if (!resp.Error && resp.Respuesta != null)
+            {
+                listaVendedores = resp.Respuesta;
+            }
+            else
+            {
+                Mensaje = await resp.ObtenerError();
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Mensaje = await resp.ObtenerError();
+            Mensaje = $"Error al cargar los datos: {ex.Message}";
         }
     }
+
 
     // Método para navegar al formulario de agregar vendedor
     private void NavigateToAgregarVendedor()
