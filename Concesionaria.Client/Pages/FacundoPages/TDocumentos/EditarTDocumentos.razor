@@ -1,0 +1,89 @@
+﻿@page "/api/tiposdocumento/editar/{codigo}"
+@using Concesionaria2024.Shared.DTO.GinoDTO.TIpoDocumento
+@inject IHttpServicio http
+@inject NavigationManager Navigation
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            <h3>Editar Tipo de Documento</h3>
+        </div>
+        <div class="card-body">
+            @if (tipoDocumento == null)
+            {
+                <p>Cargando...</p>
+            }
+            else
+            {
+                <EditForm Model="@tipoDocumento" OnValidSubmit="GuardarTipoDocumento">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label for="Nombre">Nombre:</label>
+                        <InputText id="Nombre" class="form-control" @bind-Value="tipoDocumento.Nombre" />
+                        <ValidationMessage For="@(() => tipoDocumento.Nombre)" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Codigo">Código:</label>
+                        <InputText id="Codigo" class="form-control" @bind-Value="tipoDocumento.Codigo" />
+                        <ValidationMessage For="@(() => tipoDocumento.Codigo)" />
+                    </div>
+
+                    <button class="btn btn-success w-100" type="submit">Guardar Cambios</button>
+                    <button class="btn btn-secondary w-100 mt-3" @onclick="VolverATiposDocumento">Volver a Tipos de Documento</button>
+                </EditForm>
+            }
+
+            @if (!string.IsNullOrEmpty(mensajeError))
+            {
+                <div class="alert alert-danger mt-3">@mensajeError</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string codigo { get; set; }
+
+    private PUT_TipoDocumentoDTO tipoDocumento = new PUT_TipoDocumentoDTO();
+    private string mensajeError = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarTipoDocumento();
+    }
+
+    private async Task CargarTipoDocumento()
+    {
+        var respuesta = await http.Get<PUT_TipoDocumentoDTO>($"api/tiposdocumento/Codigo/{codigo}");
+        if (!respuesta.Error)
+        {
+            tipoDocumento = respuesta.Respuesta;
+        }
+        else
+        {
+            mensajeError = await respuesta.ObtenerError();
+        }
+    }
+
+    private async Task GuardarTipoDocumento()
+    {
+        var respuesta = await http.Put($"api/tiposdocumento/CodigoAModificar/{codigo}", tipoDocumento);
+        if (!respuesta.Error)
+        {
+            Navigation.NavigateTo("/tiposdocumento");
+        }
+        else
+        {
+            mensajeError = await respuesta.ObtenerError();
+        }
+    }
+
+    private void VolverATiposDocumento()
+    {
+        Navigation.NavigateTo("/tiposdocumento");
+    }
+}
+
