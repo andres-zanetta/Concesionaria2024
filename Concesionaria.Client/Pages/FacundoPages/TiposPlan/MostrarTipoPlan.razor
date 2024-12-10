@@ -15,10 +15,12 @@
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        @* <th>ID</th>  no usar ID, se tiene q usar codigo  *@
+                        <th>Código del Plan</th>
                         <th>Nombre del Plan</th>
                         <th>Descripción</th>
                         <th>Precio</th>
+                        <th>Código Vehículo</th>
+                        <th>Acciones</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -26,28 +28,32 @@
                     {
                         @if (listaTipoPlanes == null)
                         {
-                            <tr><td colspan="4">Cargando...</td></tr>
+                            <tr><td colspan="6">Cargando...</td></tr>
                         }
                         else if (listaTipoPlanes.Count == 0)
                         {
-                            <tr><td colspan="4">No existen tipos de planes.</td></tr>
+                            <tr><td colspan="6">No existen tipos de planes.</td></tr>
                         }
                         else
                         {
                             @foreach (var plan in listaTipoPlanes)
                             {
                                 <tr>
-                                  @*   <td>@plan.Id</td>  no usar ID, se tiene q usar codigo  *@
+                                    <td>@plan.Codigo</td>
                                     <td>@plan.NombrePlan</td>
                                     <td>@plan.Descripcion</td>
                                     <td>@plan.ValorTotal.ToString("C")</td>
+                                    <td>@plan.CodigoVehiculo</td>
+                                    <td>
+                                        <button class="btn btn-outline-secondary" @onclick="() => EditarPlan(plan.Codigo)">Editar</button>
+                                    </td>
                                 </tr>
                             }
                         }
                     }
                     else
                     {
-                        <tr><td colspan="4">Error: @Mensaje</td></tr>
+                        <tr><td colspan="6">Error: @Mensaje</td></tr>
                     }
                 </tbody>
             </table>
@@ -92,5 +98,10 @@
     private void NavigateToGestion()
     {
         navigationManager.NavigateTo("/api/TipoPlan/Gestion");
+    }
+
+    private void EditarPlan(string codigo)
+    {
+        navigationManager.NavigateTo($"/api/TipoPlan/editar/{codigo}");
     }
 }

@@ -1,5 +1,6 @@
 ﻿@page "/api/TipoPlan/Gestion"
 @using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
+@using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
 
@@ -36,22 +37,14 @@
                     <ValidationMessage For="@(() => nuevoTipoPlan.ValorTotal)" class="text-danger" />
                 </div>
 
-@*                 <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Vehículo ID</label>
-                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.VehiculoId" />
-                    <ValidationMessage For="@(() => nuevoTipoPlan.VehiculoId)" class="text-danger" />
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Código del Vehículo</label>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.CodigoVehiculo" />
+                    <ValidationMessage For="@(() => nuevoTipoPlan.CodigoVehiculo)" class="text-danger" />
                 </div>
-                
-                No corresponde mostrarle el id al usuario, el id es algo que se limita al lenguaje del programa,
-                por eso se debe usar el codigo, se asocia una entidad a otra mediante la propiedad codigo.
-                El programa lo permite por q por swagger funciona.  VERIFICAR.
-                
-                *@
-
-                
 
                 <div class="text-center mt-4">
-                    <button class="btn btn-primary btn-lg w-100 shadow" style="border-radius: 8px;">Registrar Plan</button>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow" style="border-radius: 8px;">Registrar Plan</button>
                 </div>
             </EditForm>
 

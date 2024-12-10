@@ -1,0 +1,101 @@
+﻿@page "/api/TipoPlan/editar/{codigo}"
+@using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+
+<div class="container mt-5">
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Editar Plan</h3>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+            <EditForm Model="planParaEditar" OnValidSubmit="GuardarCambios">
+                <DataAnnotationsValidator />
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Nombre del Plan</label>
+                    <InputText class="form-control" @bind-Value="planParaEditar.NombrePlan" />
+                    <ValidationMessage For="@(() => planParaEditar.NombrePlan)" />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Descripción del Plan</label>
+                    <InputTextArea class="form-control" @bind-Value="planParaEditar.Descripcion" />
+                    <ValidationMessage For="@(() => planParaEditar.Descripcion)" />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Valor Total</label>
+                    <InputNumber class="form-control" @bind-Value="planParaEditar.ValorTotal" />
+                    <ValidationMessage For="@(() => planParaEditar.ValorTotal)" />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Código Vehículo</label>
+                    <InputText class="form-control" @bind-Value="planParaEditar.CodigoVehiculo" />
+                    <ValidationMessage For="@(() => planParaEditar.CodigoVehiculo)" />
+                </div>
+
+                <button class="btn btn-primary">Guardar Cambios</button>
+            </EditForm>
+
+            @if (errorMessage != null)
+            {
+                <div class="alert alert-danger mt-3">
+                    @errorMessage
+                </div>
+            }
+
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-primary btn-lg w-100 shadow" @onclick="NavigateToListado">Volver al listado</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Codigo { get; set; } 
+    private PUT_TipoPlanDTO planParaEditar = new PUT_TipoPlanDTO(); 
+    private string errorMessage = null!; 
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await CargarPlan(); 
+    }
+
+    private async Task CargarPlan()
+    {
+        var respuesta = await http.Get<PUT_TipoPlanDTO>($"api/TipoPlan/{Codigo}");
+        if (!respuesta.Error)
+        {
+            planParaEditar = respuesta.Respuesta;
+        }
+        else
+        {
+            errorMessage = "No se pudo cargar el plan. Intenta nuevamente más tarde.";
+            navigationManager.NavigateTo("/error");
+        }
+    }
+
+    private async Task GuardarCambios()
+    {
+        var respuesta = await http.Put($"api/TipoPlan/{Codigo}", planParaEditar);
+
+        if (respuesta != null && !respuesta.Error)
+        {
+            navigationManager.NavigateTo("/api/TipoPlan/mostrar");
+        }
+        else
+        {
+            errorMessage = await respuesta.ObtenerError();
+            Console.WriteLine($"Error al guardar cambios: {errorMessage}");
+        }
+    }
+
+    private void NavigateToListado()
+    {
+        navigationManager.NavigateTo("/api/TipoPlan/mostrar");
+    }
+}
