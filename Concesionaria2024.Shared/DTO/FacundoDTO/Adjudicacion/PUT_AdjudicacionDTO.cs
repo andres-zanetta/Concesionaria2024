@@ -4,22 +4,41 @@ namespace Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion
 {
     public class PUT_AdjudicacionDTO
     {
-        public int Id { get; set; }
+        // Detalle ------------------------------------------------------------------------------------------
+
 
         [MaxLength(100, ErrorMessage = "Máximo número de caracteres {1}.")]
+        // No se agrega un parametro "Required" dado que debe poder ser nullable
         public string? Detalle { get; set; }
 
-        [Required(ErrorMessage = "La fecha de adjudicación es obligatoria.")]
+
+        // Fecha de adjudicación ----------------------------------------------------------------------------
+
+
+        [Required(ErrorMessage = "La fecha de Adjudicación es obligatoria.")]
         public DateTime FechaAdjudicacion { get; set; }
 
+
+        // Auto entregado  ----------------------------------------------------------------------------------
+
+
+        [Display(Name = "¿Está entregado?", Description = "Indica si el vehiculo fue entregado")]
+        //Para mostrar info en la interfaz de usuario
         public bool AutoEntregado { get; set; }
 
-        [Required(ErrorMessage = "La patente del vehículo es obligatoria.")]
-        [MaxLength(10, ErrorMessage = "Máximo número de caracteres: {1}.")]
-        public string? PatenteVehiculo { get; set; }
 
-        [Required(ErrorMessage = "El ID del vehículo es obligatorio.")]
-        public int VehiculoId { get; set; }
-        public object Fecha { get; set; }
+        // Patente del vehiculo -----------------------------------------------------------------------------
+
+
+        [Required(ErrorMessage = "La patente del vehiculo es obligatoria.")]
+        [MaxLength(10, ErrorMessage = "Máximo número de caracteres: {1}.")]
+        public string PatenteVehiculo { get; set; }
+
+        // Codigo del Vehiculo ------------------------------------------------------------------------------
+
+        [Required(ErrorMessage = "El Codigo del vehiculo es obligatorio.")]
+        [MaxLength(50, ErrorMessage = "Máximo número de caracteres: {1}.")]
+        public string PlanVendidoCodigo { get; set; }
+
     }
 }

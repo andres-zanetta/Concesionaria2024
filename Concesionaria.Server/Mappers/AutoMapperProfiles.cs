@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
+using Concesionaria.Server.Resolvers.AdjudicacionResolver;
 using Concesionaria.Server.Resolvers.ClienteResolver;
 using Concesionaria.Server.Resolvers.PersonaResolvers;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.POST;
@@ -43,10 +44,10 @@ namespace Concesionaria.Server.Mappers
            .ForMember(dest => dest.NombreVendedor, opt => opt.MapFrom(src => $"{src.Vendedor.Persona.Nombre} {src.Vendedor.Persona.Apellido}"))
            .ForMember(dest => dest.NombrePlan, opt => opt.MapFrom(src => $"{src.TipoPlan.NombrePlan}"))
            .ForMember(dest => dest.ValorTotal, opt => opt.MapFrom(src => $"{src.TipoPlan.ValorTotal}"))
+           .ForMember(dest => dest.ModeloVehiculo, opt => opt.MapFrom(src => src.TipoPlan.Vehiculo.Modelo))
+           .ForMember(dest => dest.MarcaVehiculo, opt => opt.MapFrom(src => src.TipoPlan.Vehiculo.Marca))
            .ForMember(dest => dest.AutoEntregado, opt => opt.MapFrom(src => src.Adjudicacion != null ? src.Adjudicacion.AutoEntregado : false))
-           .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.Adjudicacion != null ? src.Adjudicacion.PatenteVehiculo : null))
-           .ForMember(dest => dest.ModeloVehiculo, opt => opt.MapFrom(src => src.Adjudicacion != null ? src.Adjudicacion.Vehiculo.Modelo : null))
-           .ForMember(dest => dest.MarcaVehiculo, opt => opt.MapFrom(src => src.Adjudicacion != null ? src.Adjudicacion.Vehiculo.Marca : null)); 
+           .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.Adjudicacion != null ? src.Adjudicacion.PatenteVehiculo : null)); 
 
             // El metodo de arriba agregar al DTO info util trackeada desde persona asociada a un CL o V e info util del TipoPlan y adjudic.
 
@@ -124,23 +125,20 @@ namespace Concesionaria.Server.Mappers
 			// Mapeado Adjudicacion ===============================================================
 
 			CreateMap<Adjudicacion, GET_AdjudicacionDTO>()
-                .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => src.FechaAdjudicacion)) 
-                .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.AutoEntregado ? "Entregado" : "Pendiente")) 
-                .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo)); 
+                .ForMember(dest => dest.VehiculoCodigo, opt => opt.MapFrom(src => src.PlanVendido.TipoPlan.Vehiculo.Codigo)); 
 
             // POST 
 
             CreateMap<POST_AdjudicacionDTO, Adjudicacion>()
-                .ForMember(dest => dest.FechaAdjudicacion, opt => opt.MapFrom(src => src.Fecha))  
-                .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo))
-                .ForMember(dest => dest.VehiculoId, opt => opt.MapFrom(src => src.VehiculoId)); 
+                .ForMember(dest => dest.Codigo,opt => opt.MapFrom(src => $"Patente-{src.PatenteVehiculo}"))
+                .ForMember(dest => dest.PlanVendidoId, opt => opt.MapFrom<PlanVendidoAdjudicResolverPost>())
+                .ForMember(dest => dest.FechaAdjudicacion, opt => opt.MapFrom(src => DateTime.Now)); 
 
             // PUT
 
             CreateMap<PUT_AdjudicacionDTO, Adjudicacion>()
-                .ForMember(dest => dest.FechaAdjudicacion, opt => opt.MapFrom(src => src.FechaAdjudicacion)) 
-                .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.PatenteVehiculo)) 
-                .ForMember(dest => dest.AutoEntregado, opt => opt.MapFrom(src => src.AutoEntregado)); 
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"Patente-{src.PatenteVehiculo}"))
+                .ForMember(dest => dest.PlanVendidoId, opt => opt.MapFrom<PlanVendidoAdjudicResolverPut>()); 
 
 
             // Mapeado Tipo Plan ==================================================================

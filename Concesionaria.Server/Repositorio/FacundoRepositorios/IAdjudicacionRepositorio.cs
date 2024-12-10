@@ -4,9 +4,10 @@ using System.Threading.Tasks;
 
 namespace Concesionaria.Server.Repositorio.FacundoRepositorios
 {
-    public interface IAdjudicacionRepositorio
+    public interface IAdjudicacionRepositorio : IRepositorio<Adjudicacion>
     {
-        Task<PlanVendido> SelectByCodigo(string codigo);
+        Task<Adjudicacion> SelectByCodigoConVehiculo(string codigo);
+        Task<Adjudicacion> SelectByPatente(string patente);
         Task<List<Adjudicacion>> SelectEntidadConVehiculo();
         Task<Adjudicacion> SelectEntidadConVehiculoById(int id);
     }

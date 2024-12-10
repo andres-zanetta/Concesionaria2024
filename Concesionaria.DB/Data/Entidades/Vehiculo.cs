@@ -56,7 +56,6 @@ namespace Concesionaria.DB.Data.Entidades
 
 
         public List<TipoPlan> TipoPlanes { get; set; } = new List<TipoPlan>();
-        public List<Adjudicacion> Adjudicaciones { get; set; } = new List<Adjudicacion>();
 
     }
 }

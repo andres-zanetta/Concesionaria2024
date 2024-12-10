@@ -23,7 +23,7 @@ namespace Concesionaria.DB.Data.Entidades
         // Fecha de adjudicación ------------------------------------------------------------------------------------------
 
 
-        [Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
+        [Required(ErrorMessage = "La fecha de Adjudicación es obligatoria.")]
         public DateTime FechaAdjudicacion { get; set; }
 
 
@@ -48,9 +48,9 @@ namespace Concesionaria.DB.Data.Entidades
 
 
 
-        [Required(ErrorMessage = "El vehiculo es obligatorio.")]
-        public int VehiculoId { get; set; }
-        public Vehiculo Vehiculo { get; set; }
+        [Required(ErrorMessage = "El plan es obligatorio.")]
+        public int PlanVendidoId { get; set; }
+        public PlanVendido PlanVendido { get; set; }
        
     }
 }

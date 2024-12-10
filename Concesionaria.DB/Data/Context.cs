@@ -34,10 +34,17 @@ namespace Concesionaria.DB.Data
                                           .SelectMany(t => t.GetForeignKeys())
                                           .Where(fk => !fk.IsOwnership
                                                        && fk.DeleteBehavior == DeleteBehavior.Casca­de);
+
             foreach (var fk in cascadeFKs)
             {
                 fk.DeleteBehavior = DeleteBehavior.Restr­ict;
             }
+
+             modelBuilder.Entity<Adjudicacion>()
+            .HasOne(a => a.PlanVendido)
+            .WithOne(p => p.Adjudicacion)
+            .HasForeignKey<Adjudicacion>(a => a.PlanVendidoId)
+            .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }

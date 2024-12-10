@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
+using Concesionaria.Server.Repositorio.FacundoRepositorios;
+using Concesionaria.Server.Repositorio.GinoRepositorios;
+using Concesionaria2024.Shared.DTO.AndresDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO;
 using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo;
@@ -13,69 +16,108 @@ namespace Concesionaria.Server.Controllers
     [Route("api/Adjudicaciones")]
     public class AdjudicacionesController : ControllerBase
     {
-        private readonly IRepositorio<Adjudicacion> repositorio;
+        private readonly IPlanVendidoRepositorio planVendidoRepositorio;
+        private readonly IAdjudicacionRepositorio repositorio;
         private readonly IMapper mapper;
 
-        public AdjudicacionesController(IRepositorio<Adjudicacion> repositorio, IMapper mapper)
+        public AdjudicacionesController(IPlanVendidoRepositorio planVendidoRepositorio, IAdjudicacionRepositorio repositorio, IMapper mapper)
         {
+            this.planVendidoRepositorio = planVendidoRepositorio;
             this.repositorio = repositorio;
             this.mapper = mapper;
         }
 
+        // GET:-------------------------------------------------------------------
         [HttpGet]
         public async Task<ActionResult<List<GET_AdjudicacionDTO>>> Get()
         {
-            var adjudicaciones = await repositorio.Select();
-            if (adjudicaciones == null || !adjudicaciones.Any())
+            try
             {
-                return NotFound("No se encontraron adjudicaciones.");
+                var ListaAdjudicacion = await repositorio.SelectEntidadConVehiculo();
+                var ListaAdjudicacionDTO = mapper.Map<List<GET_AdjudicacionDTO>>(ListaAdjudicacion);
+                return Ok(ListaAdjudicacionDTO);
             }
-
-            var adjudicacionesDTO = mapper.Map<List<GET_AdjudicacionDTO>>(adjudicaciones);
-
-            return Ok(adjudicacionesDTO);
+            catch (Exception ex)
+            {
+                // Registrar el error para el diagnóstico
+                Console.WriteLine($"Error en el método GET: {ex.Message}");
+                return StatusCode(500, $"Ocurrió un error interno: {ex.Message}");
+            }
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<GET_AdjudicacionDTO>> Get(int id)
+        [HttpGet("Patente/{patente}")]
+        public async Task<ActionResult<GET_AdjudicacionDTO>> Get(string patente)
         {
-            var adjudicacion = await repositorio.SelectById(id);
-            if (adjudicacion == null)
+            try
             {
-                return NotFound("La adjudicación no fue encontrada.");
+                Adjudicacion? adjudicacion = await repositorio.SelectByPatente(patente);
+                if (adjudicacion == null)
+                {
+                    return NotFound($"No se encontro una Adjudicación con un vehiculo cuya Patente sea: {patente}. Favor verificar");
+                }
+                var clienteDTO = mapper.Map<GET_AdjudicacionDTO>(adjudicacion);
+                return Ok(clienteDTO);
             }
-
-            var adjudicacionDTO = mapper.Map<GET_AdjudicacionDTO>(adjudicacion);
-            return Ok(adjudicacionDTO);
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    return BadRequest($"Error: {ex.Message}. Inner Exception: {ex.InnerException.Message}");
+                }
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("existe/{id:int}")]
-        public async Task<ActionResult<bool>> Existe(int id)
+        [HttpGet("Codigo/{codigo}")]
+        public async Task<ActionResult<GET_AdjudicacionDTO>> GetByCodigo(string codigo)
         {
-            var existe = await repositorio.Existe(id);
-            return Ok(existe);
+            try
+            {
+                Adjudicacion? adjudicacion = await repositorio.SelectByCodigoConVehiculo(codigo);
+                if (adjudicacion == null)
+                {
+                    return NotFound($"No se encontro  una Adjudicación con el codigo: {codigo}. Favor verificar");
+                }
+                var adjudicacionDTO = mapper.Map<GET_AdjudicacionDTO>(adjudicacion);
+                return Ok(adjudicacionDTO);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    return BadRequest($"Error: {ex.Message}. Inner Exception: {ex.InnerException.Message}");
+                }
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Post(POST_AdjudicacionDTO entidadDTO)
+        public async Task<ActionResult<int>> Post(POST_AdjudicacionDTO POST_entidadDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
-                var entidad = mapper.Map<Adjudicacion>(entidadDTO);
-                var result = await repositorio.Insert(entidad);
-                return CreatedAtAction(nameof(Get), new { id = result }, result);
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest($"Error al insertar en la base de datos: {ex.Message}");
+                if (POST_entidadDTO == null)
+                {
+                    return BadRequest("Los datos ingresados son nulos. Favor verificar.");
+                }
+
+
+                var VehiculoSeleccionado = await planVendidoRepositorio.SelectByCod(POST_entidadDTO.PlanVendidoCodigo);
+                if (VehiculoSeleccionado == null)
+                {
+                    return NotFound($"No se encontró un Vehiculo asociado al Código: {POST_entidadDTO.PlanVendidoCodigo}. Favor verificar.");
+                }
+
+                Adjudicacion entidad = mapper.Map<Adjudicacion>(POST_entidadDTO);
+                await repositorio.Insert(entidad);
+                return Ok($"Adjudicación cargada correctamente. Codigo: {entidad.Codigo}, Patente del vehiculo adjudicado: {entidad.PatenteVehiculo}");
             }
             catch (Exception e)
             {
+                if (e.InnerException != null)
+                {
+                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+                }
                 return BadRequest(e.Message);
             }
         }
@@ -99,13 +141,13 @@ namespace Concesionaria.Server.Controllers
 
 			// Log para verificar los valores actualizados en verde 
 			Console.ForegroundColor = ConsoleColor.Green;
-			Console.WriteLine($"TipoDocumento actualizado: {adjudicacion}");
+			Console.WriteLine($"Adjudicación actualizada: {adjudicacion.Codigo}-{adjudicacion.PatenteVehiculo}");
 			Console.ResetColor();
 
 			try
 			{
 				await repositorio.Update(adjudicacion.Id, adjudicacion);
-				var adjudicacionDTO = mapper.Map<PUT_AdjudicacionDTO>(adjudicacion);
+				var adjudicacionDTO = mapper.Map<GET_AdjudicacionDTO>(adjudicacion);
 				return Ok(adjudicacionDTO);
 			}
 			catch (Exception e)
@@ -118,23 +160,30 @@ namespace Concesionaria.Server.Controllers
 			}
 		}
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        [HttpDelete("EliminarCodigo/{codigo}")]
+        public async Task<ActionResult> Delete(string codigo)
         {
-            var existe = await repositorio.Existe(id);
+            var existe = await repositorio.ExisteByCodigo(codigo);
+
             if (!existe)
             {
-                return NotFound($"La adjudicación con ID {id} no existe.");
+                return NotFound($"La Adjudicación con código {codigo} no existe");
             }
 
-            var success = await repositorio.Delete(id);
-            if (success)
+            var EntidadABorrar = await repositorio.SelectByCod(codigo);
+
+            if (EntidadABorrar == null)
             {
-                return Ok($"La adjudicación con ID {id} fue eliminada.");
+                return NotFound($"No se encontró una Adjudicación con código {codigo}. Favor verificar");
+            }
+
+            if (await repositorio.Delete(EntidadABorrar.Id))
+            {
+                return Ok($"La Adjudicación con código {codigo} fue eliminada");
             }
             else
             {
-                return BadRequest("No se pudo eliminar la adjudicación.");
+                return BadRequest("No se pudo llevar a cabo la acción");
             }
         }
     }

@@ -4,6 +4,7 @@ using Concesionaria.DB.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Concesionaria.DB.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241210010355_PlanVendidoEnAdjudicacion")]
+    partial class PlanVendidoEnAdjudicacion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,10 +56,15 @@ namespace Concesionaria.DB.Migrations
                     b.Property<int>("PlanVendidoId")
                         .HasColumnType("int");
 
+                    b.Property<int>("VehiculoId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PlanVendidoId")
                         .IsUnique();
+
+                    b.HasIndex("VehiculoId");
 
                     b.HasIndex(new[] { "PatenteVehiculo" }, "Adjudicacion_UQ")
                         .IsUnique();
@@ -449,7 +457,15 @@ namespace Concesionaria.DB.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Concesionaria.DB.Data.Entidades.Vehiculo", "Vehiculo")
+                        .WithMany("Adjudicaciones")
+                        .HasForeignKey("VehiculoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("PlanVendido");
+
+                    b.Navigation("Vehiculo");
                 });
 
             modelBuilder.Entity("Concesionaria.DB.Data.Entidades.Cliente", b =>
@@ -578,6 +594,8 @@ namespace Concesionaria.DB.Migrations
 
             modelBuilder.Entity("Concesionaria.DB.Data.Entidades.Vehiculo", b =>
                 {
+                    b.Navigation("Adjudicaciones");
+
                     b.Navigation("TipoPlanes");
                 });
 

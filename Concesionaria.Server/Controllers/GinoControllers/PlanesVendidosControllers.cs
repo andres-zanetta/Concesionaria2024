@@ -172,7 +172,7 @@ namespace Concesionaria.Server.Controllers.GinoControllers
                 return NotFound($"Tipo de plan con Codigo {PUT_EntidadDNI_DTO.TipoPlanCodigo} no encontrado.");
             }
 
-            var adjudicacion = await repoAdjudicacion.SelectByCodigo(PUT_EntidadDNI_DTO.AdjudicaciónCodigo);
+            var adjudicacion = await repoAdjudicacion.SelectByCod(PUT_EntidadDNI_DTO.AdjudicaciónCodigo);
 
 
 

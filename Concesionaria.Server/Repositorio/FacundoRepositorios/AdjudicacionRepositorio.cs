@@ -16,11 +16,12 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
             this.context = context;
         }
 
-        public async Task<PlanVendido> SelectByCodigo(string codigo)
+        public async Task<Adjudicacion> SelectByCodigoConVehiculo(string codigo)
         {
             try
             {
-                var adjudicacion = await context.PlanesVendidos.FirstOrDefaultAsync(a => a.Codigo == codigo);
+                var adjudicacion = await context.Adjudicaciones.Include(a => a.PlanVendido)
+                    .ThenInclude(pv => pv.TipoPlan).ThenInclude(tp => tp.Vehiculo).FirstOrDefaultAsync(a => a.Codigo == codigo);
                 return adjudicacion;
             }
             catch (Exception e)
@@ -35,7 +36,8 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
         {
             try
             {
-                var adjudicaciones = await context.Adjudicaciones.Include(a => a.Vehiculo).ToListAsync();
+                var adjudicaciones = await context.Adjudicaciones.Include(a => a.PlanVendido)
+                    .ThenInclude(pv => pv.TipoPlan).ThenInclude(tp => tp.Vehiculo).ToListAsync();
                 return adjudicaciones;
             }
             catch (Exception e)
@@ -45,11 +47,25 @@ namespace Concesionaria.Server.Repositorio.FacundoRepositorios
             }
         }
 
+        public async Task<Adjudicacion> SelectByPatente(string patente)
+        {
+            try
+            {
+                var adjudicacion = await context.Adjudicaciones.Include(a => a.PlanVendido)
+                    .ThenInclude(pv => pv.TipoPlan).ThenInclude(tp => tp.Vehiculo).FirstOrDefaultAsync(a => a.PatenteVehiculo == patente);
+                return adjudicacion;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener los registros: {e.Message}");
+                throw;
+            }
+        }
         public async Task<Adjudicacion> SelectEntidadConVehiculoById(int id)
         {
             try
             {
-                var adjudicacion = await context.Adjudicaciones.Include(a => a.Vehiculo).FirstOrDefaultAsync(a => a.Id == id);
+                var adjudicacion = await context.Adjudicaciones.Include(a => a.PlanVendido).FirstOrDefaultAsync(a => a.Id == id);
                 return adjudicacion;
             }
             catch (Exception e)

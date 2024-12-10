@@ -5,6 +5,7 @@ using Concesionaria.Server.Repositorio.AndresRepositorios;
 using Concesionaria.Server.Repositorio.BrunoRepositorios;
 using Concesionaria.Server.Repositorio.FacundoRepositorios;
 using Concesionaria.Server.Repositorio.GinoRepositorios;
+using Concesionaria.Server.Resolvers.AdjudicacionResolver;
 using Concesionaria.Server.Resolvers.ClienteResolver;
 using Concesionaria.Server.Resolvers.PersonaResolvers;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.POST;
@@ -67,9 +68,15 @@ builder.Services.AddScoped<ClienteResolverPost>();
 builder.Services.AddScoped<VendedorResolverPost>();
 builder.Services.AddScoped<ClienteFechaSuscripcionPost>();
 
+
 builder.Services.AddScoped<TipoPlanResolverPlanVendidoPut>();
 builder.Services.AddScoped<ClienteResolverPut>();
 builder.Services.AddScoped<VendedorResolverPut>();
+
+
+builder.Services.AddScoped<PlanVendidoAdjudicResolverPost>();
+builder.Services.AddScoped<PlanVendidoAdjudicResolverPut>();
+
 
 
 // Coneccion con la BD / Context
