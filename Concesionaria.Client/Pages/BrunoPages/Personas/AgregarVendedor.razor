@@ -1,4 +1,4 @@
-﻿@page "/api/Clientes/Crear"
+﻿@page "/api/Vendedores/Crear"
 @using Concesionaria2024.Shared.DTO.GinoDTO.Persona
 @using Concesionaria2024.Shared.DTO.AndresDTO
 @inject IHttpServicio http
@@ -8,10 +8,10 @@
     <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
         <!-- Encabezado -->
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
-            <h3 class="mb-0" style="font-weight: 600;">Registrar Cliente</h3>
+            <h3 class="mb-0" style="font-weight: 600;">Registrar Vendedor</h3>
         </div>
         <div class="card-body p-4 bg-light">
-            <EditForm Model="postPersona" OnValidSubmit="RegistrarCliente">
+            <EditForm Model="postPersona" OnValidSubmit="RegistrarPersona">
                 <DataAnnotationsValidator />
 
                 <!-- Nombre -->
@@ -72,19 +72,19 @@
             @if (personaRegistrada)
             {
                 <div class="mt-4">
-                    <h5 class="text-center">Registrar como Cliente</h5>
-                    <EditForm Model="postCliente" OnValidSubmit="RegistrarCliente">
+                    <h5 class="text-center">Registrar como Vendedor</h5>
+                    <EditForm Model="postVendedor" OnValidSubmit="RegistrarVendedor">
                         <DataAnnotationsValidator />
 
                         <!-- Número de Documento (bloqueado) -->
                         <div class="form-group mb-4">
                             <label class="form-label fw-bold text-secondary">Número de Documento</label>
-                            <InputText class="form-control border-0 shadow-sm bg-light" style="border-radius: 8px;" @bind-Value="@postCliente.NumDoc" readonly />
+                            <InputText class="form-control border-0 shadow-sm bg-light" style="border-radius: 8px;" @bind-Value="@postVendedor.NumDoc" readonly />
                         </div>
 
                         <!-- Botón de Enviar -->
                         <div class="text-center mt-4">
-                            <button class="btn btn-success btn-lg w-100 shadow" style="border-radius: 8px;">Registrar como Cliente</button>
+                            <button class="btn btn-success btn-lg w-100 shadow" style="border-radius: 8px;">Registrar como Vendedor</button>
                         </div>
                     </EditForm>
                 </div>
@@ -93,44 +93,56 @@
     </div>
 </div>
 
-
 @code {
     private POST_PersonaDTO postPersona = new POST_PersonaDTO();
-    private POST_ClienteConNumDocDTO postCliente = new POST_ClienteConNumDocDTO();
+    private POST_VendedorDTO postVendedor = new POST_VendedorDTO();
     private bool personaRegistrada = false;
+    private string errorMessage = string.Empty; // Para mostrar mensajes de error
 
-    private async Task GrabarPersona()
+    private async Task RegistrarPersona()
     {
-        var httpRespuesta = await http.Post<POST_PersonaDTO>("api/Personas", postPersona);
-
-        if (httpRespuesta.Error)
+        try
         {
-            // Obtener mensaje de error utilizando el método ObtenerError()
-            var errorMensaje = await httpRespuesta.ObtenerError();
-            Console.WriteLine($"Error: {errorMensaje}");
-            return;
+            var httpRespuesta = await http.Post<POST_PersonaDTO>("api/Clientes", postPersona);
+            if (httpRespuesta.Error == null)
+            {
+                // Si la respuesta es exitosa, asignar el número de documento al DTO del vendedor
+                postVendedor.NumDoc = postPersona.NumDoc;
+                personaRegistrada = true;
+            }
+            else
+            {
+                // Si hubo un error en el registro de la persona, mostrar el mensaje
+                errorMessage = "Hubo un error al registrar la persona. Intente de nuevo.";
+            }
         }
-
-        // Redirigir o limpiar campos tras éxito
-        postPersona = new POST_PersonaDTO();
-        navigationManager.NavigateTo("/api/Clientes/Crear");
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al registrar persona: {ex.Message}";
+        }
     }
 
-    private async Task RegistrarCliente()
+    private async Task RegistrarVendedor()
     {
-        var httpRespuesta = await http.Post<POST_ClienteConNumDocDTO>("api/Clientes", postCliente);
-
-        if (httpRespuesta.Error)
+        try
         {
-            // Obtener mensaje de error utilizando el método ObtenerError()
-            var errorMensaje = await httpRespuesta.ObtenerError();
-            Console.WriteLine($"Error: {errorMensaje}");
-            return;
+            var httpRespuesta = await http.Post<POST_VendedorDTO>("api/Vendedores", postVendedor);
+            if (httpRespuesta.Error == null)
+            {
+                // Si el registro fue exitoso, redirigir al listado de vendedores
+                navigationManager.NavigateTo("/api/Vendedores/Ver");
+            }
+            else
+            {
+                // Si hubo un error, mostrar el mensaje
+                errorMessage = "Hubo un error al registrar el vendedor. Intente de nuevo.";
+            }
         }
-
-        // Redirigir tras éxito
-        postCliente = new POST_ClienteConNumDocDTO();
-        navigationManager.NavigateTo("/api/Clientes/Ver");
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al registrar vendedor: {ex.Message}";
+        }
     }
 }
+
 
