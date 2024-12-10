@@ -10,25 +10,29 @@
         </div>
 
         <div class="card-body p-4 bg-light">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Nombre del Cliente</th>
-                        <th>Código</th>
-                        <th>Documento</th>
-                        <th>Fecha de Inicio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Mensaje == "")
-                    {
-                        @if (listaClientes == null)
+            <!-- Indicador de carga -->
+            @if (listaClientes == null)
+            {
+                <div class="text-center">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Cargando clientes...
+                </div>
+            }
+            else
+            {
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Cliente</th>
+                            <th>Código</th>
+                            <th>Documento</th>
+                            <th>Fecha de Inicio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (listaClientes.Count == 0)
                         {
-                            <tr><td colspan="4">Cargando...</td></tr>
-                        }
-                        else if (listaClientes.Count == 0)
-                        {
-                            <tr><td colspan="4">No existen clientes registrados.</td></tr>
+                            <tr><td colspan="4" class="text-center">No existen clientes registrados.</td></tr>
                         }
                         else
                         {
@@ -42,13 +46,9 @@
                                 </tr>
                             }
                         }
-                    }
-                    else
-                    {
-                        <tr><td colspan="4">Error: @Mensaje</td></tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            }
 
             @if (!string.IsNullOrEmpty(Mensaje))
             {
@@ -91,7 +91,7 @@
     // Método para navegar al formulario de agregar cliente
     private void NavigateToAgregarCliente()
     {
-        navigationManager.NavigateTo("/api/ClienteS/Crear");
+        navigationManager.NavigateTo("/api/Clientes/Crear");
     }
 }
 
