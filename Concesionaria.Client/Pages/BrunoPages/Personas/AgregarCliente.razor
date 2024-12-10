@@ -1,136 +1,75 @@
 ﻿@page "/api/Clientes/Crear"
-@using Concesionaria2024.Shared.DTO.GinoDTO.Persona
 @using Concesionaria2024.Shared.DTO.AndresDTO
-@inject IHttpServicio http
+@inject IHttpServicio httpServicio
 @inject NavigationManager navigationManager
 
-<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
-    <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
-        <!-- Encabezado -->
+<PageTitle>Convertir Persona a Cliente</PageTitle>
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card border-0 shadow-lg" style="max-width: 800px; width: 100%;">
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
-            <h3 class="mb-0" style="font-weight: 600;">Registrar Cliente</h3>
+            <h3 class="mb-0" style="font-weight: 600;">Nuevo Cliente</h3>
         </div>
         <div class="card-body p-4 bg-light">
-            <EditForm Model="postPersona" OnValidSubmit="RegistrarCliente">
+            <EditForm Model="clienteDto" OnValidSubmit="ConvertirAPersonaEnCliente">
                 <DataAnnotationsValidator />
+                <ValidationSummary />
 
-                <!-- Nombre -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Nombre</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Nombre" />
-                    <ValidationMessage For="@(() => postPersona.Nombre)" class="text-danger" />
+                <!-- Agregar margen en la etiqueta y el campo de texto -->
+                <div class="form-group mb-2">
+                    <label for="NumDoc" class="mb-2">Número de Documento (DNI)</label>
+                    <InputText id="NumDoc" class="form-control" @bind-Value="clienteDto.NumDoc" />
+                    <ValidationMessage For="@(() => clienteDto.NumDoc)" />
                 </div>
 
-                <!-- Apellido -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Apellido</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Apellido" />
-                    <ValidationMessage For="@(() => postPersona.Apellido)" class="text-danger" />
-                </div>
-
-                <!-- Número de Documento -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Número de Documento</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.NumDoc" />
-                    <ValidationMessage For="@(() => postPersona.NumDoc)" class="text-danger" />
-                </div>
-
-                <!-- Tipo de Documento -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Tipo de Documento</label>
-                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.TipoDocumentoId" />
-                    <ValidationMessage For="@(() => postPersona.TipoDocumentoId)" class="text-danger" />
-                </div>
-
-                <!-- Dirección -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Dirección</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Direccion" />
-                    <ValidationMessage For="@(() => postPersona.Direccion)" class="text-danger" />
-                </div>
-
-                <!-- Teléfono -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Teléfono</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Telefono" />
-                    <ValidationMessage For="@(() => postPersona.Telefono)" class="text-danger" />
-                </div>
-
-                <!-- Email -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Email</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPersona.Email" />
-                    <ValidationMessage For="@(() => postPersona.Email)" class="text-danger" />
-                </div>
-
-                <!-- Botón de Enviar -->
-                <div class="text-center mt-4">
-                    <button class="btn btn-primary btn-lg w-100 shadow" style="border-radius: 8px;">Registrar Persona</button>
+                <!-- Contenedor para el botón centrado -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button class="btn btn-primary btn-md" type="submit" style="width: auto; padding-left: 30px; padding-right: 30px;">
+                        Aceptar
+                    </button>
                 </div>
             </EditForm>
 
-            @if (personaRegistrada)
+            @if (mensaje != null)
             {
-                <div class="mt-4">
-                    <h5 class="text-center">Registrar como Cliente</h5>
-                    <EditForm Model="postCliente" OnValidSubmit="RegistrarCliente">
-                        <DataAnnotationsValidator />
-
-                        <!-- Número de Documento (bloqueado) -->
-                        <div class="form-group mb-4">
-                            <label class="form-label fw-bold text-secondary">Número de Documento</label>
-                            <InputText class="form-control border-0 shadow-sm bg-light" style="border-radius: 8px;" @bind-Value="@postCliente.NumDoc" readonly />
-                        </div>
-
-                        <!-- Botón de Enviar -->
-                        <div class="text-center mt-4">
-                            <button class="btn btn-success btn-lg w-100 shadow" style="border-radius: 8px;">Registrar como Cliente</button>
-                        </div>
-                    </EditForm>
+                <div class="alert alert-info mt-3">
+                    @mensaje
                 </div>
             }
         </div>
     </div>
 </div>
 
-
 @code {
-    private POST_PersonaDTO postPersona = new POST_PersonaDTO();
-    private POST_ClienteConNumDocDTO postCliente = new POST_ClienteConNumDocDTO();
-    private bool personaRegistrada = false;
+    private POST_ClienteConNumDocDTO clienteDto = new POST_ClienteConNumDocDTO();
+    private string mensaje;
 
-    private async Task GrabarPersona()
+    private async Task ConvertirAPersonaEnCliente()
     {
-        var httpRespuesta = await http.Post<POST_PersonaDTO>("api/Personas", postPersona);
-
-        if (httpRespuesta.Error)
+        try
         {
-            // Obtener mensaje de error utilizando el método ObtenerError()
-            var errorMensaje = await httpRespuesta.ObtenerError();
-            Console.WriteLine($"Error: {errorMensaje}");
-            return;
+            // Enviamos la solicitud POST
+            var respuesta = await httpServicio.Post("api/Cliente", clienteDto);
+
+            // Verificamos si hubo algún error
+            if (respuesta.Error)
+            {
+                mensaje = await respuesta.ObtenerError();
+            }
+            else
+            {
+                mensaje = "Persona convertida a cliente correctamente.";
+            }
         }
-
-        // Redirigir o limpiar campos tras éxito
-        postPersona = new POST_PersonaDTO();
-        navigationManager.NavigateTo("/api/Clientes/Crear");
-    }
-
-    private async Task RegistrarCliente()
-    {
-        var httpRespuesta = await http.Post<POST_ClienteConNumDocDTO>("api/Clientes", postCliente);
-
-        if (httpRespuesta.Error)
+        catch (Exception ex)
         {
-            // Obtener mensaje de error utilizando el método ObtenerError()
-            var errorMensaje = await httpRespuesta.ObtenerError();
-            Console.WriteLine($"Error: {errorMensaje}");
-            return;
+            // Capturamos excepciones si algo salió mal (por ejemplo, problemas de conexión o deserialización)
+            mensaje = $"Error: {ex.Message}";
         }
-
-        // Redirigir tras éxito
-        postCliente = new POST_ClienteConNumDocDTO();
-        navigationManager.NavigateTo("/api/Clientes/Ver");
     }
 }
+
+
+
+
 

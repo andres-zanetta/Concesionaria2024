@@ -18,49 +18,49 @@
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
-                <div class="form-group">
+                <div class="form-group mb-2">
                     <label for="Nombre">Nombre</label>
                     <InputText id="Nombre" class="form-control" @bind-Value="personaDTO.Nombre" />
                     <ValidationMessage For="@(() => personaDTO.Nombre)" />
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mb-2">
                     <label for="Apellido">Apellido</label>
                     <InputText id="Apellido" class="form-control" @bind-Value="personaDTO.Apellido" />
                     <ValidationMessage For="@(() => personaDTO.Apellido)" />
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mb-2">
                     <label for="Direccion">Dirección</label>
                     <InputText id="Direccion" class="form-control" @bind-Value="personaDTO.Direccion" />
                     <ValidationMessage For="@(() => personaDTO.Direccion)" />
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mb-2">
                     <label for="Telefono">Teléfono</label>
                     <InputText id="Telefono" class="form-control" @bind-Value="personaDTO.Telefono" />
                     <ValidationMessage For="@(() => personaDTO.Telefono)" />
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mb-2">
                     <label for="Email">Email</label>
                     <InputText id="Email" class="form-control" @bind-Value="personaDTO.Email" />
                     <ValidationMessage For="@(() => personaDTO.Email)" />
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mb-2">
                     <label for="NumDoc">Número de Documento</label>
                     <InputText id="NumDoc" class="form-control" @bind-Value="personaDTO.NumDoc" />
                     <ValidationMessage For="@(() => personaDTO.NumDoc)" />
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mb-2">
                     <label for="DocumentoCodigo">Código del Documento</label>
                     <InputText id="DocumentoCodigo" class="form-control" @bind-Value="personaDTO.DocumentoCodigo" />
                     <ValidationMessage For="@(() => personaDTO.DocumentoCodigo)" />
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mb-2">
                     <label for="EsEmpresa">¿Es Empresa?</label>
                     <InputCheckbox id="EsEmpresa" class="form-check-input" @bind-Value="personaDTO.EsEmpresa" />
                 </div>
@@ -119,6 +119,5 @@
         }
     }
 }
-
 
 
