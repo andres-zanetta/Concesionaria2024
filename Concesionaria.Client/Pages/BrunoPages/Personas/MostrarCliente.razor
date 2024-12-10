@@ -1,0 +1,100 @@
+﻿@page "/api/Clientes/Ver"
+@using Concesionaria2024.Shared.DTO.AndresDTO
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+
+<div class="container mt-5">
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Listado de Clientes</h3>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre del Cliente</th>
+                        <th>Código</th>
+                        <th>Documento</th>
+                        <th>Fecha de Inicio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Mensaje == "")
+                    {
+                        @if (listaClientes == null)
+                        {
+                            <tr><td colspan="4">Cargando...</td></tr>
+                        }
+                        else if (listaClientes.Count == 0)
+                        {
+                            <tr><td colspan="4">No existen clientes registrados.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var cliente in listaClientes)
+                            {
+                                <tr>
+                                    <td>@cliente.NombrePersona</td>
+                                    <td>@cliente.Codigo</td>
+                                    <td>@cliente.NumDoc</td>
+                                    <td>@cliente.FechaInicio.ToString("d")</td>
+                                </tr>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="4">Error: @Mensaje</td></tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!string.IsNullOrEmpty(Mensaje))
+            {
+                <div class="alert alert-danger mt-3">
+                    @Mensaje
+                </div>
+            }
+
+            <!-- Nuevo botón para agregar cliente -->
+            <div class="text-center mt-4">
+                <button class="btn btn-success btn-lg w-100 shadow" style="border-radius: 8px;" @onclick="NavigateToAgregarCliente">Agregar Cliente</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<GET_ClienteDTO> listaClientes = null!;
+    string Mensaje = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LeerClientes();
+    }
+
+    private async Task LeerClientes()
+    {
+        var resp = await http.Get<List<GET_ClienteDTO>>("api/Cliente");
+        if (!resp.Error)
+        {
+            listaClientes = resp.Respuesta;
+        }
+        else
+        {
+            Mensaje = await resp.ObtenerError();
+        }
+    }
+
+    // Método para navegar al formulario de agregar cliente
+    private void NavigateToAgregarCliente()
+    {
+        navigationManager.NavigateTo("/api/ClienteS/Crear");
+    }
+}
+
+
+
+

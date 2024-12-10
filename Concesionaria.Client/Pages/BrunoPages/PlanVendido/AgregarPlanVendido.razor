@@ -1,4 +1,4 @@
-﻿@page "/api/PlanVendido/agregar"
+﻿@page "/api/PlanVendido/Agregar"
 @using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
@@ -13,55 +13,53 @@
             <EditForm Model="postPlanVendido" OnValidSubmit="Grabar">
                 <DataAnnotationsValidator />
 
-                <!-- Campo de Código -->
-@*                 <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Código</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPlanVendido.Codigo" />
-                    <ValidationMessage For="@(() => postPlanVendido.Codigo)" class="text-danger" />
+                <!-- Campo de ClienteId -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Cliente ID</label>
+                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.ClienteId" />
+                    <ValidationMessage For="@(() => postPlanVendido.ClienteId)" class="text-danger" />
                 </div>
-                
-                El codigo se genera de manera automatica con el dni de la persona y el nombre del tipo de plan
-                
-                *@
+
+                <!-- Campo de VendedorId -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Vendedor ID</label>
+                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.VendedorId" />
+                    <ValidationMessage For="@(() => postPlanVendido.VendedorId)" class="text-danger" />
+                </div>
+
+                <!-- Campo de TipoPlanId -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Tipo de Plan ID</label>
+                    <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.TipoPlanId" />
+                    <ValidationMessage For="@(() => postPlanVendido.TipoPlanId)" class="text-danger" />
+                </div>
+
+                <!-- Campo de Fecha de Suscripción -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Fecha de Suscripción</label>
+                    <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.FechaSuscripcion" />
+                    <ValidationMessage For="@(() => postPlanVendido.FechaSuscripcion)" class="text-danger" />
+                </div>
+
+                <!-- Campo de Fecha de Inicio -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Fecha de Inicio</label>
+                    <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.FechaInicio" />
+                    <ValidationMessage For="@(() => postPlanVendido.FechaInicio)" class="text-danger" />
+                </div>
 
                 <!-- Campo de Descripción -->
                 <div class="form-group mb-4">
                     <label class="form-label fw-bold text-secondary">Descripción</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPlanVendido.Descripcion" />
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.Descripcion" />
                     <ValidationMessage For="@(() => postPlanVendido.Descripcion)" class="text-danger" />
                 </div>
 
                 <!-- Campo de Estado -->
                 <div class="form-group mb-4">
                     <label class="form-label fw-bold text-secondary">Estado</label>
-                    <InputSelect class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPlanVendido.Estado">
-                        <option value="" disabled>Seleccione un estado</option>
-                        <option value="Activo">Activo</option>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Cancelado">Cancelado</option>
-                    </InputSelect>
+                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.Estado" />
                     <ValidationMessage For="@(() => postPlanVendido.Estado)" class="text-danger" />
-                </div>
-
-                <!-- Campo de Vendedor DNI -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">DNI del Vendedor</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPlanVendido.VendedorDNI" />
-                    <ValidationMessage For="@(() => postPlanVendido.VendedorDNI)" class="text-danger" />
-                </div>
-
-                <!-- Campo de Cliente DNI -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">DNI del Cliente</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPlanVendido.ClienteDNI" />
-                    <ValidationMessage For="@(() => postPlanVendido.ClienteDNI)" class="text-danger" />
-                </div>
-
-                <!-- Campo de Tipo de Plan -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Tipo de Plan</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@postPlanVendido.TipoPlanCodigo" />
-                    <ValidationMessage For="@(() => postPlanVendido.TipoPlanCodigo)" class="text-danger" />
                 </div>
 
                 <!-- Botón de Enviar -->
@@ -74,19 +72,19 @@
 </div>
 
 @code {
-    private POST_PlanVendidoDNI_DTO postPlanVendido = new POST_PlanVendidoDNI_DTO();
+    private POST_PlanVendidoDTO postPlanVendido = new POST_PlanVendidoDTO();
 
     private async Task Grabar()
     {
-        var httpRespuesta = await http.Post<POST_PlanVendidoDNI_DTO>("api/PlanVendido", postPlanVendido);
+        var httpRespuesta = await http.Post<POST_PlanVendidoDTO>("api/PlanVendido", postPlanVendido);
 
         if (httpRespuesta.Error)
         {
             // Manejo de error
-            
         }
 
         // Redirige al usuario a la lista de planes vendidos
-        navigationManager.NavigateTo("/api/PlanVendido/mostrar");
+        navigationManager.NavigateTo("/PlanVendido/Mostrar");
     }
 }
+

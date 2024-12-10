@@ -1,0 +1,92 @@
+﻿/* Global container styles */
+.container {
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    margin-top: 50px;
+}
+
+/* Card styles */
+.card {
+    width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border: none;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.card-body {
+    padding: 30px;
+    background-color: #f8f9fa;
+}
+
+/* Form field styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 15px;
+    font-size: 1rem;
+}
+
+.form-check-input {
+    margin-right: 10px;
+}
+
+    .form-control:focus,
+    .form-check-input:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+/* Validation message styles */
+.text-danger {
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Button styles */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    button:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.7);
+    }
