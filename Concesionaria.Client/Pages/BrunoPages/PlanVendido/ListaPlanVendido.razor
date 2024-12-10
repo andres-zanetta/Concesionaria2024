@@ -13,7 +13,6 @@
             <div class="d-flex justify-content-end mb-3">
                 <button class="btn btn-primary me-2" @onclick="AgregarPlanVendido">Agregar Plan Vendido</button>
                 <button class="btn btn-secondary me-2" @onclick="BuscarPlanVendido">Buscar Plan Vendido</button>
-                <button class="btn btn-warning" @onclick="EditarPlanVendido">Editar Plan Vendido</button>
             </div>
 
             <table class="table tabla-cuotas">
@@ -24,6 +23,7 @@
                         <th>Estado</th>
                         <th>Plan en Mora</th>
                         <th>Valor Total</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,13 +37,19 @@
                                 <td>@plan.Estado</td>
                                 <td>@(plan.PlanEnMora ? "Sí" : "No")</td>
                                 <td>@plan.ValorTotal.ToString("C")</td>
+                                <td class="text-start">
+                                    <!-- Botón Ver Cuotas -->
+                                    <button class="btn btn-outline-secondary me-2" @onclick="() => NavegarAverCuotas(plan.Codigo)">Ver Cuotas</button>
+                                    <!-- Botón Editar -->
+                                    <button class="btn btn-outline-secondary" @onclick="() => NavegarAEditar(plan.Codigo)">Editar</button>
+                                </td>
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="5" class="text-center text-secondary">No hay planes vendidos registrados.</td>
+                            <td colspan="6" class="text-center text-secondary">No hay planes vendidos registrados.</td>
                         </tr>
                     }
                 </tbody>
@@ -77,7 +83,6 @@
 
     private void AgregarPlanVendido()
     {
-        // Navegar a la misma página para "agregar plan vendido"
         navigationManager.NavigateTo("/api/PlanVendido/agregar");
     }
 
@@ -86,8 +91,13 @@
         navigationManager.NavigateTo("/api/PlanVendido/buscar");
     }
 
-    private void EditarPlanVendido()
+    private void NavegarAEditar(string codigo)
     {
-        navigationManager.NavigateTo("/api/PlanVendido/editar");
+        navigationManager.NavigateTo($"/api/PlanVendido/editar/{codigo}");
+    }
+
+    private void NavegarAverCuotas(string codigo)
+    {
+        navigationManager.NavigateTo($"/api/PlanVendido/cuotas/{codigo}");
     }
 }
