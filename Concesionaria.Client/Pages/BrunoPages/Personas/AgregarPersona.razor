@@ -1,84 +1,124 @@
-﻿@page "/agregarPersona"
+﻿@page "/api/Persona/Agregar"
 @inject NavigationManager navigationManager
+@inject IHttpServicio httpServicio // Inyección del servicio HttpServicio
+@inject HttpClient Http
 @using Concesionaria2024.Shared.DTO.GinoDTO.Persona
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>Crear Persona</PageTitle>
 
 <div class="container mt-5">
     <div class="card border-0 shadow-lg">
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
             <h3 class="mb-0" style="font-weight: 600;">Agregar Persona</h3>
         </div>
-
         <div class="card-body p-4 bg-light">
-            <EditForm Model="@persona" OnValidSubmit="HandleValidSubmit">
+            <EditForm Model="personaDTO" OnValidSubmit="HandleValidSubmit">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
                 <div class="form-group">
                     <label for="Nombre">Nombre</label>
-                    <InputText id="Nombre" class="form-control" @bind-Value="persona.Nombre" />
-                    <ValidationMessage For="@(() => persona.Nombre)" />
+                    <InputText id="Nombre" class="form-control" @bind-Value="personaDTO.Nombre" />
+                    <ValidationMessage For="@(() => personaDTO.Nombre)" />
                 </div>
 
                 <div class="form-group">
                     <label for="Apellido">Apellido</label>
-                    <InputText id="Apellido" class="form-control" @bind-Value="persona.Apellido" />
-                    <ValidationMessage For="@(() => persona.Apellido)" />
+                    <InputText id="Apellido" class="form-control" @bind-Value="personaDTO.Apellido" />
+                    <ValidationMessage For="@(() => personaDTO.Apellido)" />
                 </div>
 
                 <div class="form-group">
                     <label for="Direccion">Dirección</label>
-                    <InputText id="Direccion" class="form-control" @bind-Value="persona.Direccion" />
-                    <ValidationMessage For="@(() => persona.Direccion)" />
+                    <InputText id="Direccion" class="form-control" @bind-Value="personaDTO.Direccion" />
+                    <ValidationMessage For="@(() => personaDTO.Direccion)" />
                 </div>
 
                 <div class="form-group">
                     <label for="Telefono">Teléfono</label>
-                    <InputText id="Telefono" class="form-control" @bind-Value="persona.Telefono" />
-                    <ValidationMessage For="@(() => persona.Telefono)" />
+                    <InputText id="Telefono" class="form-control" @bind-Value="personaDTO.Telefono" />
+                    <ValidationMessage For="@(() => personaDTO.Telefono)" />
                 </div>
 
                 <div class="form-group">
                     <label for="Email">Email</label>
-                    <InputText id="Email" class="form-control" @bind-Value="persona.Email" />
-                    <ValidationMessage For="@(() => persona.Email)" />
-                </div>
-
-                <div class="form-group">
-                    <label for="EsEmpresa">¿Es Empresa?</label>
-                    <InputCheckbox id="EsEmpresa" class="form-check-input" @bind-Value="persona.EsEmpresa" />
+                    <InputText id="Email" class="form-control" @bind-Value="personaDTO.Email" />
+                    <ValidationMessage For="@(() => personaDTO.Email)" />
                 </div>
 
                 <div class="form-group">
                     <label for="NumDoc">Número de Documento</label>
-                    <InputText id="NumDoc" class="form-control" @bind-Value="persona.NumDoc" />
-                    <ValidationMessage For="@(() => persona.NumDoc)" />
+                    <InputText id="NumDoc" class="form-control" @bind-Value="personaDTO.NumDoc" />
+                    <ValidationMessage For="@(() => personaDTO.NumDoc)" />
                 </div>
 
                 <div class="form-group">
-                    <label for="TipoDocumentoId">Tipo de Documento</label>
-                    <InputNumber id="TipoDocumentoId" class="form-control" @bind-Value="persona.TipoDocumentoId" />
-                    <ValidationMessage For="@(() => persona.TipoDocumentoId)" />
+                    <label for="DocumentoCodigo">Código del Documento</label>
+                    <InputText id="DocumentoCodigo" class="form-control" @bind-Value="personaDTO.DocumentoCodigo" />
+                    <ValidationMessage For="@(() => personaDTO.DocumentoCodigo)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="EsEmpresa">¿Es Empresa?</label>
+                    <InputCheckbox id="EsEmpresa" class="form-check-input" @bind-Value="personaDTO.EsEmpresa" />
                 </div>
 
                 <button type="submit" class="btn btn-success btn-lg w-100 mt-3" style="border-radius: 0px;">
-                    Guardar Persona
+                    Crear Persona
                 </button>
             </EditForm>
         </div>
     </div>
 </div>
 
+@if (isError)
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+
+@if (isSuccess)
+{
+    <div class="alert alert-success">
+        Persona creada exitosamente.
+    </div>
+}
+
 @code {
-    private POST_PersonaDTO persona = new POST_PersonaDTO();
+    private POST_PersonaNumDocDTO personaDTO = new POST_PersonaNumDocDTO();
+    private bool isSuccess = false;
+    private bool isError = false;
+    private string errorMessage = string.Empty;
 
     private async Task HandleValidSubmit()
     {
-        // Lógica para enviar los datos a la API o hacer lo necesario con la entidad
-        // Ejemplo:
-        // var response = await personaService.AgregarPersonaAsync(persona);
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/Persona", personaDTO);
 
-        navigationManager.NavigateTo("/personas"); // Redirigir después de enviar
+            if (response.IsSuccessStatusCode)
+            {
+                isSuccess = true;
+                isError = false;
+            }
+            else
+            {
+                isSuccess = false;
+                isError = true;
+                errorMessage = await response.Content.ReadAsStringAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            isError = true;
+            errorMessage = $"Error al enviar la solicitud: {ex.Message}";
+        }
     }
 }
+
+
+
