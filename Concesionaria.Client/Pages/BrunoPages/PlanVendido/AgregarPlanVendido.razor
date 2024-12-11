@@ -15,49 +15,35 @@
 
                 <!-- Campo de ClienteId -->
                 <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Cliente ID</label>
+                    <label class="form-label fw-bold text-secondary">Cliente DNI:</label>
                     <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.ClienteId" />
                     <ValidationMessage For="@(() => postPlanVendido.ClienteId)" class="text-danger" />
                 </div>
 
                 <!-- Campo de VendedorId -->
                 <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Vendedor ID</label>
+                    <label class="form-label fw-bold text-secondary">Vendedor DNI:</label>
                     <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.VendedorId" />
                     <ValidationMessage For="@(() => postPlanVendido.VendedorId)" class="text-danger" />
                 </div>
 
                 <!-- Campo de TipoPlanId -->
                 <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Tipo de Plan ID</label>
+                    <label class="form-label fw-bold text-secondary">Codigo de Plan:</label>
                     <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.TipoPlanId" />
                     <ValidationMessage For="@(() => postPlanVendido.TipoPlanId)" class="text-danger" />
                 </div>
 
-                <!-- Campo de Fecha de Suscripción -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Fecha de Suscripción</label>
-                    <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.FechaSuscripcion" />
-                    <ValidationMessage For="@(() => postPlanVendido.FechaSuscripcion)" class="text-danger" />
-                </div>
-
-                <!-- Campo de Fecha de Inicio -->
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Fecha de Inicio</label>
-                    <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.FechaInicio" />
-                    <ValidationMessage For="@(() => postPlanVendido.FechaInicio)" class="text-danger" />
-                </div>
-
                 <!-- Campo de Descripción -->
                 <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Descripción</label>
+                    <label class="form-label fw-bold text-secondary">Descripción:</label>
                     <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.Descripcion" />
                     <ValidationMessage For="@(() => postPlanVendido.Descripcion)" class="text-danger" />
                 </div>
 
                 <!-- Campo de Estado -->
                 <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Estado</label>
+                    <label class="form-label fw-bold text-secondary">Estado:</label>
                     <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="postPlanVendido.Estado" />
                     <ValidationMessage For="@(() => postPlanVendido.Estado)" class="text-danger" />
                 </div>

@@ -2,6 +2,7 @@
 @using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO
 @inject IHttpServicio http
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 
 <div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
     <div class="card border-0 shadow-lg" style="width: 100%; border-radius: 10px;">
@@ -65,11 +66,12 @@
                                     <td>@vehiculo.Codigo</td>
                                     <td>@vehiculo.Marca</td>
                                     <td>@vehiculo.Modelo</td>
-                                    <td>@vehiculo.Precio.ToString("C")</td>
+                                    <td>@vehiculo.Precio.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
                                     <td>@vehiculo.Motor</td>
                                     <td>@vehiculo.Combustible</td>
                                     <td>
                                         <button class="btn btn-outline-secondary" @onclick="() => IrAEditarVehiculo(vehiculo.Codigo)">Editar</button>
+                                        <button class="btn btn-outline-danger ml-2" @onclick="() => EliminarVehiculo(vehiculo.Codigo)">Eliminar</button>
                                     </td>
                                 </tr>
                             }
@@ -158,6 +160,24 @@
     private void IrAEditarVehiculo(string codigoVehiculo)
     {
         Navigation.NavigateTo($"/api/vehiculos/editar/{codigoVehiculo}");
+    }
+
+    private async Task EliminarVehiculo(string codigoVehiculo)
+    {
+        var confirmacion = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de eliminar el vehículo con código {codigoVehiculo}?");
+
+        if (confirmacion)
+        {
+            var respuesta = await http.Delete($"api/Vehiculos/EliminarCodigo/{codigoVehiculo}");
+            if (!respuesta.Error)
+            {
+                await LeerVehiculos();
+            }
+            else
+            {
+                Mensaje = "Error al eliminar el vehículo.";
+            }
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

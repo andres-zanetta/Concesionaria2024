@@ -9,5 +9,7 @@ namespace Concesionaria.Client.Servicios
 
         Task<HttpRespuesta<object>> Put<O>(string url, O entidad);
 
+        Task<HttpRespuesta<object>> Delete(string url);
+
     }
 }

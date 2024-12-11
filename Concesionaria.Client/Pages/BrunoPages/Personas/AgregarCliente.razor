@@ -54,11 +54,23 @@
             // Verificamos si hubo algún error
             if (respuesta.Error)
             {
+                // Si hay un error, mostramos el mensaje de error
                 mensaje = await respuesta.ObtenerError();
             }
             else
             {
-                mensaje = "Persona convertida a cliente correctamente.";
+                // Aquí asumimos que la respuesta es un string con el cuerpo del mensaje
+                // Verificamos si la respuesta contiene el cuerpo esperado
+                if (respuesta.Respuesta is string respuestaBody)
+                {
+                    // Si la respuesta es de tipo string, lo mostramos directamente
+                    mensaje = respuestaBody;
+                }
+                else
+                {
+                    // Si la respuesta no es un string, usamos un mensaje genérico
+                    mensaje = "Error desconocido en la respuesta del servidor.";
+                }
             }
         }
         catch (Exception ex)
@@ -68,6 +80,9 @@
         }
     }
 }
+
+
+
 
 
 

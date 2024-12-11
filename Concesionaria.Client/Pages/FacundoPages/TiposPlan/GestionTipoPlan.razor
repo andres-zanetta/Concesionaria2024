@@ -1,8 +1,11 @@
 ﻿@page "/api/TipoPlan/Gestion"
+@using Concesionaria2024.Shared.DTO.FacundoDTO.Concesionaria2024.Shared.DTO.FacundoDTO
 @using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
 @using Concesionaria2024.Shared.DTO.FacundoDTO.Vehiculo
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
+@inject IJSRuntime JSRuntime
+
 
 <div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
     <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
@@ -20,12 +23,6 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Descripción del Plan</label>
-                    <InputTextArea class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.Descripcion" />
-                    <ValidationMessage For="@(() => nuevoTipoPlan.Descripcion)" class="text-danger" />
-                </div>
-
-                <div class="form-group mb-4">
                     <label class="form-label fw-bold text-secondary">Cantidad de Cuotas</label>
                     <InputNumber class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.CantCuotas" />
                     <ValidationMessage For="@(() => nuevoTipoPlan.CantCuotas)" class="text-danger" />
@@ -39,8 +36,20 @@
 
                 <div class="form-group mb-4">
                     <label class="form-label fw-bold text-secondary">Código del Vehículo</label>
-                    <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.CodigoVehiculo" />
+                    <select class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind="nuevoTipoPlan.CodigoVehiculo">
+                        <option value="" disabled selected>Seleccione un vehículo</option>
+                        @foreach (var vehiculo in vehiculos)
+                        {
+                            <option value="@vehiculo.Codigo">@vehiculo.Codigo</option>
+                        }
+                    </select>
                     <ValidationMessage For="@(() => nuevoTipoPlan.CodigoVehiculo)" class="text-danger" />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold text-secondary">Descripción del Plan</label>
+                    <InputTextArea class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="nuevoTipoPlan.Descripcion" />
+                    <ValidationMessage For="@(() => nuevoTipoPlan.Descripcion)" class="text-danger" />
                 </div>
 
                 <div class="text-center mt-4">
@@ -65,6 +74,25 @@
 @code {
     private POST_TipoPlanDTO nuevoTipoPlan = new POST_TipoPlanDTO();
     private string errorMessage = "";
+    private List<GET_VehiculoDTO> vehiculos = new List<GET_VehiculoDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LeerVehiculos();
+    }
+
+    private async Task LeerVehiculos()
+    {
+        var resp = await http.Get<List<GET_VehiculoDTO>>("api/Vehiculos");
+        if (!resp.Error)
+        {
+            vehiculos = resp.Respuesta;  
+        }
+        else
+        {
+            errorMessage = await resp.ObtenerError();
+        }
+    }
 
     private async Task RegistrarTipoPlan()
     {
@@ -74,7 +102,7 @@
 
             if (respuesta != null)
             {
-                navigationManager.NavigateTo("/tipoplan/mostrar");
+                navigationManager.NavigateTo("/api/TipoPlan/mostrar",true);
             }
             else
             {
@@ -90,6 +118,6 @@
 
     private void NavigateToMostrar()
     {
-        navigationManager.NavigateTo("/api/tipoplan/mostrar");
+        navigationManager.NavigateTo("/api/TipoPlan/mostrar");
     }
 }

@@ -46,7 +46,7 @@
                                 <td>@planVendidoEncontrado.NombrePlan</td>
                                 <td>@planVendidoEncontrado.Estado</td>
                                 <td>@(planVendidoEncontrado.PlanEnMora ? "Sí" : "No")</td>
-                                <td>@planVendidoEncontrado.ValorTotal.ToString("C")</td>
+                                <td>@planVendidoEncontrado.ValorTotal.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
                             </tr>
                         }
                         else if (buscando)
@@ -86,7 +86,7 @@
         try
         {
             // Realiza la solicitud HTTP para buscar el plan vendido por DNI
-            var respuesta = await http.Get<GET_PlanVendidoDTO>($"api/PlanVendido/{dniCliente}");
+            var respuesta = await http.Get<GET_PlanVendidoDTO>($"api/PlanVendido/Documento/{dniCliente}");
             if (respuesta.Error)
             {
                 planVendidoEncontrado = null;
@@ -104,7 +104,6 @@
         buscando = false;
     }
 }
-
 
 
 

@@ -1,101 +1,111 @@
-﻿@* @page "/api/TipoPlan/editar/{codigo}"
+﻿@page "/api/TipoPlan/editar/{codigo}"
 @using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
 @inject IHttpServicio http
-@inject NavigationManager navigationManager
+@inject NavigationManager Navigation
 
-<div class="container mt-5">
-    <div class="card border-0 shadow-lg">
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
+    <div class="card border-0 shadow-lg" style="width: 100%; border-radius: 10px;">
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
-            <h3 class="mb-0" style="font-weight: 600;">Editar Plan</h3>
+            <h3 class="mb-0" style="font-weight: 600;">Editar Tipo de Plan</h3>
         </div>
 
         <div class="card-body p-4 bg-light">
-            <EditForm Model="planParaEditar" OnValidSubmit="GuardarCambios">
-                <DataAnnotationsValidator />
+            <h5 class="mb-4">Editar los detalles del plan</h5>
 
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Nombre del Plan</label>
-                    <InputText class="form-control" @bind-Value="planParaEditar.NombrePlan" />
-                    <ValidationMessage For="@(() => planParaEditar.NombrePlan)" />
-                </div>
-
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Descripción del Plan</label>
-                    <InputTextArea class="form-control" @bind-Value="planParaEditar.Descripcion" />
-                    <ValidationMessage For="@(() => planParaEditar.Descripcion)" />
-                </div>
-
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Valor Total</label>
-                    <InputNumber class="form-control" @bind-Value="planParaEditar.ValorTotal" />
-                    <ValidationMessage For="@(() => planParaEditar.ValorTotal)" />
-                </div>
-
-                <div class="form-group mb-4">
-                    <label class="form-label fw-bold text-secondary">Código Vehículo</label>
-                    <InputText class="form-control" @bind-Value="planParaEditar.CodigoVehiculo" />
-                    <ValidationMessage For="@(() => planParaEditar.CodigoVehiculo)" />
-                </div>
-
-                <button class="btn btn-primary">Guardar Cambios</button>
-            </EditForm>
-
-            @if (errorMessage != null)
+            @if (planParaEditar == null)
             {
-                <div class="alert alert-danger mt-3">
-                    @errorMessage
-                </div>
+                <p>Cargando plan...</p>
             }
+            else
+            {
+                <EditForm Model="planParaEditar" OnValidSubmit="GuardarCambios">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
 
-            <div class="text-center mt-4">
-                <button class="btn btn-outline-primary btn-lg w-100 shadow" @onclick="NavigateToListado">Volver al listado</button>
-            </div>
+                    <div class="form-group">
+                        <label for="nombrePlan">Nombre del Plan</label>
+                        <InputText id="nombrePlan" class="form-control" @bind-Value="planParaEditar.NombrePlan" />
+                        <ValidationMessage For="@(() => planParaEditar.NombrePlan)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="valorTotal">Valor Total</label>
+                        <InputNumber id="valorTotal" class="form-control" @bind-Value="planParaEditar.ValorTotal" />
+                        <ValidationMessage For="@(() => planParaEditar.ValorTotal)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <InputTextArea id="descripcion" class="form-control" @bind-Value="planParaEditar.Descripcion" />
+                        <ValidationMessage For="@(() => planParaEditar.Descripcion)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cantCuotas">Cantidad de Cuotas</label>
+                        <InputNumber id="cantCuotas" class="form-control" @bind-Value="planParaEditar.CantCuotas" />
+                        <ValidationMessage For="@(() => planParaEditar.CantCuotas)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="codigoVehiculo">Código de Vehículo</label>
+                        <InputText id="codigoVehiculo" class="form-control" @bind-Value="planParaEditar.CodigoVehiculo" />
+                        <ValidationMessage For="@(() => planParaEditar.CodigoVehiculo)" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Cambios</button>
+                    <button @onclick="IrALaLista" class="btn btn-outline-primary w-100 mt-3">Volver a la lista</button>
+                </EditForm>
+            }
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public string Codigo { get; set; } 
-    private PUT_TipoPlanDTO planParaEditar = new PUT_TipoPlanDTO(); 
-    private string errorMessage = null!; 
+    [Parameter] public string codigo { get; set; }
+
+    private PUT_TipoPlanDTO planParaEditar;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await CargarPlan(); 
+        await CargarPlan();
     }
 
     private async Task CargarPlan()
     {
-        var respuesta = await http.Get<PUT_TipoPlanDTO>($"api/TipoPlan/{Codigo}");
-        if (!respuesta.Error)
+        var resp = await http.Get<GET_TipoPlanDTO>($"api/TipoPlan/Codigo/{codigo}");
+        if (!resp.Error)
         {
-            planParaEditar = respuesta.Respuesta;
+            planParaEditar = new PUT_TipoPlanDTO
+                {
+                    NombrePlan = resp.Respuesta.NombrePlan,
+                    CantCuotas = resp.Respuesta.CantCuotas,
+                    ValorTotal = resp.Respuesta.ValorTotal,
+                    CodigoVehiculo = resp.Respuesta.CodigoVehiculo,
+                    Descripcion = resp.Respuesta.Descripcion,
+                };
         }
         else
         {
-            errorMessage = "No se pudo cargar el plan. Intenta nuevamente más tarde.";
-            navigationManager.NavigateTo("/error");
+            Navigation.NavigateTo("/error");
         }
     }
 
     private async Task GuardarCambios()
     {
-        var respuesta = await http.Put($"api/TipoPlan/{Codigo}", planParaEditar);
-
-        if (respuesta != null && !respuesta.Error)
+        var resp = await http.Put($"api/TipoPlan/CodigoAModificar/{codigo}", planParaEditar);
+        if (!resp.Error)
         {
-            navigationManager.NavigateTo("/api/TipoPlan/mostrar");
+            Navigation.NavigateTo("/api/TipoPlan/mostrar", true);
         }
         else
         {
-            errorMessage = await respuesta.ObtenerError();
-            Console.WriteLine($"Error al guardar cambios: {errorMessage}");
+            var error = await resp.ObtenerError();
         }
     }
 
-    private void NavigateToListado()
+    private void IrALaLista()
     {
-        navigationManager.NavigateTo("/api/TipoPlan/mostrar");
+        Navigation.NavigateTo("/api/TipoPlan/mostrar");
     }
-} *@
+}

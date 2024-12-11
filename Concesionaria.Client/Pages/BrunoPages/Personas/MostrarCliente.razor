@@ -2,6 +2,7 @@
 @using Concesionaria2024.Shared.DTO.AndresDTO
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
+@inject IJSRuntime JSRuntime  
 
 <div class="container mt-5">
     <div class="card border-0 shadow-lg">
@@ -27,12 +28,13 @@
                             <th>Código</th>
                             <th>Documento</th>
                             <th>Fecha de Inicio</th>
+                            <th>Acciones</th> <!-- Columna para acciones -->
                         </tr>
                     </thead>
                     <tbody>
                         @if (listaClientes.Count == 0)
                         {
-                            <tr><td colspan="4" class="text-center">No existen clientes registrados.</td></tr>
+                            <tr><td colspan="5" class="text-center">No existen clientes registrados.</td></tr>
                         }
                         else
                         {
@@ -43,6 +45,10 @@
                                     <td>@cliente.Codigo</td>
                                     <td>@cliente.NumDoc</td>
                                     <td>@cliente.FechaInicio.ToString("d")</td>
+                                    <td>
+                                        <!-- Botón de eliminar -->
+                                        <button class="btn btn-danger" @onclick="() => ConfirmarEliminar(cliente.Codigo)">Eliminar</button>
+                                    </td>
                                 </tr>
                             }
                         }
@@ -78,12 +84,45 @@
     private async Task LeerClientes()
     {
         var resp = await http.Get<List<GET_ClienteDTO>>("api/Cliente");
-        if (!resp.Error)
+        
+        // Adaptamos la comprobación de error
+        if (resp.Error)
         {
-            listaClientes = resp.Respuesta;
+            Mensaje = await resp.ObtenerError();
         }
         else
         {
+            listaClientes = resp.Respuesta;
+        }
+    }
+
+    // Método para confirmar antes de eliminar un cliente
+    private async Task ConfirmarEliminar(string codigo)
+    {
+        // Mostramos un cuadro de confirmación con JSRuntime
+        var confirmacion = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de que deseas eliminar el cliente con código {codigo}?");
+
+        if (confirmacion)
+        {
+            // Si el usuario confirma, procedemos con la eliminación
+            await EliminarCliente(codigo);
+        }
+    }
+
+    // Método para eliminar un cliente
+    private async Task EliminarCliente(string codigo)
+    {
+        var resp = await http.Delete($"api/Cliente/EliminarCodigo/{codigo}");
+
+        if (!resp.Error)
+        {
+            // Si la eliminación fue exitosa, actualizamos la lista
+            await LeerClientes();
+            Mensaje = $"El cliente con código {codigo} fue eliminado con éxito.";
+        }
+        else
+        {
+            // Si hubo un error, mostramos el mensaje
             Mensaje = await resp.ObtenerError();
         }
     }
@@ -94,6 +133,10 @@
         navigationManager.NavigateTo("/api/Clientes/Crear");
     }
 }
+
+
+
+
 
 
 
