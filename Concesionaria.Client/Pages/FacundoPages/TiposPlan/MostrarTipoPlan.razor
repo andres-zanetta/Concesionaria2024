@@ -2,6 +2,7 @@
 @using Concesionaria2024.Shared.DTO.FacundoDTO.TipoPlan
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="container mt-5">
     <div class="card border-0 shadow-lg">
@@ -17,9 +18,9 @@
                     <tr>
                         <th>Código del Plan</th>
                         <th>Nombre del Plan</th>
-                        <th>Descripción</th>
                         <th>Precio</th>
                         <th>Código Vehículo</th>
+                        <th>Descripción</th>
                         <th>Acciones</th> 
                     </tr>
                 </thead>
@@ -41,11 +42,12 @@
                                 <tr>
                                     <td>@plan.Codigo</td>
                                     <td>@plan.NombrePlan</td>
-                                    <td>@plan.Descripcion</td>
                                     <td>@plan.ValorTotal.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
                                     <td>@plan.CodigoVehiculo</td>
+                                    <td>@plan.Descripcion</td>
                                     <td>
                                         <button class="btn btn-outline-secondary" @onclick="() => EditarPlan(plan.Codigo)">Editar</button>
+                                        <button class="btn btn-outline-danger" @onclick="() => EliminarPlan(plan.Codigo)">Eliminar</button>
                                     </td>
                                 </tr>
                             }
@@ -88,6 +90,7 @@
         if (!resp.Error)
         {
             listaTipoPlanes = resp.Respuesta;
+            Console.WriteLine($"Planes cargados: {listaTipoPlanes.Count}");
         }
         else
         {
@@ -103,5 +106,30 @@
     private void EditarPlan(string codigo)
     {
         navigationManager.NavigateTo($"/api/TipoPlan/editar/{codigo}");
+    }
+
+    private async Task ConfirmarEliminar(string codigo)
+    {
+        var confirmacion = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de que deseas eliminar el Tipo de Plan con código {codigo}?");
+
+        if (confirmacion)
+        {
+            await EliminarPlan(codigo);
+        }
+    }
+
+    private async Task EliminarPlan(string codigo)
+    {
+        var resp = await http.Delete($"api/TipoPlan/Eliminar-Tipo-Plan/{codigo}");
+
+        if (!resp.Error)
+        {
+            await LeerTipoPlanes();
+            Mensaje = $"El Tipo de Plan con código {codigo} fue eliminado exitosamente.";
+        }
+        else
+        {
+            Mensaje = await resp.ObtenerError();
+        }
     }
 }
