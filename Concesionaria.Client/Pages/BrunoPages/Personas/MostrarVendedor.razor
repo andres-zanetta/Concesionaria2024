@@ -2,6 +2,7 @@
 @using Concesionaria2024.Shared.DTO.AndresDTO
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="container mt-5">
     <div class="card border-0 shadow-lg">
@@ -29,12 +30,13 @@
                             <th>Fecha de Inicio</th>
                             <th>Fecha de Fin</th>
                             <th>Cant. Planes Vendidos</th>
+                            <th>Acciones</th> <!-- Columna de acciones -->
                         </tr>
                     </thead>
                     <tbody>
                         @if (listaVendedores.Count == 0)
                         {
-                            <tr><td colspan="6" class="text-center">No existen vendedores registrados.</td></tr>
+                            <tr><td colspan="7" class="text-center">No existen vendedores registrados.</td></tr>
                         }
                         else
                         {
@@ -47,6 +49,10 @@
                                     <td>@vendedor.FechaInicio.ToString("d")</td>
                                     <td>@(vendedor.FechaFin?.ToString("d") ?? "N/A")</td>
                                     <td>@vendedor.CantPlanesVendidos</td>
+                                    <td>
+                                        <!-- Botón para eliminar -->
+                                        <button class="btn btn-danger" @onclick="() => ConfirmarEliminar(vendedor.Codigo)">Eliminar</button>
+                                    </td>
                                 </tr>
                             }
                         }
@@ -102,6 +108,36 @@
         }
     }
 
+    // Método para confirmar antes de eliminar un vendedor
+    private async Task ConfirmarEliminar(string codigo)
+    {
+        // Mostramos un cuadro de confirmación con JSRuntime
+        var confirmacion = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de que deseas eliminar el vendedor con código {codigo}?");
+
+        if (confirmacion)
+        {
+            // Si el usuario confirma, procedemos con la eliminación
+            await EliminarVendedor(codigo);
+        }
+    }
+
+    // Método para eliminar un vendedor
+    private async Task EliminarVendedor(string codigo)
+    {
+        var resp = await http.Delete($"api/Vendedores/EliminarCodigo/{codigo}");
+
+        if (!resp.Error)
+        {
+            // Si la eliminación fue exitosa, actualizamos la lista
+            await LeerVendedores();
+            Mensaje = $"El vendedor con código {codigo} fue eliminado con éxito.";
+        }
+        else
+        {
+            // Si hubo un error, mostramos el mensaje
+            Mensaje = await resp.ObtenerError();
+        }
+    }
 
     // Método para navegar al formulario de agregar vendedor
     private void NavigateToAgregarVendedor()
