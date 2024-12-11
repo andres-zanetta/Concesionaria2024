@@ -7,6 +7,7 @@ using Concesionaria.Server.Repositorio.FacundoRepositorios;
 using Concesionaria.Server.Repositorio.GinoRepositorios;
 using Concesionaria.Server.Resolvers.AdjudicacionResolver;
 using Concesionaria.Server.Resolvers.ClienteResolver;
+using Concesionaria.Server.Resolvers.CuotaResolver;
 using Concesionaria.Server.Resolvers.PersonaResolvers;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.POST;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.PUT;
@@ -76,6 +77,10 @@ builder.Services.AddScoped<VendedorResolverPut>();
 
 builder.Services.AddScoped<PlanVendidoAdjudicResolverPost>();
 builder.Services.AddScoped<PlanVendidoAdjudicResolverPut>();
+
+
+builder.Services.AddScoped<PlanVendidoCuotaResolverPost>();
+builder.Services.AddScoped<PlanVendidoCuotaResolverPut>();
 
 
 

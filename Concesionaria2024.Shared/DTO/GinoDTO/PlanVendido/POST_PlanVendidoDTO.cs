@@ -28,7 +28,7 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 
 
         [Required(ErrorMessage = "El estado del plan es obligatorio.")]
-        [MaxLength(20, ErrorMessage = "Máximo número de caracteres {1}.")]
+        [MaxLength(200, ErrorMessage = "Máximo número de caracteres {1}.")]
         public string Estado { get; set; }
 
 

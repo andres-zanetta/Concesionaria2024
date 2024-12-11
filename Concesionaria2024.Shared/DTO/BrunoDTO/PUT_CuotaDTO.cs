@@ -1,48 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Concesionaria2024.Shared.DTO.BrunoDTO
 {
-        public class PUT_CuotaDTO
-        {
-            // Número de Cuota ------------------------------------------------------------------------------------------
+    public class PUT_CuotaDTO
+    {
+        [Required(ErrorMessage = "El monto de la cuota es obligatorio.")]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal ValorCuota { get; set; }
 
-            [Required(ErrorMessage = "El número de cuota es obligatorio.")]
-            public int NumeroCuota { get; set; }
 
-            // Valor de la Cuota ------------------------------------------------------------------------------------------
+        // Número de la cuota ------------------------------------------------------------------------------------------
 
-            [Required(ErrorMessage = "El valor de la cuota es obligatorio.")]
-            public decimal ValorCuota { get; set; }
 
-            // Fecha de Vencimiento ------------------------------------------------------------------------------------------
+        [Required(ErrorMessage = "La Capacidad maxima del vehiculo es obligatoria.")]
+        public int NumeroCuota { get; set; }
 
-            [Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
-            public DateTime FechaVencimiento { get; set; }
 
-            // Estado ------------------------------------------------------------------------------------------
+        // Fcha de inicio ------------------------------------------------------------------------------------------
 
-            [Required(ErrorMessage = "El estado de la cuota es obligatorio.")]
-            public string Estado { get; set; }
 
-            // Observaciones (opcional) ------------------------------------------------------------------------------------------
+        [Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
+        public DateTime FechaInicio { get; set; }
 
-            [MaxLength(500, ErrorMessage = "Máximo número de caracteres {1}.")]
-            public string? Observaciones { get; set; }
 
-            // Plan Vendido ID ------------------------------------------------------------------------------------------
+        // Fecha de vencimiento ------------------------------------------------------------------------------------------
 
-            [Required(ErrorMessage = "El ID del plan vendido es obligatorio.")]
-            public int PlanVendidoId { get; set; }
 
-            // Cuota Vencida ------------------------------------------------------------------------------------------
+        [Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
+        public DateTime FechaVencimiento { get; set; }
 
-            [Required(ErrorMessage = "Debe especificar si la cuota está vencida o no.")]
-            public bool CuotaVencida { get; set; }
-        }
+
+        // Cuota vencida ------------------------------------------------------------------------------------------
+
+
+        [Display(Name = "¿Está vencida?", Description = "Indica si la cuota está vencida")]
+        //Para mostrar info en la interfaz de usuario
+        public bool CuotaVencida { get; set; }
+
+
+        // Observaciones ------------------------------------------------------------------------------------------
+
+
+        [MaxLength(100, ErrorMessage = "Máximo número de caracteres {1}.")]
+        // No se agrega un parametro "Required" dado que debe poder ser nullable
+        public string? Observaciones { get; set; }
+
+
+        public string CodigoPlanVendido { get; set; }
+    }
 }
 

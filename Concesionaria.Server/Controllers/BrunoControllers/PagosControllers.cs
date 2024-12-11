@@ -51,23 +51,23 @@ namespace Concesionaria.Server.Controllers.BrunoControllers
         }
 
         // POST: ----------------------------------------------------------------------
-        [HttpPost]
-        public async Task<ActionResult<int>> Post(CrearPagoDTO entidadDTO)
-        {
-            try
-            {
-                Pago entidad = mapper.Map<Pago>(entidadDTO);
-                return await repositorio.Insert(entidad);
-            }
-            catch (Exception e)
-            {
-                if (e.InnerException != null)
-                {
-                    return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
-                }
-                return BadRequest(e.Message);
-            }
-        }
+        //[HttpPost]
+        //public async Task<ActionResult<int>> Post(CrearPagoDTO entidadDTO)
+        //{
+        //    try
+        //    {
+        //        Pago entidad = mapper.Map<Pago>(entidadDTO);
+        //        return await repositorio.Insert(entidad);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (e.InnerException != null)
+        //        {
+        //            return BadRequest($"Error: {e.Message}. Inner Exception: {e.InnerException.Message}");
+        //        }
+        //        return BadRequest(e.Message);
+        //    }
+        //}
 
 		// PUT: -----------------------------------------------------------------------
 		[HttpPut("CodigoAModificar/{codigo}")]

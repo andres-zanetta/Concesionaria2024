@@ -2,6 +2,7 @@
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria.Server.Repositorio.AndresRepositorios;
+using Concesionaria.Server.Repositorio.BrunoRepositorios;
 using Concesionaria.Server.Repositorio.FacundoRepositorios;
 using Concesionaria.Server.Repositorio.GinoRepositorios;
 using Concesionaria2024.Shared.DTO.AndresDTO;
@@ -15,6 +16,7 @@ namespace Concesionaria.Server.Controllers.GinoControllers
     [Route("api/PlanVendido")]
     public class PlanesVendidosControllers : ControllerBase
     {
+        private readonly ICuotaRepositorio repoCuota;
         private readonly IAdjudicacionRepositorio repoAdjudicacion;
         private readonly ITipoPlanRepositorio repoTipoPlan;
         private readonly IVendedorRepositorio repoVendedor;
@@ -22,9 +24,10 @@ namespace Concesionaria.Server.Controllers.GinoControllers
         private readonly IPlanVendidoRepositorio repositorio;
         private readonly IMapper mapper;
 
-        public PlanesVendidosControllers( IAdjudicacionRepositorio repoAdjudicacion , ITipoPlanRepositorio repoTipoPlan, IVendedorRepositorio repoVendedor,
+        public PlanesVendidosControllers(ICuotaRepositorio repoCuota, IAdjudicacionRepositorio repoAdjudicacion, ITipoPlanRepositorio repoTipoPlan, IVendedorRepositorio repoVendedor,
                                         IClienteRepositorio repoCliente, IPlanVendidoRepositorio repositorio, IMapper mapper)
         {
+            this.repoCuota = repoCuota;
             this.repoAdjudicacion = repoAdjudicacion;
             this.repoTipoPlan = repoTipoPlan;
             this.repoVendedor = repoVendedor;
@@ -123,10 +126,13 @@ namespace Concesionaria.Server.Controllers.GinoControllers
                     return NotFound($"Tipo de plan con nombre {POST_entidadDNI_DTO.TipoPlanCodigo} no encontrado.");
                 }
 
-
                 PlanVendido entidad = mapper.Map<PlanVendido>(POST_entidadDNI_DTO);
-                await repositorio.Insert(entidad);
-                return Ok($"Plan vendido cargado exitosamente: Código {entidad.Codigo}, Vendedor {vendedor.Persona.Nombre} {vendedor.Persona.Apellido}");
+                int idEntidad = await repositorio.Insert(entidad);
+
+                await repoCuota.Generarcuotas(idEntidad);
+
+                return Ok($"Plan vendido cargado exitosamente: Código {entidad.Codigo}, Vendedor {vendedor.Persona.Nombre} {vendedor.Persona.Apellido}," +
+                    $" Cantidad cuotas {entidad.cuotas.Count}");
             }
             catch (Exception e)
             {

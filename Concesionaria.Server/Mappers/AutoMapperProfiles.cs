@@ -2,6 +2,7 @@
 using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Resolvers.AdjudicacionResolver;
 using Concesionaria.Server.Resolvers.ClienteResolver;
+using Concesionaria.Server.Resolvers.CuotaResolver;
 using Concesionaria.Server.Resolvers.PersonaResolvers;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.POST;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.PUT;
@@ -46,6 +47,7 @@ namespace Concesionaria.Server.Mappers
            .ForMember(dest => dest.ValorTotal, opt => opt.MapFrom(src => $"{src.TipoPlan.ValorTotal}"))
            .ForMember(dest => dest.ModeloVehiculo, opt => opt.MapFrom(src => src.TipoPlan.Vehiculo.Modelo))
            .ForMember(dest => dest.MarcaVehiculo, opt => opt.MapFrom(src => src.TipoPlan.Vehiculo.Marca))
+           .ForMember(dest => dest.CantidadCuotas, opt => opt.MapFrom(src => src.TipoPlan.CantCuotas))
            .ForMember(dest => dest.AutoEntregado, opt => opt.MapFrom(src => src.Adjudicacion != null ? src.Adjudicacion.AutoEntregado : false))
            .ForMember(dest => dest.PatenteVehiculo, opt => opt.MapFrom(src => src.Adjudicacion != null ? src.Adjudicacion.PatenteVehiculo : null)); 
 
@@ -154,11 +156,20 @@ namespace Concesionaria.Server.Mappers
 
             // Mapeado Cuota ======================================================================
 
-            CreateMap<CrearCuotaDTO, Cuota>();
+            CreateMap<Cuota, GET_CuotaDTO>()
+                .ForMember(dest => dest.CodigoPlanVendido, opt => opt.MapFrom(src => src.PlanVendido.Codigo))
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.FechaInicio:dd-MM-yyyy} - Cuota {src.NumeroCuota}")); ;
+
+            CreateMap<POST_CuotaDTO, Cuota>()
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.FechaInicio.ToString("dd-MM-yyyy")} - Cuota {src.NumeroCuota}"))
+                .ForMember(dest => dest.PlanVendidoId, opt => opt.MapFrom<PlanVendidoCuotaResolverPost>());
+
+            CreateMap<PUT_CuotaDTO, Cuota>()
+                .ForMember(dest => dest.PlanVendidoId, opt => opt.MapFrom<PlanVendidoCuotaResolverPut>());
 
             // Mapeado Pago =======================================================================
 
-            CreateMap<CrearPagoDTO, Pago>();
+            CreateMap<PUT_CuotaDTO, Pago>();
         
         }
     }

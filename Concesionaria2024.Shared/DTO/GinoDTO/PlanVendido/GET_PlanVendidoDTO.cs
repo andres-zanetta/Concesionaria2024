@@ -67,7 +67,9 @@ namespace Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 
         //  Clases de Nav pero en este caso las uso para traer info relac al plan
 
+        [Required(ErrorMessage = "El estado del plan es obligatorio.")]
 
+        public int CantidadCuotas { get; set; }
 
 
         [Required(ErrorMessage = "El cliente es obligatorio.")]

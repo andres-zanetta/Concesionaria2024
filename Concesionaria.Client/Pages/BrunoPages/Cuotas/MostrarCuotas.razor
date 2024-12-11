@@ -31,10 +31,12 @@
                                 <td>@cuota.NumeroCuota</td>
                                 <td>@cuota.ValorCuota.ToString("C")</td>
                                 <td>@cuota.FechaVencimiento.ToString("dd/MM/yyyy")</td>
-                                <td>@cuota.Estado</td>
+                               @*  <td>@cuota.Estado</td> el estado de la cuota s epuede manejar con colores, 
+                               si esta vencida rojo, si está pagada verde y si esta en plazo y no pagada amarillo *@
                                 <td>
-                                    <button class="btn btn-info btn-sm me-2" @onclick="() => VerPago(cuota.PlanVendidoId)">Ver Pago</button>
-                                    <button class="btn btn-success btn-sm" @onclick="() => RegistrarPago(cuota.PlanVendidoId)">Registrar Pago</button>
+ @*                                    <button class="btn btn-info btn-sm me-2" @onclick="() => VerPago(cuota.PlanVendidoId)">Ver Pago</button>
+                                    <button class="btn btn-success btn-sm" @onclick="() => RegistrarPago(cuota.PlanVendidoId)">Registrar Pago</button> 
+                                    modificar metodo ver pago para que busque por el codigo del plan o que tome el codigo y busque el id del plan*@
                                 </td>
                             </tr>
                         }

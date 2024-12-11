@@ -30,15 +30,14 @@ namespace Concesionaria.DB.Data.Entidades
         public int NumeroCuota { get; set; }
 
 
-        // Estado ------------------------------------------------------------------------------------------
+        // Fcha de inicio ------------------------------------------------------------------------------------------
 
 
-        [Required(ErrorMessage = "El estado de la cuota es obligatorio.")]
-        [MaxLength(20, ErrorMessage = "Máximo número de caracteres {1}.")]
-        public string Estado { get; set; }
+        [Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
+        public DateTime FechaInicio { get; set; }
 
 
-        // FEcha de vencimiento ------------------------------------------------------------------------------------------
+        // Fecha de vencimiento ------------------------------------------------------------------------------------------
 
 
         [Required(ErrorMessage = "La fecha de vencimiento es obligatoria.")]
