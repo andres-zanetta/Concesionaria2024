@@ -47,7 +47,7 @@
                                     <td>@plan.Descripcion</td>
                                     <td>
                                         <button class="btn btn-outline-secondary" @onclick="() => EditarPlan(plan.Codigo)">Editar</button>
-                                        <button class="btn btn-outline-danger" @onclick="() => EliminarPlan(plan.Codigo)">Eliminar</button>
+                                        <button class="btn btn-outline-danger ml-2" @onclick="() => EliminarPlan(plan.Codigo)">Eliminar</button>
                                     </td>
                                 </tr>
                             }
@@ -108,28 +108,33 @@
         navigationManager.NavigateTo($"/api/TipoPlan/editar/{codigo}");
     }
 
-    private async Task ConfirmarEliminar(string codigo)
+    private async Task EliminarPlan(string codigo)
     {
-        var confirmacion = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de que deseas eliminar el Tipo de Plan con código {codigo}?");
+        var confirmacion = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de eliminar el Tipo de Plan con código {codigo}?");
 
         if (confirmacion)
         {
-            await EliminarPlan(codigo);
+            var respuesta = await http.Delete($"api/TipoPlan/Eliminar-Tipo-Plan/{codigo}");
+
+            if (respuesta.Error)
+            {
+                Mensaje = "No se pudo eliminar el tipo de plan.";
+            }
+            else
+            {
+                Mensaje = $"El tipo de plan con código {codigo} fue eliminado con éxito.";
+            }
         }
     }
 
-    private async Task EliminarPlan(string codigo)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var resp = await http.Delete($"api/TipoPlan/Eliminar-Tipo-Plan/{codigo}");
+        if (firstRender)
+        {
+            return;
+        }
 
-        if (!resp.Error)
-        {
-            await LeerTipoPlanes();
-            Mensaje = $"El Tipo de Plan con código {codigo} fue eliminado exitosamente.";
-        }
-        else
-        {
-            Mensaje = await resp.ObtenerError();
-        }
+        await LeerTipoPlanes();
+        StateHasChanged();
     }
 }
