@@ -1,115 +1,73 @@
 ﻿@page "/api/PlanVendido/editar/{codigo}"
+@using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
-    <div class="card border-0 shadow-lg" style="width: 600px; border-radius: 10px;">
-        <!-- Encabezado con fondo sólido y texto blanco -->
+    <div class="card border-0 shadow-lg" style="width: 100%; border-radius: 10px;">
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
             <h3 class="mb-0" style="font-weight: 600;">Editar Plan Vendido</h3>
         </div>
+
         <div class="card-body p-4 bg-light">
-            @if (planVendido == null)
-            {
-                <div class="text-center">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Cargando datos del plan vendido...
+            <EditForm Model="@planVendido" OnValidSubmit="GuardarPlanVendido">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group mb-3">
+                    <label for="estado">Estado</label>
+                    <InputText id="estado" class="form-control" @bind-Value="planVendido.Estado" />
                 </div>
-            }
-            else
-            {
-                <EditForm Model="planVendido" OnValidSubmit="Grabar">
-                    <DataAnnotationsValidator />
 
-                    <!-- Campos del formulario -->
-                    @* DNI del Cliente *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">DNI del Cliente</label>
-                        <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@planVendido.ClienteDNI" />
-                        <ValidationMessage For="@(() => planVendido.ClienteDNI)" class="text-danger" />
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="descripcion">Descripción</label>
+                    <InputText id="descripcion" class="form-control" @bind-Value="planVendido.Descripcion" />
+                </div>
 
-                    @* DNI del Vendedor *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">DNI del Vendedor</label>
-                        <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@planVendido.VendedorDNI" />
-                        <ValidationMessage For="@(() => planVendido.VendedorDNI)" class="text-danger" />
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="fechaInicio">Fecha de Inicio</label>
+                    <InputDate id="fechaInicio" class="form-control" @bind-Value="planVendido.FechaInicio" />
+                </div>
 
-                    @* Tipo de Plan *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">Tipo de Plan</label>
-                        <InputSelect class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@planVendido.TipoPlanCodigo">
-                            <option value="1">Plan Básico</option>
-                            <option value="2">Plan Avanzado</option>
-                            <option value="3">Plan Premium</option>
-                        </InputSelect>
-                        <ValidationMessage For="@(() => planVendido.TipoPlanCodigo)" class="text-danger" />
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="fechaFin">Fecha de Fin</label>
+                    <InputDate id="fechaFin" class="form-control" @bind-Value="planVendido.FechaFin" />
+                </div>
 
-                    @* Estado *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">Estado</label>
-                        <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@planVendido.Estado" />
-                        <ValidationMessage For="@(() => planVendido.Estado)" class="text-danger" />
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="planEnMora">Plan en Mora</label>
+                    <InputCheckbox id="planEnMora" style="width: 20px; height: 20px; padding: 0; display: inline-block;" @bind-Value="planVendido.PlanEnMora" />
+                </div>
 
-                    @* Plan en Mora *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">¿El plan tiene mora?</label>
-                        <InputCheckbox class="form-check-input shadow-sm" @bind-Value="@planVendido.PlanEnMora" />
-                        <ValidationMessage For="@(() => planVendido.PlanEnMora)" class="text-danger" />
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="vendedorDNI">Vendedor</label>
+                    <InputText id="vendedorDNI" class="form-control" @bind-Value="planVendido.VendedorDNI" />
+                </div>
 
-                    @* Fecha de Suscripción *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">Fecha de Suscripción</label>
-                        <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@planVendido.FechaSuscripcion" />
-                        <ValidationMessage For="@(() => planVendido.FechaSuscripcion)" class="text-danger" />
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="clienteDNI">Cliente</label>
+                    <InputText id="clienteDNI" class="form-control" @bind-Value="planVendido.ClienteDNI" />
+                </div>
 
-                    @* Fecha del Sorteo *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">Fecha del Sorteo</label>
-                        <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@planVendido.FechaSorteo" />
-                        <ValidationMessage For="@(() => planVendido.FechaSorteo)" class="text-danger" />
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="tipoPlanCodigo">Tipo de Plan</label>
+                    <InputText id="tipoPlanCodigo" class="form-control" @bind-Value="planVendido.TipoPlanCodigo" />
+                </div>
 
-                    @* Fecha Inicio *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">Fecha Inicio</label>
-                        <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@planVendido.FechaInicio" />
-                        <ValidationMessage For="@(() => planVendido.FechaInicio)" class="text-danger" />
-                    </div>
-
-                    @* Fecha Fin *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">Fecha Fin</label>
-                        <InputDate class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@planVendido.FechaFin" />
-                        <ValidationMessage For="@(() => planVendido.FechaFin)" class="text-danger" />
-                    </div>
-                  
-                    @* Descripción *@
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-secondary">Descripción</label>
-                        <InputText class="form-control border-0 shadow-sm" style="border-radius: 8px;" @bind-Value="@planVendido.Descripcion" />
-                        <ValidationMessage For="@(() => planVendido.Descripcion)" class="text-danger" />
-                    </div>
-
-                    @* Botones *@
-                    <div class="d-flex justify-content-between mt-4">
-                        <button type="submit" class="btn btn-success me-2">Guardar</button>
-                        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
-                    </div>
-                </EditForm>
-            }
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-success me-3" type="submit">Guardar</button>
+                    <button class="btn btn-secondary ms-3" @onclick="CancelarEdicion">Cancelar</button>
+                </div>
+            </EditForm>
         </div>
     </div>
 </div>
 
 @code {
     [Parameter] public string Codigo { get; set; }
-    PUT_PlanVendidoDNI_DTO planVendido = null;
+    private PUT_PlanVendidoDNI_DTO planVendido = new PUT_PlanVendidoDNI_DTO();
+    private string mensajeError = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -119,46 +77,51 @@
 
     private async Task CargarPlanVendido()
     {
-        var respuesta = await http.Get<GET_PlanVendidoDTO>($"api/PlanVendido/Codigo/{Codigo}");
-        if (!respuesta.Error)
+        var resp = await http.Get<GET_PlanVendidoDTO>($"api/PlanVendido/Codigo/{Codigo}");
+        if (!resp.Error)
         {
-            var dto = respuesta.Respuesta;
-            // Mapeo directo al modelo del formulario si los nombres coinciden
+            // Convertir la respuesta GET_PlanVendidoDTO a PUT_PlanVendidoDNI_DTO
             planVendido = new PUT_PlanVendidoDNI_DTO
                 {
-                    FechaSuscripcion = dto.FechaSuscripcion,
-                    FechaSorteo = dto.FechaSorteo,
-                    Descripcion = dto.Descripcion,
-                    Estado = dto.Estado,
-                    FechaInicio = dto.FechaInicio,
-                    FechaFin = dto.FechaFin,
-                    PlanEnMora = dto.PlanEnMora,
-                    // TipoPlanCodigo = dto.TipoPlanCodigo,  // Mapeo de TipoPlanCodigo
-                    // VendedorDNI = dto.VendedorDNI,        // Mapeo de VendedorDNI
-                    // ClienteDNI = dto.ClienteDNI           // Mapeo de ClienteDNI
+                    FechaSuscripcion = resp.Respuesta.FechaSuscripcion,
+                    FechaSorteo = resp.Respuesta.FechaSorteo,
+                    Descripcion = resp.Respuesta.Descripcion,
+                    Estado = resp.Respuesta.Estado,
+                    FechaInicio = resp.Respuesta.FechaInicio,
+                    FechaFin = resp.Respuesta.FechaFin,
+                    PlanEnMora = resp.Respuesta.PlanEnMora,
+                    VendedorDNI = resp.Respuesta.NombreVendedor, // Si 'NombreVendedor' es la propiedad adecuada
+                    ClienteDNI = resp.Respuesta.NombreCliente,   // Si 'NombreCliente' es la propiedad adecuada
+                    TipoPlanCodigo = resp.Respuesta.NombrePlan   // Si 'NombrePlan' es la propiedad adecuada
                 };
+
         }
         else
         {
-            // Manejo del error
-            navigationManager.NavigateTo("/api/PlanVendido/mostrar");
+            mensajeError = "No se pudo cargar el plan vendido.";
         }
     }
 
-    private async Task Grabar()
+    private async Task GuardarPlanVendido()
     {
-        var respuesta = await http.Put($"api/PlanVendido/Actualizar/{Codigo}", planVendido);
-        if (!respuesta.Error)
+        Console.WriteLine("El método GuardarPlanVendido fue llamado.");
+
+        var resp = await http.Put($"api/PlanVendido/CodigoAModificar/{Codigo}", planVendido);
+        if (resp.Error)
         {
-            navigationManager.NavigateTo("/api/PlanVendido/mostrar");
+            mensajeError = await resp.ObtenerError();
+            Console.WriteLine($"Error al guardar: {mensajeError}");
         }
         else
         {
-            // Manejo del error
+            // Redirigir a la lista de planes vendidos si la operación fue exitosa
+            navigationManager.NavigateTo("/api/PlanVendido/mostrar");
         }
     }
 
-    private void Cancelar()
+
+
+    private void CancelarEdicion()
     {
         navigationManager.NavigateTo("/api/PlanVendido/mostrar");
     }
