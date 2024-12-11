@@ -2,6 +2,7 @@
 @using Concesionaria2024.Shared.DTO.GinoDTO.PlanVendido
 @inject IHttpServicio http
 @inject NavigationManager navigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
     <div class="card border-0 shadow-lg" style="width: 100%; border-radius: 10px;">
@@ -15,45 +16,58 @@
                 <button class="btn btn-secondary me-2" @onclick="BuscarPlanVendido">Buscar Plan Vendido</button>
             </div>
 
-            <table class="table tabla-cuotas">
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Plan</th>
-                        <th>Estado</th>
-                        <th>Plan en Mora</th>
-                        <th>Valor Total</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (listaPlanesVendidos != null && listaPlanesVendidos.Any())
-                    {
-                        foreach (var plan in listaPlanesVendidos)
+            <!-- Indicador de carga -->
+            @if (listaPlanesVendidos == null)
+            {
+                <div class="text-center">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Cargando planes vendidos...
+                </div>
+            }
+            else
+            {
+                <table class="table tabla-cuotas">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Plan</th>
+                            <th>Estado</th>
+                            <th>Plan en Mora</th>
+                            <th>Valor Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (listaPlanesVendidos.Any())
+                        {
+                            foreach (var plan in listaPlanesVendidos)
+                            {
+                                <tr>
+                                    <td>@plan.NombreCliente</td>
+                                    <td>@plan.NombrePlan</td>
+                                    <td>@plan.Estado</td>
+                                    <td>@(plan.PlanEnMora ? "Sí" : "No")</td>
+                                    <td>@plan.ValorTotal.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
+                                    <td class="text-start">
+                                        <!-- Botón Ver Cuotas -->
+                                        <button class="btn btn-outline-secondary me-2" @onclick="() => NavegarAverCuotas(plan.Codigo)">Ver Cuotas</button>
+                                        <!-- Botón Editar -->
+                                        <button class="btn btn-outline-secondary me-2" @onclick="() => NavegarAEditar(plan.Codigo)">Editar</button>
+                                        <!-- Botón Eliminar -->
+                                        <button class="btn btn-outline-danger" @onclick="() => EliminarPlanVendido(plan.Codigo)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>@plan.NombreCliente</td>
-                                <td>@plan.NombrePlan</td>
-                                <td>@plan.Estado</td>
-                                <td>@(plan.PlanEnMora ? "Sí" : "No")</td>
-                                <td>@plan.ValorTotal.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
-                                <td class="text-start">
-                                    <!-- Botón Ver Cuotas -->
-                                    <button class="btn btn-outline-secondary me-2" @onclick="() => NavegarAverCuotas(plan.Codigo)">Ver Cuotas</button>
-                                    <!-- Botón Editar -->
-                                    <button class="btn btn-outline-secondary" @onclick="() => NavegarAEditar(plan.Codigo)">Editar</button>
-                                </td>
+                                <td colspan="6" class="text-center text-secondary">No hay planes vendidos registrados.</td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="6" class="text-center text-secondary">No hay planes vendidos registrados.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            }
         </div>
     </div>
 </div>
@@ -99,5 +113,26 @@
     private void NavegarAverCuotas(string codigo)
     {
         navigationManager.NavigateTo($"/api/PlanVendido/cuotas/{codigo}");
+    }
+
+    private async Task EliminarPlanVendido(string codigo)
+    {
+        bool confirmacion = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Está seguro de que desea eliminar el Plan Vendido con código {codigo}?");
+
+        if (!confirmacion)
+        {
+            return; // Si el usuario cancela, no se hace nada
+        }
+
+        var resp = await http.Delete($"api/PlanVendido/EliminarCodigo/{codigo}");
+
+        if (!resp.Error)
+        {
+            await LeerPlanesVendidos(); // Recargar la lista de planes vendidos
+        }
+        else
+        {
+            Mensaje = await resp.ObtenerError();
+        }
     }
 }

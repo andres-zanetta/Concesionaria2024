@@ -1,4 +1,5 @@
 ﻿
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
@@ -63,7 +64,19 @@ namespace Concesionaria.Client.Servicios
             }
         }
 
-        
+        public async Task<HttpRespuesta<object>> Delete(string url)
+        {
+            var respuestaHttp = await http.DeleteAsync(url);
+
+            if (!respuestaHttp.IsSuccessStatusCode)
+            {
+                var error = await respuestaHttp.Content.ReadAsStringAsync();
+                return new HttpRespuesta<object>(null, true, respuestaHttp); // Pasar el HttpResponseMessage directamente.
+            }
+
+            return new HttpRespuesta<object>(null, false, respuestaHttp);
+        }
+
 
         private async Task<O> DesSerealizar<O>(HttpResponseMessage response)
         {
