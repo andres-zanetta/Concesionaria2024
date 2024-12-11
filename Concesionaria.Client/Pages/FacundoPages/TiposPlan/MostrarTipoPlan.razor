@@ -42,7 +42,7 @@
                                     <td>@plan.Codigo</td>
                                     <td>@plan.NombrePlan</td>
                                     <td>@plan.Descripcion</td>
-                                    <td>@plan.ValorTotal.ToString("C")</td>
+                                    <td>@plan.ValorTotal.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
                                     <td>@plan.CodigoVehiculo</td>
                                     <td>
                                         <button class="btn btn-outline-secondary" @onclick="() => EditarPlan(plan.Codigo)">Editar</button>

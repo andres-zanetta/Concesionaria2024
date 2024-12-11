@@ -36,7 +36,7 @@
                                 <td>@plan.NombrePlan</td>
                                 <td>@plan.Estado</td>
                                 <td>@(plan.PlanEnMora ? "Sí" : "No")</td>
-                                <td>@plan.ValorTotal.ToString("C")</td>
+                                <td>@plan.ValorTotal.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
                                 <td class="text-start">
                                     <!-- Botón Ver Cuotas -->
                                     <button class="btn btn-outline-secondary me-2" @onclick="() => NavegarAverCuotas(plan.Codigo)">Ver Cuotas</button>
