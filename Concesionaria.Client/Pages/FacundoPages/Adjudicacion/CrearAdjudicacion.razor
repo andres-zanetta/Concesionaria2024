@@ -1,50 +1,52 @@
 ﻿@page "/api/adjudicacion/crear"
 @using Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion
-@inject IHttpServicio http
 @inject NavigationManager Navigation
+@inject IHttpServicio HttpServicio
 
-<div class="container mt-5">
-    <div class="card shadow-lg">
-        <div class="card-header bg-primary text-white text-center">
-            <h3>Crear Adjudicación</h3>
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
+    <div class="card border-0 shadow-lg" style="width: 100%; border-radius: 10px;">
+        <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            <h3 class="mb-0" style="font-weight: 600;">Crear nueva Adjudicación</h3>
         </div>
+
         <div class="card-body">
             <EditForm Model="@adjudicacion" OnValidSubmit="CrearNuevaAdjudicacion">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
                 <div class="mb-3">
-                    <label for="Detalle">Detalle:</label>
-                    <InputText id="Detalle" class="form-control" @bind-Value="adjudicacion.Detalle" />
-                    <ValidationMessage For="@(() => adjudicacion.Detalle)" />
-                </div>
-
-                <div class="mb-3">
-                    <label for="AutoEntregado">¿Está entregado?</label>
-                    <InputCheckbox id="AutoEntregado" class="form-check-input" @bind-Value="adjudicacion.AutoEntregado" />
-                    <ValidationMessage For="@(() => adjudicacion.AutoEntregado)" />
-                </div>
-
-                <div class="mb-3">
-                    <label for="PatenteVehiculo">Patente del Vehículo:</label>
+                    <label for="PatenteVehiculo" class="form-label">Patente del Vehículo</label>
                     <InputText id="PatenteVehiculo" class="form-control" @bind-Value="adjudicacion.PatenteVehiculo" />
                     <ValidationMessage For="@(() => adjudicacion.PatenteVehiculo)" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="PlanVendidoCodigo">Código del Plan Vendido:</label>
+                    <label for="PlanVendidoCodigo" class="form-label">Código del Vehículo</label>
                     <InputText id="PlanVendidoCodigo" class="form-control" @bind-Value="adjudicacion.PlanVendidoCodigo" />
                     <ValidationMessage For="@(() => adjudicacion.PlanVendidoCodigo)" />
                 </div>
 
-                <button class="btn btn-primary w-100" type="submit">Guardar Cambios</button>
+                <div class="mb-3">
+                    <label for="Detalle" class="form-label">Detalle</label>
+                    <InputText id="Detalle" class="form-control" @bind-Value="adjudicacion.Detalle" />
+                    <ValidationMessage For="@(() => adjudicacion.Detalle)" />
+                </div>
+
+                <div class="mb-3 form-check">
+                    <InputCheckbox id="AutoEntregado" class="form-check-input" @bind-Value="adjudicacion.AutoEntregado" />
+                    <label class="form-check-label" for="AutoEntregado">¿Auto entregado?</label>
+                    <ValidationMessage For="@(() => adjudicacion.AutoEntregado)" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-4">Crear Adjudicación</button>
+                <button class="btn btn-outline-primary w-100 mt-3" @onclick="VolverAListaAdjudicaciones">Volver a la lista de Adjudicaciones</button>
             </EditForm>
 
-            <button class="btn btn-secondary w-100 mt-3" @onclick="VolverAAdjudicaciones">Volver a Adjudicaciones</button>
-
-            @if (!string.IsNullOrEmpty(mensajeError))
+            @if (!string.IsNullOrEmpty(mensaje))
             {
-                <div class="alert alert-danger mt-3">@mensajeError</div>
+                <div class="alert alert-info mt-4">
+                    @mensaje
+                </div>
             }
         </div>
     </div>
@@ -52,21 +54,25 @@
 
 @code {
     private POST_AdjudicacionDTO adjudicacion = new POST_AdjudicacionDTO();
-    private string mensajeError = "";
+    private string? mensaje;
 
     private async Task CrearNuevaAdjudicacion()
     {
-        var respuesta = await http.Post("api/Adjudicaciones", adjudicacion);
+        var resultado = await HttpServicio.Post<POST_AdjudicacionDTO>("api/adjudicacion", adjudicacion);
 
-        if (!respuesta.Error)
+        if (resultado.Error)
         {
-            Navigation.NavigateTo("/adjudicaciones");
+            mensaje = $"Error al crear adjudicación: {await resultado.ObtenerError()}";
         }
         else
         {
-            mensajeError = await respuesta.ObtenerError();
+            mensaje = "Adjudicación creada con éxito.";
+            Navigation.NavigateTo("/api/Adjudicacion"); 
         }
     }
-    private void VolverAAdjudicaciones() 
-    { Navigation.NavigateTo("/api/Adjudicacion"); }
+
+    private void VolverAListaAdjudicaciones()
+    {
+    Navigation.NavigateTo("/api/Adjudicacion");
+    }
 }
