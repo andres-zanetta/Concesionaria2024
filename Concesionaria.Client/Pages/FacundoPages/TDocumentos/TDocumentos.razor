@@ -1,0 +1,79 @@
+﻿@page "/api/tipodocumentos"
+@using Concesionaria2024.Shared.DTO.GinoDTO.TIpoDocumento
+@inject IHttpServicio http
+@inject NavigationManager Navigation
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            <h3>Tipos de Documento</h3>
+        </div>
+        <div class="card-body">
+            <button class="btn btn-success mb-3" @onclick="IrACrearTipoDocumento">Agregar Nuevo Tipo de Documento</button>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Código</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (tiposDocumento == null)
+                    {
+                        <tr>
+                            <td colspan="3">Cargando...</td>
+                        </tr>
+                    }
+                    else if (!tiposDocumento.Any())
+                    {
+                        <tr>
+                            <td colspan="3">No hay tipos de documento registrados.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var tipo in tiposDocumento)
+                        {
+                            <tr>
+                                <td>@tipo.Nombre</td>
+                                <td>@tipo.Codigo</td>
+                                <td>
+                                    <button class="btn btn-primary" @onclick="() => IrAEditarTipoDocumento(tipo.Codigo)">Editar</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<GET_TipoDocumentoDTO> tiposDocumento;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarTiposDocumento();
+    }
+
+    private async Task CargarTiposDocumento()
+    {
+        var respuesta = await http.Get<List<GET_TipoDocumentoDTO>>("api/tiposdocumento");
+        if (!respuesta.Error)
+        {
+            tiposDocumento = respuesta.Respuesta;
+        }
+    }
+
+    private void IrACrearTipoDocumento()
+    {
+        Navigation.NavigateTo("/api/tipodocumentos/crear");
+    }
+
+    private void IrAEditarTipoDocumento(string codigo)
+    {
+        Navigation.NavigateTo($"/api/tiposdocumento/editar/{codigo}");
+    }
+}
