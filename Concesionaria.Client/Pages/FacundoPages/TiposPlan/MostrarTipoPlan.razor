@@ -20,8 +20,7 @@
                         <th>Nombre del Plan</th>
                         <th>Precio</th>
                         <th>Código Vehículo</th>
-                        <th>Descripción</th>
-                        <th>Acciones</th> 
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,11 +28,11 @@
                     {
                         @if (listaTipoPlanes == null)
                         {
-                            <tr><td colspan="6">Cargando...</td></tr>
+                            <tr><td colspan="5">Cargando...</td></tr>
                         }
                         else if (listaTipoPlanes.Count == 0)
                         {
-                            <tr><td colspan="6">No existen tipos de planes.</td></tr>
+                            <tr><td colspan="5">No existen tipos de planes.</td></tr>
                         }
                         else
                         {
@@ -44,10 +43,14 @@
                                     <td>@plan.NombrePlan</td>
                                     <td>@plan.ValorTotal.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
                                     <td>@plan.CodigoVehiculo</td>
-                                    <td>@plan.Descripcion</td>
                                     <td>
                                         <button class="btn btn-outline-secondary" @onclick="() => EditarPlan(plan.Codigo)">Editar</button>
                                         <button class="btn btn-outline-danger ml-2" @onclick="() => EliminarPlan(plan.Codigo)">Eliminar</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <strong>Descripción:</strong> @plan.Descripcion
                                     </td>
                                 </tr>
                             }
@@ -55,7 +58,7 @@
                     }
                     else
                     {
-                        <tr><td colspan="6">Error: @Mensaje</td></tr>
+                        <tr><td colspan="5">Error: @Mensaje</td></tr>
                     }
                 </tbody>
             </table>
@@ -73,6 +76,7 @@
         </div>
     </div>
 </div>
+
 
 @code {
     List<GET_TipoPlanDTO> listaTipoPlanes = null!;
