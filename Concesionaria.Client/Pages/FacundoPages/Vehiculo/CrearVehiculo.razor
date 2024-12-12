@@ -43,22 +43,8 @@
                     <ValidationMessage For="@(() => vehiculo.Combustible)" />
                 </div>
 
-                @if (isSubmitting)
-                {
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando...</span>
-                    </div>
-                }
-
                 <button type="submit" class="btn btn-primary w-100 mt-3" @disabled="isSubmitting">Agregar vehículo</button>
             </EditForm>
-
-            @if (!string.IsNullOrEmpty(errorMessage))
-            {
-                <div class="alert alert-danger mt-3">
-                    @errorMessage
-                </div>
-            }
 
             <button @onclick="IrALaLista" class="btn btn-outline-primary w-100 mt-3">Volver a la lista</button>
         </div>
@@ -77,22 +63,30 @@
         errorMessage = null;
         successMessage = null;
 
-        var response = await http.Post<POST_VehiculoDTO>("api/Vehiculos", vehiculo);
-
-        if (!response.Error)
+        try
         {
-            successMessage = "Vehículo agregado correctamente.";
+            var response = await http.Post<POST_VehiculoDTO>("api/Vehiculos", vehiculo);
 
-            await Task.Delay(2000);
-            Navigation.NavigateTo("/Vehiculos");
+            if (!response.Error)
+            {
+                successMessage = "Vehículo agregado correctamente.";
+                Navigation.NavigateTo("/api/vehiculos/lista", true);
+            }
+            else
+            {
+                errorMessage = $"Error: {await response.ObtenerError()}";
+                Console.WriteLine(errorMessage);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            errorMessage = $"Error: {await response.ObtenerError()}";
-            Console.WriteLine(errorMessage);
+            errorMessage = $"Error: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
         }
-
-        isSubmitting = false;
+        finally
+        {
+            isSubmitting = false;
+        }
     }
 
     private void IrALaLista()
