@@ -1,5 +1,4 @@
 using Concesionaria.DB.Data;
-using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Repositorio;
 using Concesionaria.Server.Repositorio.AndresRepositorios;
 using Concesionaria.Server.Repositorio.BrunoRepositorios;
@@ -8,6 +7,7 @@ using Concesionaria.Server.Repositorio.GinoRepositorios;
 using Concesionaria.Server.Resolvers.AdjudicacionResolver;
 using Concesionaria.Server.Resolvers.ClienteResolver;
 using Concesionaria.Server.Resolvers.CuotaResolver;
+using Concesionaria.Server.Resolvers.PagoResolver;
 using Concesionaria.Server.Resolvers.PersonaResolvers;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.POST;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.PUT;
@@ -51,24 +51,19 @@ builder.Services.AddScoped<IVehiculoRepositorio, VehiculoRepositorio>();
 builder.Services.AddScoped<TipoDocumentoResolverPost>();
 builder.Services.AddScoped<TipoDocumentoResolverPut>();  // teclas ( fn + f12 ) sobre el resolver para saber a que entidad pertenece.
 
-
 builder.Services.AddScoped<TipoPlanResolverPost>();
 builder.Services.AddScoped<TipoPlanResolverPut>();
-
 
 builder.Services.AddScoped<PersonaResolverPost>();
 builder.Services.AddScoped<PersonaResolverPut>();
 
-
 builder.Services.AddScoped<PersonaVendedorResolverPost>();
 builder.Services.AddScoped<PersonaVendedorResolverPut>();
-
 
 builder.Services.AddScoped<TipoPlanResolverPlanVendidoPost>();
 builder.Services.AddScoped<ClienteResolverPost>();
 builder.Services.AddScoped<VendedorResolverPost>();
 builder.Services.AddScoped<ClienteFechaSuscripcionPost>();
-
 
 builder.Services.AddScoped<TipoPlanResolverPlanVendidoPut>();
 builder.Services.AddScoped<ClienteResolverPut>();
@@ -78,11 +73,11 @@ builder.Services.AddScoped<VendedorResolverPut>();
 builder.Services.AddScoped<PlanVendidoAdjudicResolverPost>();
 builder.Services.AddScoped<PlanVendidoAdjudicResolverPut>();
 
-
 builder.Services.AddScoped<PlanVendidoCuotaResolverPost>();
 builder.Services.AddScoped<PlanVendidoCuotaResolverPut>();
 
-
+builder.Services.AddScoped<PagoCuotaResolverPost>();
+builder.Services.AddScoped<PagoCuotaResolverPut>();
 
 // Coneccion con la BD / Context
 

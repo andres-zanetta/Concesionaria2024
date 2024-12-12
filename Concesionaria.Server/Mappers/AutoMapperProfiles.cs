@@ -3,6 +3,7 @@ using Concesionaria.DB.Data.Entidades;
 using Concesionaria.Server.Resolvers.AdjudicacionResolver;
 using Concesionaria.Server.Resolvers.ClienteResolver;
 using Concesionaria.Server.Resolvers.CuotaResolver;
+using Concesionaria.Server.Resolvers.PagoResolver;
 using Concesionaria.Server.Resolvers.PersonaResolvers;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.POST;
 using Concesionaria.Server.Resolvers.PlanVendidoResolver.PUT;
@@ -169,8 +170,18 @@ namespace Concesionaria.Server.Mappers
 
             // Mapeado Pago =======================================================================
 
-            CreateMap<PUT_CuotaDTO, Pago>();
-        
+            CreateMap<Pago, GET_PagoDTO>()
+                .ForMember(dest => dest.CuotaCodigo, opt => opt.MapFrom(src => src.Cuota.Codigo));
+
+
+            CreateMap<POST_PagoDTO, Pago>()
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.ReferenciaPago}-{src.CodigoCuota}"))
+                .ForMember(dest => dest.CuotaId, opt => opt.MapFrom<PagoCuotaResolverPost>());
+
+
+            CreateMap<PUT_PagoDTO, Pago>()
+                .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => $"{src.ReferenciaPago}-{src.CodigoCuota}"))
+                .ForMember(dest => dest.CuotaId, opt => opt.MapFrom<PagoCuotaResolverPut>());
         }
     }
 }

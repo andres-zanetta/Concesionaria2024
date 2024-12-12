@@ -12,13 +12,6 @@ namespace Concesionaria.DB.Data.Entidades
     [Index(nameof(CuotaId), Name = "CuotaId_UQ", IsUnique = true)]
     public class Pago : EntityBase
     {
-        // Monto pagado ------------------------------------------------------------------------------------------
-
-
-        [Required(ErrorMessage = "El monto pagado de la cuota es obligatorio.")]
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal MontoPagado { get; set; }
-
 
         // Fecha pago ------------------------------------------------------------------------------------------
 
@@ -47,7 +40,6 @@ namespace Concesionaria.DB.Data.Entidades
 
         [Required(ErrorMessage = "La cuota asociada es obligatoria.")]
         public int CuotaId { get; set; }
-
         public Cuota Cuota { get; set; }
     }
 }

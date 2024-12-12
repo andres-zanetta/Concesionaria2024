@@ -68,9 +68,6 @@ namespace Concesionaria.DB.Data.Entidades
         public PlanVendido PlanVendido { get; set; }
 
 
-        // Lista ------------------------------------------------------------------------------------------
-
-
-        public List<Pago> Pagos { get; set; } = new List<Pago>();
+        public Pago Pago { get; set; } 
     }
 }

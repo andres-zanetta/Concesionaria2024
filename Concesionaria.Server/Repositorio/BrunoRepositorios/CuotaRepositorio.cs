@@ -18,7 +18,7 @@ namespace Concesionaria.Server.Repositorio.BrunoRepositorios
         {
             try
             {
-                var cuotas = await context.Cuotas.Include(c => c.Pagos).Include(c => c.PlanVendido).
+                var cuotas = await context.Cuotas.Include(c => c.PlanVendido).
                     Where(pv => pv.PlanVendido.Codigo == codigo).ToListAsync(); // Incluye la entidad Pago
                 return cuotas;
             }
@@ -47,7 +47,7 @@ namespace Concesionaria.Server.Repositorio.BrunoRepositorios
         {
             try
             {
-                var cuotas = await context.Cuotas.Include(c => c.Pagos).Include(c => c.PlanVendido).ToListAsync(); // Incluye la entidad Pago
+                var cuotas = await context.Cuotas.Include(c => c.PlanVendido).ToListAsync(); // Incluye la entidad Pago
                 return cuotas;
             }
             catch (Exception e)
@@ -62,7 +62,7 @@ namespace Concesionaria.Server.Repositorio.BrunoRepositorios
         {
             try
             {
-                var cuota = await context.Cuotas.Include(c => c.Pagos).Include(c => c.PlanVendido).FirstOrDefaultAsync(c => c.Codigo == codigo); // Incluye la entidad Pago
+                var cuota = await context.Cuotas.Include(c => c.PlanVendido).FirstOrDefaultAsync(c => c.Codigo == codigo); // Incluye la entidad Pago
                 return cuota;
             }
             catch (Exception e)
@@ -76,7 +76,7 @@ namespace Concesionaria.Server.Repositorio.BrunoRepositorios
         {
             try
             {
-                var cuota = await context.Cuotas.Include(c => c.Pagos).Include(c => c.PlanVendido).FirstOrDefaultAsync(c => c.NumeroCuota == numCuota); 
+                var cuota = await context.Cuotas.Include(c => c.PlanVendido).FirstOrDefaultAsync(c => c.NumeroCuota == numCuota); 
                 // Incluye la entidad Pago
                 return cuota;
             }

@@ -29,6 +29,48 @@ namespace Concesionaria.Server.Repositorio.BrunoRepositorios
             }
         }
 
+        public async Task<Pago> SelectByReferenciaPago(string refPAgo)
+        {
+            try
+            {
+                var pago = await context.Pagos.Include(p => p.Cuota).FirstOrDefaultAsync(p => p.ReferenciaPago == refPAgo);
+                return pago;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener el pago: {e.Message}");
+                throw;
+            }
+        }
+
+        public async Task<Pago> SelectCodigoConCuota(string codigo)
+        {
+            try
+            {
+                var pago = await context.Pagos.Include(p => p.Cuota).FirstOrDefaultAsync(p => p.Codigo == codigo);
+                return pago;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener el pago: {e.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<Pago>> SelectAllConCuota()
+        {
+            try
+            {
+                var ListaPago = await context.Pagos.Include(p => p.Cuota).ToListAsync();
+                return ListaPago;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error al obtener el pago: {e.Message}");
+                throw;
+            }
+        }
+
         // Muestra todos los pagos asociados a una cuota en particular
         public async Task<List<Pago>> SelectPagosXCuotaId(int cuotaId)
         {
