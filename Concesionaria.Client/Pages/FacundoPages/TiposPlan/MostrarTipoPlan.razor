@@ -81,6 +81,7 @@
 @code {
     List<GET_TipoPlanDTO> listaTipoPlanes = null!;
     string Mensaje = "";
+    string MensajeExito = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -120,13 +121,16 @@
         {
             var respuesta = await http.Delete($"api/TipoPlan/Eliminar-Tipo-Plan/{codigo}");
 
-            if (respuesta.Error)
+            if (!respuesta.Error)
             {
-                Mensaje = "No se pudo eliminar el tipo de plan.";
+                await LeerTipoPlanes();
+                MensajeExito = $"El tipo de plan con código {codigo} fue eliminado con éxito.";
+                Mensaje = "";
             }
             else
             {
-                Mensaje = $"El tipo de plan con código {codigo} fue eliminado con éxito.";
+                Mensaje = "Error al eliminar el tipo de plan."; 
+                MensajeExito = "";
             }
         }
     }
