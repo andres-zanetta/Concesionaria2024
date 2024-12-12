@@ -1,17 +1,25 @@
-﻿@page "/api/adjudicacion/crear"
+﻿@page "/api/adjudicacion/CodigoAModificar/{codigo}"
 @using Concesionaria2024.Shared.DTO.FacundoDTO.Adjudicacion
 @inject IHttpServicio HttpServicio
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
 
 <div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: 50px;">
     <div class="card border-0 shadow-lg" style="width: 500px; border-radius: 10px;">
         <div class="card-header bg-primary text-white text-center py-4" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
-            <h3 class="mb-0" style="font-weight: 600;">Crear Adjudicación</h3>
+            <h3 class="mb-0" style="font-weight: 600;">Editar Adjudicación</h3>
         </div>
         <div class="card-body">
-            <EditForm Model="@adjudicacion" OnValidSubmit="CrearnuevaAdjudicacion" Context="editContext">
+            <EditForm Model="@adjudicacion" OnValidSubmit="ActualizarAdjudicacion">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
+
+                <div class="form-group">
+                    <label for="FechaAdjudicacion">Fecha de Adjudicación</label>
+                    <InputDate id="FechaAdjudicacion" class="form-control" @bind-Value="adjudicacion.FechaAdjudicacion" />
+                    <ValidationMessage For="@(() => adjudicacion.FechaAdjudicacion)" />
+                </div>
 
                 <div class="form-group">
                     <label for="PatenteVehiculo">Patente del Vehículo</label>
@@ -37,7 +45,8 @@
                     <ValidationMessage For="@(() => adjudicacion.Detalle)" />
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 mt-3" @disabled="isSubmitting">Crear Adjudicación</button>
+                <button type="submit" class="btn btn-primary w-100 mt-3" @disabled="isSubmitting">Actualizar Adjudicación</button>
+                <button type="button" class="btn btn-secondary w-100 mt-3" @onclick="Cancelar">Cancelar</button>
             </EditForm>
 
             @if (!string.IsNullOrEmpty(errorMessage))
@@ -46,38 +55,51 @@
                     @errorMessage
                 </div>
             }
-
-            <button @onclick="IrAListaAdjudicaciones" class="btn btn-outline-primary w-100 mt-3">Volver a la lista</button>
         </div>
     </div>
 </div>
 
-@code {
-    private POST_AdjudicacionDTO adjudicacion = new POST_AdjudicacionDTO();
-    private bool isSubmitting = false;
-    private string errorMessage;
 
-    private async Task CrearnuevaAdjudicacion()
+@code {
+    [Parameter] public string codigo { get; set; }
+    private PUT_AdjudicacionDTO adjudicacion = new PUT_AdjudicacionDTO();
+    private string errorMessage;
+    private bool isSubmitting = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var resultado = await HttpServicio.Get<PUT_AdjudicacionDTO>($"api/adjudicacion/Codigo/{codigo}");
+        if (resultado.Error)
+        {
+            errorMessage = $"Error al cargar la adjudicación: {await resultado.ObtenerError()}";
+        }
+        else
+        {
+            adjudicacion = resultado.Respuesta;
+        }
+    }
+
+    private async Task ActualizarAdjudicacion()
     {
         isSubmitting = true;
         errorMessage = null;
 
-        var response = await HttpServicio.Post("api/adjudicacion", adjudicacion);
+        var response = await HttpServicio.Put($"api/adjudicacion/CodigoAModificar/{codigo}", adjudicacion);
 
         if (!response.Error)
         {
+            await JSRuntime.InvokeVoidAsync("alert", "Adjudicación actualizada correctamente.");
             Navigation.NavigateTo("/api/adjudicacion");
         }
         else
         {
-            errorMessage = $"Error: {await response.ObtenerError()}";
-            Console.WriteLine(errorMessage);
+            errorMessage = $"Error al actualizar la adjudicación: {await response.ObtenerError()}";
         }
 
         isSubmitting = false;
     }
 
-    private void IrAListaAdjudicaciones()
+    private void Cancelar()
     {
         Navigation.NavigateTo("/api/adjudicacion");
     }

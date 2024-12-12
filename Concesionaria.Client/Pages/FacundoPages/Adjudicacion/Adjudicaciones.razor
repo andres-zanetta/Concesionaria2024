@@ -36,6 +36,7 @@
                             <th>Auto Entregado</th>
                             <th>Código Vehículo</th>
                             <th>Detalle</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,13 +51,16 @@
                                     <td>@(adjudicacion.AutoEntregado ? "Sí" : "No")</td>
                                     <td>@adjudicacion.VehiculoCodigo</td>
                                     <td>@(string.IsNullOrEmpty(adjudicacion.Detalle) ? "No disponible" : adjudicacion.Detalle)</td>
+                                    <td>
+                                        <button class="btn btn-outline-secondary" @onclick="() => IrAEditarAdjudicacion(adjudicacion.Codigo)">Editar</button>
+                                    </td>
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr>
-                                <td colspan="6" class="text-center">No se encontraron adjudicaciones.</td>
+                                <td colspan="7" class="text-center">No se encontraron adjudicaciones.</td>
                             </tr>
                         }
                     </tbody>
@@ -164,5 +168,10 @@
     private void IrACrearNuevaAdjudicacion()
     {
         Navigation.NavigateTo("/api/adjudicacion/crear");
+    }
+
+    private void IrAEditarAdjudicacion(string codigo)
+    {
+        Navigation.NavigateTo($"/api/adjudicacion/CodigoAModificar/{codigo}");
     }
 }
